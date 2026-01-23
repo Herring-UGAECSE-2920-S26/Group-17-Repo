@@ -1,32 +1,37 @@
 import spidev
-import time
+import sys
 
 # 1. Setup SPI for the Potentiometer
 spi = spidev.SpiDev()
 spi.open(0, 0)
 spi.max_speed_hz = 1000000
 
-# Our 4 values to cycle through
+# Resistance values (from your lesson)
 resistances = [100, 1000, 5000, 10000]
+idx = 0
 
-def set_pot_resistance(target_ohms):
-    # Calculate step (0-128) for the MCP4131
-    # 10k ohms is the max capacity of this specific model
+def update_pot(target_ohms):
+    # MCP4131 is a 7-bit device (0-128 steps)
     step = int((target_ohms / 10000) * 128)
-    
-    # Send to MCP4131 via SPI
-    # 0x00 is the write command for the Wiper 0 register
     spi.xfer2([0x00, step])
-    print(f"Resistance set to: {target_ohms}Ω (Step: {step})")
+    print(f"\n[ACTIVE] Resistance: {target_ohms}Ω | MCP4131 Step: {step}")
 
 try:
-    print("Auto-cycling resistance levels. Press Ctrl+C to stop.")
+    print("--- Digipot Keyboard Controller ---")
+    print("Press ENTER to cycle to the next resistance.")
+    print("Press Ctrl+C to exit.")
+    
+    # Set initial state
+    update_pot(resistances[idx])
+
     while True:
-        for val in resistances:
-            set_pot_resistance(val)
-            # Wait 2 seconds before switching to the next level
-            time.sleep(2) 
+        input("Press [Enter] for next level...")
+        
+        # Increment index and wrap around using modulo
+        idx = (idx + 1) % len(resistances)
+        update_pot(resistances[idx])
 
 except KeyboardInterrupt:
-    print("\nShutting down...")
+    print("\n\nClosing SPI connection. Goodbye!")
     spi.close()
+    sys.exit()
