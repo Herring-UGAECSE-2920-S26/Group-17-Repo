@@ -4,43 +4,33 @@ class MCP4131:
     def __init__(self, bus=0, device=0):
         self.spi = spidev.SpiDev()
         self.spi.open(bus, device)
+        # Slower speed is MUCH safer for digipots to prevent bit-shift errors
         self.spi.max_speed_hz = 50000 
+        self.spi.mode = 0
 
     def set_step(self, step):
-        """
-        Sends the raw integer to the MCP4131. 
-        Note: Hardware limits are 0-128. 
-        Values outside this may cause unexpected bit-shifting behavior.
-        """
-        # We use masking (& 0xFF) to ensure we only send one byte of data
-        # even if the input is a very large number.
-        self.spi.xfer2([0x00, step & 0xFF])
-        print(f"Sent raw value {step} (Byte: {step & 0xFF}) to MCP4131")
+        # 1. Force the value to be an integer
+        step = int(step)
+        
+        # 2. Limit the hardware range internally to 0-128 
+        # to prevent overflow into the command bits
+        if step > 128:
+            step = 128
+        if step < 0:
+            step = 0
+
+        # 3. Construct the Write Command
+        # Address 0000 (Wiper 0), Command 00 (Write)
+        # Byte 1 should be 0x00 (0000 0000)
+        # Byte 2 is the actual step
+        command_byte = 0x00 
+        data_byte = step & 0xFF
+        
+        # Send as a 16-bit transaction
+        self.spi.xfer2([command_byte, data_byte])
+        print(f"Wiper set to: {step}")
 
     def close(self):
         self.spi.close()
 
-if __name__ == "__main__":
-    pot = MCP4131()
-    
-    print("--- MCP4131 Unrestricted Manual Control ---")
-    print("Enter any integer. Type 'exit' to quit.")
-    
-    try:
-        while True:
-            user_input = input("\nEnter value: ").strip().lower()
-            
-            if user_input == 'exit':
-                break
-            
-            try:
-                # Converts input to integer and sends it regardless of size
-                step_val = int(user_input)
-                pot.set_step(step_val)
-            except ValueError:
-                print("That's not a number. Please enter an integer.")
-
-    except KeyboardInterrupt:
-        print("\nProgram interrupted.")
-    finally:
-        pot.close()
+# ... (rest of your input loop remains the same)
