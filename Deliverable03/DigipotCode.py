@@ -1,47 +1,55 @@
 import spidev
 import sys
 
-class MCP4131:
-    def __init__(self, bus=0, device=0):
-        self.spi = spidev.SpiDev()
-        self.spi.open(bus, device)
-        self.spi.max_speed_hz = 1000000 
+# 1. Setup SPI with hardened settings
+spi = spidev.SpiDev()
+spi.open(0, 0)
 
-    def set_step(self, step):
-        """Sets the wiper position (0 to 128)."""
-        if 0 <= step <= 128:
-            # MCP4131 Write Command to Address 0x00
-            self.spi.xfer2([0x00, step])
-            print(f"Successfully set wiper to step {step}")
-        else:
-            print("Error: Step must be between 0 and 128.")
+# FIX 1: Lower speed significantly. 
+# Digipots are slow; 1MHz is often too fast for messy breadboard wires.
+spi.max_speed_hz = 50000 
 
-    def close(self):
-        self.spi.close()
+# FIX 2: Explicitly set SPI mode 0 (CPOL=0, CPHA=0)
+spi.mode = 0
 
-# --- Interactive Control ---
-if __name__ == "__main__":
-    pot = MCP4131()
-    
-    print("--- MCP4131 Manual Control ---")
-    print("Enter a step value between 0 and 128.")
-    print("Type 'exit' or press Ctrl+C to quit.")
-    
+def set_pot_step(step):
+    """Sends the step value with bit-safety for the MCP4131."""
     try:
-        while True:
-            user_input = input("\nEnter step (0-128): ").strip().lower()
-            
-            if user_input == 'exit':
-                break
-            
-            try:
-                step_val = int(user_input)
-                pot.set_step(step_val)
-            except ValueError:
-                print("Invalid input. Please enter a whole number.")
+        # Clamp value to 0-128
+        step = max(0, min(128, int(step)))
+        
+        # FIX 3: Construct a clean 16-bit write command.
+        # Address 0000 (Wiper 0) + Command 00 (Write) = 0x00
+        # This ensures we NEVER accidentally hit the 'Shutdown' or 'TCON' registers.
+        address_byte = 0x00 
+        data_byte = step & 0xFF 
+        
+        spi.xfer2([address_byte, data_byte])
+        
+        # Feedback
+        approx_ohms = int((step / 128) * 10000)
+        print(f"Success: Step {step} (~{approx_ohms}Ω)")
+        
+    except Exception as e:
+        print(f"Communication Error: {e}")
 
-    except KeyboardInterrupt:
-        print("\nProgram interrupted.")
-    finally:
-        pot.close()
-        print("SPI connection closed.")
+try:
+    print("--- MCP4131 HARDENED CONTROLLER ---")
+    print("Shielded against accidental Shutdown Mode entry.")
+    
+    while True:
+        user_input = input("\nEnter step (0-128) or 'exit': ").strip().lower()
+
+        if user_input == 'exit':
+            break
+
+        if user_input.isdigit():
+            set_pot_step(user_input)
+        else:
+            print("Please enter a valid whole number.")
+
+except KeyboardInterrupt:
+    print("\nExiting...")
+finally:
+    spi.close()
+    sys.exit()
