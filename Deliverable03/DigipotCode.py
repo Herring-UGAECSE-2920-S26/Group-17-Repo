@@ -6,32 +6,38 @@ spi = spidev.SpiDev()
 spi.open(0, 0)
 spi.max_speed_hz = 1000000
 
-# Resistance values (from your lesson)
-resistances = [100, 1000, 5000, 10000]
-idx = 0
-
-def update_pot(target_ohms):
-    # MCP4131 is a 7-bit device (0-128 steps)
-    step = int((target_ohms / 10000) * 128)
+def set_pot_step(step):
+    """Sends the raw 0-128 step value to the MCP4131."""
+    # Ensure step is within the 7-bit wiper range
+    step = max(0, min(128, int(step)))
     spi.xfer2([0x00, step])
-    print(f"\n[ACTIVE] Resistance: {target_ohms}Ω | MCP4131 Step: {step}")
+    
+    # Calculate approximate Ohms for feedback (assuming 10k pot)
+    approx_ohms = int((step / 128) * 10000)
+    print(f"Success: Step set to {step} (~{approx_ohms}Ω)")
 
 try:
-    print("--- Digipot Keyboard Controller ---")
-    print("Press ENTER to cycle to the next resistance.")
-    print("Press Ctrl+C to exit.")
-    
-    # Set initial state
-    update_pot(resistances[idx])
+    print("--- MCP4131 Manual Step Controller ---")
+    print("The MCP4131 accepts values from 0 (min) to 128 (max).")
+    print("Type 'exit' or press Ctrl+C to quit.")
 
     while True:
-        input("Press [Enter] for next level...")
-        
-        # Increment index and wrap around using modulo
-        idx = (idx + 1) % len(resistances)
-        update_pot(resistances[idx])
+        user_input = input("\nEnter desired step (0-128): ").strip().lower()
+
+        if user_input == 'exit':
+            break
+
+        try:
+            val = int(user_input)
+            if 0 <= val <= 128:
+                set_pot_step(val)
+            else:
+                print("Error: Please enter a number between 0 and 128.")
+        except ValueError:
+            print("Invalid input. Please enter a whole number.")
 
 except KeyboardInterrupt:
-    print("\n\nClosing SPI connection. Goodbye!")
+    print("\nClosing SPI connection.")
+finally:
     spi.close()
     sys.exit()
