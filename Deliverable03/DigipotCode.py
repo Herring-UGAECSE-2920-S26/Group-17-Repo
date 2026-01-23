@@ -4,7 +4,7 @@ class MCP4131:
     def __init__(self, bus=0, device=0):
         self.spi = spidev.SpiDev()
         self.spi.open(bus, device)
-        self.spi.max_speed_hz = 1000000 
+        self.spi.max_speed_hz = 50000 
 
     def set_step(self, step):
         """
