@@ -1,43 +1,51 @@
 import spidev
-import sys
+import time
 
-# 1. Setup SPI for the Potentiometer
-spi = spidev.SpiDev()
-spi.open(0, 0)
-spi.max_speed_hz = 1000000
+class MCP4131:
+    def __init__(self, bus=0, device=0):
+        self.spi = spidev.SpiDev()
+        self.spi.open(bus, device)
+        # MCP4131 supports mode 0,0 and 1,1. 
+        # Max clock speed is roughly 10MHz, we'll use 1MHz for stability.
+        self.spi.max_speed_hz = 1000000 
 
-def set_pot_step(step):
-    """Sends the raw 0-128 step value to the MCP4131."""
-    # Ensure step is within the 7-bit wiper range
-    step = max(0, min(128, int(step)))
-    spi.xfer2([0x00, step])
+    def set_step(self, step):
+        """
+        Sets the wiper position (0 to 128).
+        Command byte for MCP4131: 
+        0000 (Address 0 for Volatile Wiper 0) + 00 (Write Command) + 00 (Padding) = 0x00
+        """
+        if not 0 <= step <= 128:
+            raise ValueError("Step must be between 0 and 128")
+
+        # Send [Command Byte, Data Byte]
+        # For the 4131, the 9th bit of data is actually in the command byte, 
+        # but for 128 steps, we only need the second byte.
+        self.spi.xfer2([0x00, step])
+
+    def close(self):
+        self.spi.close()
+
+# --- Main Execution ---
+if __name__ == "__main__":
+    pot = MCP4131()
     
-    # Calculate approximate Ohms for feedback (assuming 10k pot)
-    approx_ohms = int((step / 128) * 10000)
-    print(f"Success: Step set to {step} (~{approx_ohms}Ω)")
-
-try:
-    print("--- MCP4131 Manual Step Controller ---")
-    print("The MCP4131 accepts values from 0 (min) to 128 (max).")
-    print("Type 'exit' or press Ctrl+C to quit.")
-
-    while True:
-        user_input = input("\nEnter desired step (0-128): ").strip().lower()
-
-        if user_input == 'exit':
-            break
-
-        try:
-            val = int(user_input)
-            if 0 <= val <= 128:
-                set_pot_step(val)
-            else:
-                print("Error: Please enter a number between 0 and 128.")
-        except ValueError:
-            print("Invalid input. Please enter a whole number.")
-
-except KeyboardInterrupt:
-    print("\nClosing SPI connection.")
-finally:
-    spi.close()
-    sys.exit()
+    try:
+        print("Cycling resistance from 0 to 128...")
+        while True:
+            # Sweep Up
+            for s in range(0, 129, 10):
+                print(f"Setting step to: {s}")
+                pot.set_step(s)
+                time.sleep(1)
+            
+            # Sweep Down
+            for s in range(128, -1, -10):
+                print(f"Setting step to: {s}")
+                pot.set_step(s)
+                time.sleep(1)
+                
+    except KeyboardInterrupt:
+        print("\nStopping...")
+    finally:
+        pot.close()
