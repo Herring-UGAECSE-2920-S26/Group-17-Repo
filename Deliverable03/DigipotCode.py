@@ -5,36 +5,47 @@ class MCP4131:
     def __init__(self, bus=0, device=0):
         self.spi = spidev.SpiDev()
         self.spi.open(bus, device)
-        self.spi.max_speed_hz = 50000 # Slow and steady
-        self.spi.mode = 0             # Try Mode 0 first; if fails, try mode 3
-        self.spi.no_cs = False        # Ensure the Pi manages the CS pin
+        # MCP4131 supports mode 0,0 and 1,1. 
+        # Max clock speed is roughly 10MHz, we'll use 1MHz for stability.
+        self.spi.max_speed_hz = 1000000 
 
     def set_step(self, step):
-        try:
-            val = int(step)
-            # Ensure we stay in hardware bounds
-            if val < 0: val = 0
-            if val > 128: val = 128
-            
-            # The MCP4131 uses 16-bit instructions
-            # [Address/Command Byte] [Data Byte]
-            # Address 0, Write = 0x00
-            resp = self.spi.xfer2([0x00, val])
-            
-            print(f"Sent {val}. Hardware response: {resp}")
-        except ValueError:
-            print("Invalid input! Enter a number.")
+        """
+        Sets the wiper position (0 to 128).
+        Command byte for MCP4131: 
+        0000 (Address 0 for Volatile Wiper 0) + 00 (Write Command) + 00 (Padding) = 0x00
+        """
+        if not 0 <= step <= 128:
+            raise ValueError("Step must be between 0 and 128")
+
+        # Send [Command Byte, Data Byte]
+        # For the 4131, the 9th bit of data is actually in the command byte, 
+        # but for 128 steps, we only need the second byte.
+        self.spi.xfer2([0x00, step])
 
     def close(self):
         self.spi.close()
 
+# --- Main Execution ---
 if __name__ == "__main__":
     pot = MCP4131()
+    
     try:
+        print("Cycling resistance from 0 to 128...")
         while True:
-            u_input = input("Enter Step (0-128) or 'q': ")
-            if u_input.lower() == 'q':
-                break
-            pot.set_step(u_input)
+            # Sweep Up
+            for s in range(0, 129, 10):
+                print(f"Setting step to: {s}")
+                pot.set_step(s)
+                time.sleep(1)
+            
+            # Sweep Down
+            for s in range(128, -1, -10):
+                print(f"Setting step to: {s}")
+                pot.set_step(s)
+                time.sleep(1)
+                
+    except KeyboardInterrupt:
+        print("\nStopping...")
     finally:
         pot.close()
