@@ -1,12 +1,14 @@
-import spidev
+import spidev #https://pypi.org/project/spidev/
 import sys
 
+#class that uses the spidev library to interface with the digipot
 class MCP4131:
     def __init__(self, bus=0, device=0):
         self.spi = spidev.SpiDev()
         self.spi.open(bus, device)
         self.spi.max_speed_hz = 1000000 
 
+    #method that sets the digipot to a specific value
     def set_step(self, step):
         """Sets the wiper position (0 to 128)."""
         if 0 <= step <= 128:
@@ -16,17 +18,20 @@ class MCP4131:
         else:
             print("Error: Step must be between 0 and 128.")
 
+    #method that closes the program
     def close(self):
         self.spi.close()
 
-# --- Interactive Control ---
+# --- Interactive Control --- 
 if __name__ == "__main__":
     pot = MCP4131()
     
     print("--- MCP4131 Manual Control ---")
     print("Enter a step value between 0 and 128.")
     print("Type 'exit' or press Ctrl+C to quit.")
-    
+
+    #code that allows the user to change the resistor value
+    #through keyboard input
     try:
         while True:
             user_input = input("\nEnter step (0-128): ").strip().lower()
