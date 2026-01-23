@@ -8,7 +8,7 @@ pi1 = pigpio.pi() #opens an instance of pigpio
 #define vars
 switchPin = 24
 count = 0
-pot = MCP4131 #create instance of class found in DigipotCode.py
+pot = MCP4131() #create instance of class found in DigipotCode.py
 
 #sets up the switch pin
 pi1.set_mode(switchPin, pigpio.INPUT)
