@@ -1,51 +1,47 @@
 import spidev
-import time
+import sys
 
 class MCP4131:
     def __init__(self, bus=0, device=0):
         self.spi = spidev.SpiDev()
         self.spi.open(bus, device)
-        # MCP4131 supports mode 0,0 and 1,1. 
-        # Max clock speed is roughly 10MHz, we'll use 1MHz for stability.
         self.spi.max_speed_hz = 1000000 
 
     def set_step(self, step):
-        """
-        Sets the wiper position (0 to 128).
-        Command byte for MCP4131: 
-        0000 (Address 0 for Volatile Wiper 0) + 00 (Write Command) + 00 (Padding) = 0x00
-        """
-        if not 0 <= step <= 128:
-            raise ValueError("Step must be between 0 and 128")
-
-        # Send [Command Byte, Data Byte]
-        # For the 4131, the 9th bit of data is actually in the command byte, 
-        # but for 128 steps, we only need the second byte.
-        self.spi.xfer2([0x00, step])
+        """Sets the wiper position (0 to 128)."""
+        if 0 <= step <= 128:
+            # MCP4131 Write Command to Address 0x00
+            self.spi.xfer2([0x00, step])
+            print(f"Successfully set wiper to step {step}")
+        else:
+            print("Error: Step must be between 0 and 128.")
 
     def close(self):
         self.spi.close()
 
-# --- Main Execution ---
+# --- Interactive Control ---
 if __name__ == "__main__":
     pot = MCP4131()
     
+    print("--- MCP4131 Manual Control ---")
+    print("Enter a step value between 0 and 128.")
+    print("Type 'exit' or press Ctrl+C to quit.")
+    
     try:
-        print("Cycling resistance from 0 to 128...")
         while True:
-            # Sweep Up
-            for s in range(0, 129, 10):
-                print(f"Setting step to: {s}")
-                pot.set_step(s)
-                time.sleep(1)
+            user_input = input("\nEnter step (0-128): ").strip().lower()
             
-            # Sweep Down
-            for s in range(128, -1, -10):
-                print(f"Setting step to: {s}")
-                pot.set_step(s)
-                time.sleep(1)
-                
+            if user_input == 'exit':
+                break
+            
+            try:
+                step_val = int(user_input)
+                pot.set_step(step_val)
+            except ValueError:
+                print("Invalid input. Please enter a whole number.")
+
     except KeyboardInterrupt:
-        print("\nStopping...")
+        print("\nProgram interrupted.")
     finally:
         pot.close()
+        print("SPI connection closed.")
