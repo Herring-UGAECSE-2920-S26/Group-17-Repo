@@ -30,7 +30,7 @@ try:
         try:
             val = int(user_input)
             if 0 <= val <= 128:
-                set_pot_step(val)
+                write_pot(val)
             else:
                 print("Error: Please enter a number between 0 and 128.")
         except ValueError:
