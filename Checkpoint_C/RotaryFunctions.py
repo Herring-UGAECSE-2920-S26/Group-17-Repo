@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import pigpio
 import time
 import asyncio
@@ -56,3 +57,7 @@ class Rotary:
             self.prevA = self.readA
             startTime = time.perf_counter()
             await asyncio.sleep(0)
+||||||| 07d2a6c
+=======
+
+>>>>>>> 96a75b3a4175b347f95a127775fbfa64cecba283

@@ -32,5 +32,3 @@ while True:
     elif count == 4:
         count = 0
         pot.set_step(128) #set digipot to 10000
-    
-
