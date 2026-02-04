@@ -1,4 +1,6 @@
-
+import pigpio
+import asyncio
+import time
 
 class Rotary:
 
@@ -55,10 +57,9 @@ class Rotary:
             self.prevA = self.readA
             startTime = time.perf_counter()
             await asyncio.sleep(0)
+            
+if __name__ == "__main__":
 
-            if __name__ == "__main__":
-
-                pi1 = pigpio.pi()
-
-                rot = Rotary()
-                asyncio.run(rot.checkRotary())
+    pi1 = pigpio.pi()
+    rot = Rotary()
+    asyncio.run(rot.checkRotary())
