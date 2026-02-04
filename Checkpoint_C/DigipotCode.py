@@ -3,8 +3,8 @@ import sys
 
 #class that uses the spidev library to interface with the digipot
 class MCP4131:
-    def __init__(self, bus=0, device=0):
-        self.spi = spidev.SpiDev()
+    def __init__(self, spi, bus=0, device=0):
+        self.spi = spi
         self.spi.open(bus, device)
         self.spi.max_speed_hz = 1000000 
 
@@ -24,7 +24,8 @@ class MCP4131:
 
 # --- Interactive Control --- 
 if __name__ == "__main__":
-    pot = MCP4131()
+    spi = spidev.SpiDev()
+    pot = MCP4131(spi)
     
     print("--- MCP4131 Manual Control ---")
     print("Enter a step value between 0 and 128.")
