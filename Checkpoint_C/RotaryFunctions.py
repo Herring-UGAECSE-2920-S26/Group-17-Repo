@@ -36,25 +36,27 @@ class Rotary:
         self.resistance = 100
 
     #check direction and speed of encoder spinning    
-    async def checkRotary():
+    async def checkRotary(self):
         startTime = time.perf_counter()
-        self.prevA = self.p1.read(self.rotaryA)
+        self.prevA = self.pi1.read(self.rotaryA)
         
         while True:
-            self.readA = self.p1.read(self.rotaryA) #find current A pin value
+            self.readA = self.pi1.read(self.rotaryA) #find current A pin value
 
             #if rotary encoder is spinning
             if self.readA != self.prevA:
-                endTime = time.perf_Counter()
+                endTime = time.perf_counter()
+                print("End Time:", endTime)
                 print("Click!")
                 #checks speed
-                if startTime - endTime >= 1:
+                if abs(startTime - endTime) >= 2:
                     self.fast = False
                     print("Slow")
                 else:
                     self.fast = True
                     print("Fast")
-
+                startTime = time.perf_counter()
+                print("Start Time:", startTime)
                 #checks direction
                 if self.pi1.read(self.rotaryB) != self.readA:
                     self.clockwise = True
@@ -63,9 +65,9 @@ class Rotary:
                     self.clockwise = False
                     print("Counterclockwise")
 
-            #update values
+            #update A value
             self.prevA = self.readA
-            startTime = time.perf_counter()
+
             #lets other coroutines run
             await asyncio.sleep(0)
 
