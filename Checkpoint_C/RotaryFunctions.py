@@ -1,6 +1,4 @@
-import pigpio
-import time
-import asyncio
+
 
 class Rotary:
 
@@ -40,6 +38,7 @@ class Rotary:
 
             if self.readA != self.prevA:
                 endTime = time.perf_Counter()
+                print("Click!")
                 if startTime - endTime >= 1:
                     self.fast = False
                     print("Slow")
@@ -56,4 +55,10 @@ class Rotary:
             self.prevA = self.readA
             startTime = time.perf_counter()
             await asyncio.sleep(0)
-            
+
+            if __name__ == "__main__":
+
+                pi1 = pigpio.pi()
+
+                rot = Rotary()
+                asyncio.run(rot.checkRotary())
