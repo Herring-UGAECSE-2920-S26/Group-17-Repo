@@ -73,5 +73,5 @@ class Rotary:
 if __name__ == "__main__":
 
     pi1 = pigpio.pi()
-    rot = Rotary()
+    rot = Rotary(18, 23, 24, pi1)
     asyncio.run(rot.checkRotary())
