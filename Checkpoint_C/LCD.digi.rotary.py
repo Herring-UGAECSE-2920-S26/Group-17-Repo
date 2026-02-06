@@ -199,9 +199,11 @@ class Rotary:
         #set up rotary encoder
         self.pi1.set_mode(self.rotaryA, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryA, pigpio.PUD_UP)
+        self.pi1.set_glitch_filter(self.rotaryA, 1000)
         
         self.pi1.set_mode(self.rotaryB, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryB, pigpio.PUD_UP)
+        self.pi1.set_glitch_filter(self.rotaryB, 1000)
 
         self.pi1.set_mode(self.switchPin, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.switchPin, pigpio.PUD_UP)
@@ -265,57 +267,54 @@ class MenuSystem:
         self.current_selection = 0
         self.is_changing = False
         
-        # Store resistance in Ohms
-        self.pot_resistance = [self.rot.minR, self.rot.minR] 
+        # Track steps (0-128) directly for full range
+        self.pot_steps = [0, 0] 
 
     def update_ui(self):
+        # Only clear the LCD when necessary to prevent lag
         self.lcd.lcd_clear()
         if not self.is_changing:
             self.lcd.lcd_display_string("Select Digipot:", line=1)
             self.lcd.lcd_display_string(f"> {self.menu_options[self.current_selection]}", line=2)
         else:
             name = self.menu_options[self.current_selection]
-            ohms = self.pot_resistance[self.current_selection]
-            step = int((ohms / self.rot.maxR) * 128)
+            step = self.pot_steps[self.current_selection]
+            # Calculate approx Ohms: (Step/128 * 10k) + offset
+            approx_ohms = int((step / 128) * 10000) + 75 
             
-            self.lcd.lcd_display_string(f"{name} [{step}]", line=1)
-            self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
+            self.lcd.lcd_display_string(f"{name} Step:{step}", line=1)
+            self.lcd.lcd_display_string(f"~ {approx_ohms} Ohms", line=2)
 
     async def run(self):
         self.update_ui()
         last_button_state = 1
         
         while True:
-            # Switch between select and change mode
             button_state = self.rot.pi1.read(self.rot.switchPin)
             if button_state == 0 and last_button_state == 1:
                 self.is_changing = not self.is_changing
                 self.update_ui()
-                await asyncio.sleep(0.8) # Debounce button press
+                await asyncio.sleep(0.3) # Faster debounce
             last_button_state = button_state
             
-            # Rotation 
             if self.rot.changed: 
                 if not self.is_changing:
-                    # Change Digipot selection
                     move = 1 if self.rot.clockwise else -1
                     self.current_selection = (self.current_selection + move) % len(self.menu_options)
                 else:
-                    increment = 100 if self.rot.fast else 10
+                    # Logic: Fast turn = 10 steps, Slow turn = 1 step
+                    increment = 10 if self.rot.fast else 1
                     direction = 1 if self.rot.clockwise else -1
                     
-                    new_ohms = self.pot_resistance[self.current_selection] + (direction * increment)
-                    new_ohms = max(self.rot.minR, min(self.rot.maxR, new_ohms))
-                    self.pot_resistance[self.current_selection] = new_ohms
+                    new_step = self.pot_steps[self.current_selection] + (direction * increment)
+                    # Constrain to full 0-128 range
+                    self.pot_steps[self.current_selection] = max(0, min(128, new_step))
                     
-                    # Convert to step
-                    step = int((new_ohms / self.rot.maxR) * 128)
-                    
-                    # spi call:
-                    self.pot.set_step(step, pot_num=self.current_selection)
+                    # Update the hardware
+                    self.pot.set_step(self.pot_steps[self.current_selection], pot_num=self.current_selection)
                 
                 self.update_ui()
-                self.rot.changed = False # Reset flag
+                self.rot.changed = False 
 
             await asyncio.sleep(0.01)
 
