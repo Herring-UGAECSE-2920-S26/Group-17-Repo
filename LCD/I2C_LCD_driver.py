@@ -176,3 +176,4 @@ class lcd:
       for char in fontdata:
          for line in char:
             self.lcd_write_char(line)         
+print("LCD is working")
