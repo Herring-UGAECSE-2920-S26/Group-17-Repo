@@ -33,7 +33,9 @@ class Rotary:
         self.prevA = None
         self.clockwise = None
         self.fast = False
-        self.resistance = 100
+        self.rotating = False
+        self.clicked = False
+        self.longClick = False
 
     #check direction and speed of encoder spinning    
     async def checkRotary(self):
@@ -45,18 +47,21 @@ class Rotary:
 
             #if rotary encoder is spinning
             if self.readA != self.prevA:
+                self.rotating = True
                 endTime = time.perf_counter()
-                print("End Time:", endTime)
+                print("End Time Rot:", endTime)
                 print("Click!")
+                
                 #checks speed
-                if abs(startTime - endTime) >= 2:
+                if abs(startTime - endTime) >= 1:
                     self.fast = False
                     print("Slow")
                 else:
                     self.fast = True
                     print("Fast")
                 startTime = time.perf_counter()
-                print("Start Time:", startTime)
+                print("Start Time Rot:", startTime)
+                
                 #checks direction
                 if self.pi1.read(self.rotaryB) != self.readA:
                     self.clockwise = True
@@ -71,9 +76,58 @@ class Rotary:
             #lets other coroutines run
             await asyncio.sleep(0)
 
+            #update rotating
+            self.rotating = False
+
+    #checks if button is pressed and for how long
+    async def checkButton(self):
+
+        while True:
+
+            #if button has been pressed
+            if self.pi.wait_for_edge(self.switchPin):
+                self.clicked = True
+                startTime = time.perf_counter()
+                print("Press")
+                print("Start Time Button:", startTime)
+
+                #if button is no longer pressed
+                if self.pi.wait_for_edge(self.switchPin, pigpio.FALLING_EDGE):
+                    endTime = time.perf_counter()
+                    print("Stop Press")
+                    print("End Time Button:", endTime)
+
+                    #checks duration
+                    if abs(startTime - endTime) >= 3:
+                        self.longClicked = True
+                        print("Long")
+                    else:
+                        self.longClicked = False
+                        print("Short")
+
+                    #lets other coroutines run
+                    await asyncio.sleep(0)
+
+                    #updates values
+                    self.clicked = False
+                    self.longClicked = False
+                    
+            #if button hasn't been pressed
+            else:
+                #lets other coroutines run
+                await asyncio.sleep(0)
+
 # --- For Testing ---
 if __name__ == "__main__":
 
+    #setup
     pi1 = pigpio.pi()
     rot = Rotary(18, 23, 24, pi1)
-    asyncio.run(rot.checkRotary())
+    
+    #create asynchronous tasks
+    rotarySpin = asyncio.create_task(rotary.checkRotary)
+    buttonPress = asyncio.create_task(rotary.checkButton)
+
+    #perpetually run both tasks together
+    asyncio.gather(rotarySpin, buttonPress)
+
