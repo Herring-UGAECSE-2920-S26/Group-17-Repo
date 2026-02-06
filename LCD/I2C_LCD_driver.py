@@ -177,3 +177,4 @@ class lcd:
          for line in char:
             self.lcd_write_char(line)         
 print("LCD is working")
+
