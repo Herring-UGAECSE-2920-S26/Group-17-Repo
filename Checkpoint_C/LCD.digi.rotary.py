@@ -3,6 +3,7 @@ import asyncio
 import spidev
 import time
 import sys
+import I2C_LCD_driver
 
 #class Digipot
 class MCP4131:
@@ -117,9 +118,8 @@ class MenuSystem:
             ohms = self.pot_resistance[self.current_selection]
             step = int((ohms / self.rot.maxR) * 128)
             
-            self.lcd.lcd_display_string(f"{name}:", line=1)
-            self.lcd.lcd_display_string(f"Step: {step}/128", line=2)
-            self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=3)
+            self.lcd.lcd_display_string(f"{name} [{step}]", line=1)
+            self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
 
     async def run(self):
         self.update_ui()
@@ -160,11 +160,6 @@ class MenuSystem:
             await asyncio.sleep(0.01)
 
 if __name__ == "__main__":
-    # Mock LCD for testing if library is missing
-    class MockLCD:
-        def lcd_clear(self): pass
-        def lcd_display_string(self, text, line): print(f"[LCD L{line}] {text}")
-
     pi = pigpio.pi()
     if not pi.connected:
         print("Pigpio daemon not running. Run 'sudo pigpiod'")
@@ -172,7 +167,7 @@ if __name__ == "__main__":
 
     rotary = Rotary(18, 23, 24, pi) 
     pot = MCP4131()
-    lcd = MockLCD() # Replace with actual LCD object
+    lcd = I2C_LCD_driver.lcd()
     
     menu = MenuSystem(rotary, lcd, pot)
     
