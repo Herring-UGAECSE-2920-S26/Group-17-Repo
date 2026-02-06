@@ -233,7 +233,7 @@ class Rotary:
                 print("End Time:", endTime)
                 print("Click!")
                 #checks speed
-                if abs(startTime - endTime) >= 2:
+                if abs(startTime - endTime) >= .2:
                     self.fast = False
                     print("Slow")
                 else:
