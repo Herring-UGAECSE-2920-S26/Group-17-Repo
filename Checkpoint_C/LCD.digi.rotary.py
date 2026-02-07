@@ -6,10 +6,11 @@ import sys
 import smbus
 from time import sleep
 
-# i2c bus (0 -- original Pi, 1 -- Rev 2 Pi)
+#LCD code adaptation from LCD library by Tony DiCola:
+#a good reference but could and should be cut down
+
 I2CBUS = 1
 
-# LCD Address
 ADDRESS = 0x27
 
 class i2c_device:
@@ -17,70 +18,27 @@ class i2c_device:
       self.addr = addr
       self.bus = smbus.SMBus(port)
 
-# Write a single command
+
    def write_cmd(self, cmd):
       self.bus.write_byte(self.addr, cmd)
       sleep(0.0001)
-
-# Write a command and argument
-   def write_cmd_arg(self, cmd, data):
-      self.bus.write_byte_data(self.addr, cmd, data)
-      sleep(0.0001)
-
-# Write a block of data
-   def write_block_data(self, cmd, data):
-      self.bus.write_block_data(self.addr, cmd, data)
-      sleep(0.0001)
-
-# Read a single byte
-   def read(self):
-      return self.bus.read_byte(self.addr)
-
-# Read
-   def read_data(self, cmd):
-      return self.bus.read_byte_data(self.addr, cmd)
-
-# Read a block of data
-   def read_block_data(self, cmd):
-      return self.bus.read_block_data(self.addr, cmd)
-
 
 # commands
 LCD_CLEARDISPLAY = 0x01
 LCD_RETURNHOME = 0x02
 LCD_ENTRYMODESET = 0x04
 LCD_DISPLAYCONTROL = 0x08
-LCD_CURSORSHIFT = 0x10
 LCD_FUNCTIONSET = 0x20
-LCD_SETCGRAMADDR = 0x40
-LCD_SETDDRAMADDR = 0x80
 
 # flags for display entry mode
-LCD_ENTRYRIGHT = 0x00
 LCD_ENTRYLEFT = 0x02
-LCD_ENTRYSHIFTINCREMENT = 0x01
-LCD_ENTRYSHIFTDECREMENT = 0x00
 
 # flags for display on/off control
 LCD_DISPLAYON = 0x04
-LCD_DISPLAYOFF = 0x00
-LCD_CURSORON = 0x02
-LCD_CURSOROFF = 0x00
-LCD_BLINKON = 0x01
-LCD_BLINKOFF = 0x00
-
-# flags for display/cursor shift
-LCD_DISPLAYMOVE = 0x08
-LCD_CURSORMOVE = 0x00
-LCD_MOVERIGHT = 0x04
-LCD_MOVELEFT = 0x00
 
 # flags for function set
-LCD_8BITMODE = 0x10
 LCD_4BITMODE = 0x00
 LCD_2LINE = 0x08
-LCD_1LINE = 0x00
-LCD_5x10DOTS = 0x04
 LCD_5x8DOTS = 0x00
 
 # flags for backlight control
@@ -88,7 +46,6 @@ LCD_BACKLIGHT = 0x08
 LCD_NOBACKLIGHT = 0x00
 
 En = 0b00000100 # Enable bit
-Rw = 0b00000010 # Read/Write bit
 Rs = 0b00000001 # Register select bit
 
 class lcd:
@@ -124,8 +81,7 @@ class lcd:
       self.lcd_write_four_bits(mode | (cmd & 0xF0))
       self.lcd_write_four_bits(mode | ((cmd << 4) & 0xF0))
 
-   # write a character to lcd (or character rom) 0x09: backlight | RS=DR<
-   # works!
+    #write a character
    def lcd_write_char(self, charvalue, mode=1):
       self.lcd_write_four_bits(mode | (charvalue & 0xF0))
       self.lcd_write_four_bits(mode | ((charvalue << 4) & 0xF0))
@@ -158,13 +114,6 @@ class lcd:
       elif state == 0:
          self.lcd_device.write_cmd(LCD_NOBACKLIGHT)
 
-   # add custom characters (0 - 7)
-   def lcd_load_custom_chars(self, fontdata):
-      self.lcd_write(0x40);
-      for char in fontdata:
-         for line in char:
-            self.lcd_write_char(line)         
-
 #class Digipot
 class MCP4131:
     def __init__(self, bus=0, device=0):
@@ -189,7 +138,7 @@ class Rotary:
     minR = 100
     maxR = 10000
 
-    #initialize Rotary object
+    #initialize Rotary object to meet Menu System needs
     def __init__(self, rotaryA, rotaryB, switchPin, pi1):
         self.rotaryA = rotaryA
         self.rotaryB = rotaryB
@@ -199,57 +148,54 @@ class Rotary:
         #set up rotary encoder
         self.pi1.set_mode(self.rotaryA, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryA, pigpio.PUD_UP)
-        self.pi1.set_glitch_filter(self.rotaryA, 1000)
+        self.pi1.set_glitch_filter(self.rotaryA, 3000) # 3ms debounce
         
         self.pi1.set_mode(self.rotaryB, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryB, pigpio.PUD_UP)
-        self.pi1.set_glitch_filter(self.rotaryB, 1000)
+        self.pi1.set_glitch_filter(self.rotaryB, 3000) # 3ms debounce
 
         self.pi1.set_mode(self.switchPin, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.switchPin, pigpio.PUD_UP)
+        self.pi1.set_glitch_filter(self.switchPin, 20000) # 20ms debounce
 
-        self.pi1.set_glitch_filter(switchPin, 50000)
-
-        #set up other vars
+        #set up vars
         self.readA = None
         self.readB = None
         self.prevA = None
-        self.clockwise = None
+        self.clockwise = False
         self.fast = False
         self.resistance = 100
         self.changed = False
 
-    #check direction and speed of encoder spinning    
+    #check direction and speed of encoder spinning, still subject to noise, consult Sharon code    
     async def checkRotary(self):
-        startTime = time.perf_counter()
         self.prevA = self.pi1.read(self.rotaryA)
+        startTime = time.perf_counter()
         
         while True:
-            self.readA = self.pi1.read(self.rotaryA) #find current A pin value
-
-            #if rotary encoder is spinning
+            self.readA = self.pi1.read(self.rotaryA)
+            
             if self.readA != self.prevA:
-                endTime = time.perf_counter()
-                print("End Time:", endTime)
-                print("Click!")
-                #checks speed
-                if abs(startTime - endTime) >= .2:
-                    self.fast = False
-                    print("Slow")
-                else:
-                    self.fast = True
-                    print("Fast")
-                startTime = time.perf_counter()
-                print("Start Time:", startTime)
-                #checks direction
-                if self.pi1.read(self.rotaryB) != self.readA:
-                    self.clockwise = True
-                    print("Clockwise")
-                else:
-                    self.clockwise = False
-                    print("Counterclockwise")
-                
-                self.changed = True
+                # Only trigger on falling edge 
+                if self.readA == 0:
+                    endTime = time.perf_counter()
+                    
+                    # Check speed (0.1s threshold)
+                    if (endTime - startTime) < 0.1:
+                        self.fast = True
+                    else:
+                        self.fast = False
+                    startTime = endTime
+
+                    # Check direction
+                    # If B is high when A falls = Clockwise
+                    #**subject to noise**
+                    if self.pi1.read(self.rotaryB) == 1:
+                        self.clockwise = True
+                    else:
+                        self.clockwise = False
+                    
+                    self.changed = True
             
             #update A value
             self.prevA = self.readA
@@ -267,34 +213,33 @@ class MenuSystem:
         self.current_selection = 0
         self.is_changing = False
         
-        # Track steps (0-128) directly for full range
-        self.pot_steps = [0, 0] 
+        # Track resistance (Ohms) directly
+        self.pot_resistance = [self.rot.minR, self.rot.minR] 
 
     def update_ui(self):
-        # Only clear the LCD when necessary to prevent lag
+        # lag prevention
         self.lcd.lcd_clear()
         if not self.is_changing:
             self.lcd.lcd_display_string("Select Digipot:", line=1)
             self.lcd.lcd_display_string(f"> {self.menu_options[self.current_selection]}", line=2)
         else:
             name = self.menu_options[self.current_selection]
-            step = self.pot_steps[self.current_selection]
-            # Calculate approx Ohms: (Step/128 * 10k) + offset
-            approx_ohms = int((step / 128) * 10000) + 75 
+            ohms = self.pot_resistance[self.current_selection]
+            step = int((ohms / self.rot.maxR) * 128)
             
             self.lcd.lcd_display_string(f"{name} Step:{step}", line=1)
-            self.lcd.lcd_display_string(f"~ {approx_ohms} Ohms", line=2)
+            self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
 
     async def run(self):
         self.update_ui()
         last_button_state = 1
-        
+        #digipot control
         while True:
             button_state = self.rot.pi1.read(self.rot.switchPin)
             if button_state == 0 and last_button_state == 1:
                 self.is_changing = not self.is_changing
                 self.update_ui()
-                await asyncio.sleep(0.3) # Faster debounce
+                await asyncio.sleep(0.3)
             last_button_state = button_state
             
             if self.rot.changed: 
@@ -302,21 +247,24 @@ class MenuSystem:
                     move = 1 if self.rot.clockwise else -1
                     self.current_selection = (self.current_selection + move) % len(self.menu_options)
                 else:
-                    # Logic: Fast turn = 10 steps, Slow turn = 1 step
-                    increment = 10 if self.rot.fast else 1
+                    #Fast turn = 100 Ohms, Slow turn = 10 Ohms
+                    increment = 100 if self.rot.fast else 10
                     direction = 1 if self.rot.clockwise else -1
                     
-                    new_step = self.pot_steps[self.current_selection] + (direction * increment)
-                    # Constrain to full 0-128 range
-                    self.pot_steps[self.current_selection] = max(0, min(128, new_step))
+                    new_ohms = self.pot_resistance[self.current_selection] + (direction * increment)
+                    # Constraint
+                    self.pot_resistance[self.current_selection] = max(self.rot.minR, min(self.rot.maxR, new_ohms))
                     
+                    # Convert to step for hardware
+                    step = int((self.pot_resistance[self.current_selection] / self.rot.maxR) * 128)
                     # Update the hardware
-                    self.pot.set_step(self.pot_steps[self.current_selection], pot_num=self.current_selection)
+                    self.pot.set_step(step, pot_num=self.current_selection)
                 
                 self.update_ui()
                 self.rot.changed = False 
 
             await asyncio.sleep(0.01)
+
 
 if __name__ == "__main__":
     pi = pigpio.pi()
