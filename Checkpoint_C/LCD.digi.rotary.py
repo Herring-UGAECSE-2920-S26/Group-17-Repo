@@ -187,8 +187,8 @@ class MCP4131:
 class Rotary:
 
     #min and max resistor values
-    minR = 100
-    maxR = 10000
+    minR = 110
+    maxR = 9422
 
     #initialize Rotary object to meet Menu System needs
     def __init__(self, rotaryA, rotaryB, switchPin, pi1):
@@ -232,8 +232,8 @@ class Rotary:
                 if self.readA == 0:
                     endTime = time.perf_counter()
                     
-                    # Check speed (0.1s threshold)
-                    if (endTime - startTime) < 0.1:
+                    # Check speed (0.3s threshold)
+                    if (endTime - startTime) < 0.3:
                         self.fast = True
                     else:
                         self.fast = False
@@ -270,7 +270,7 @@ class MenuSystem:
 
     def ohms_to_step(self, ohms):
         """Converts resistance in Ohms to 0-128 step value."""
-        step = int(((ohms - 75) / self.rot.maxR) * 128)
+        step = int(((ohms - 78) / self.rot.maxR) * 128)
         return max(0, min(128, step))
 
     def update_ui(self):
@@ -339,7 +339,7 @@ if __name__ == "__main__":
             lcd = lcd(0x3F)
         except OSError:
             print("\n[ERROR] I2C Input/Output Error: LCD not found at address 0x27 or 0x3F.")
-            print("Please check your wiring or verify the address using 'i2cdetect -y 1'.\n")
+            print("this is so sad :9")
             sys.exit(1)
     
     menu = MenuSystem(rotary, lcd, pot)
