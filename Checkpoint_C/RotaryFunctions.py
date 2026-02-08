@@ -67,18 +67,26 @@ class Rotary:
                 if self.pi1.read(self.rotaryB) != self.readA:
                     self.clockwise = True
                     print("Clockwise")
+                    #lets other coroutines run
+                    time.sleep(0.01)
                 else:
                     self.clockwise = False
                     print("Counterclockwise")
+                    #lets other coroutines run
+                    time.sleep(0.01)
+            else:
+                self.rotating = False
+                #lets other coroutines run
+                time.sleep(0.01)
 
             #update A value
             self.prevA = self.readA
 
             #lets other coroutines run
-            time.sleep(0.01)
+            #time.sleep(0.01)
 
             #update rotating
-            self.rotating = False
+            #self.rotating = False
 
     #checks if button is pressed and for how long
     def checkButton(self):
@@ -107,17 +115,18 @@ class Rotary:
                         print("Short")
 
                     #lets other coroutines run
-                    time.sleep(0.01)
+                    #time.sleep(0.01)
 
                     #updates values
-                    self.clicked = False
-                    self.longClicked = False
+                    #self.clicked = False
+                    #self.longClicked = False
 
                    #lets other coroutines run
                     time.sleep(0.01)
                     
             #if button hasn't been pressed
             else:
+                self.clicked = False
                 #lets other coroutines run
                 time.sleep(0.01)
 
