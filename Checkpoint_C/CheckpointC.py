@@ -119,12 +119,18 @@ while True:
                     else:
                         digi2R = digi2R - 10
                         digi2First = True
-            elif rotary.clicked == True:
-                if rotary.longClick == True:
-                    state = "menu1"
-                    menu1First = True
+            if rotary.clicked == True and rotary.longClick == False:
+                print("Updated DigiPot2")
+                #insert proper digipot updating code here
+            if rotary.clicked == True and rotary.longClick == True:
+                state = "menu1"
+                menu1First = True
+                #if rotary.longClick == True:
+                    #state = "menu1"
+                    #menu1First = True
                 #elif rotary.longClick == False:
                     #print("Updated DigiPot2")
                     #insert proper digipot updating code here
-            digi2First = False
+            if rotary.rotating == False:
+                digi2First = False
     
