@@ -136,8 +136,8 @@ if __name__ == "__main__":
     #run the tasks in always()
     #asyncio.run(always())
 
-    rotThread = threading.Thread(target=rot.checkRotary, args=(1))
-    buttonThread = threading.Thread(target=rot.checkButton, args=(1))
+    rotThread = threading.Thread(target=rot.checkRotary)
+    buttonThread = threading.Thread(target=rot.checkButton)
 
     rotThread.start()
     buttonThread.start()
