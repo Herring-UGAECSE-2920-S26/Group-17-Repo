@@ -325,7 +325,12 @@ if __name__ == "__main__":
 
     rotary = Rotary(18, 23, 24, pi) 
     pot = MCP4131()
-    lcd = lcd()
+    try:
+        lcd = lcd()
+    except OSError:
+        print("\n[ERROR] I2C Input/Output Error: LCD not found at address 0x27.")
+        print("Please check your wiring or verify the address using 'i2cdetect -y 1'.\n")
+        sys.exit(1)
     
     menu = MenuSystem(rotary, lcd, pot)
     
