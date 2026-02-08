@@ -4,7 +4,7 @@ import asyncio
 import Dual_Digipot
 import RotaryFunctions
 #from transitions import AsyncMachine
-from RPLCD.i2c import CharLCD
+# from RPLCD.i2c import CharLCD
 
 pi1 = pigpio.pi()
 spi1 = spidev.SpiDev()
