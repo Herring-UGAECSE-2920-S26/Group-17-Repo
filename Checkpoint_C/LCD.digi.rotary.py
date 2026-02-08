@@ -92,8 +92,8 @@ Rs = 0b00000001 # Register select bit
 
 class lcd:
    #initializes objects and lcd
-   def __init__(self):
-      self.lcd_device = i2c_device(0x27)
+   def __init__(self, addr=0x27):
+      self.lcd_device = i2c_device(addr)
 
       self.lcd_write(0x03)
       self.lcd_write(0x03)
@@ -103,6 +103,7 @@ class lcd:
       self.lcd_write(LCD_FUNCTIONSET | LCD_2LINE | LCD_5x8DOTS | LCD_4BITMODE)
       self.lcd_write(LCD_DISPLAYCONTROL | LCD_DISPLAYON)
       self.lcd_write(LCD_CLEARDISPLAY)
+      sleep(0.002) # Wait for clear to finish
       self.lcd_write(LCD_ENTRYMODESET | LCD_ENTRYLEFT)
       sleep(0.2)
 
@@ -149,7 +150,6 @@ class lcd:
    def lcd_clear(self):
       self.lcd_write(LCD_CLEARDISPLAY)
       sleep(0.002)
-      self.lcd_write(LCD_RETURNHOME)
 
    # define backlight on/off (lcd.backlight(1); off= lcd.backlight(0)
    def backlight(self, state): # for state, 1 = on, 0 = off
@@ -261,7 +261,7 @@ class MenuSystem:
         self.lcd = lcd_obj
         self.pot = pot_obj
         
-        self.menu_options = ["Digipot 0", "Digipot 1"]
+        self.menu_options = ["Pot 0", "Pot 1"]
         self.current_selection = 0
         self.is_changing = False
         
@@ -332,11 +332,15 @@ if __name__ == "__main__":
     rotary = Rotary(18, 23, 24, pi) 
     pot = MCP4131()
     try:
-        lcd = lcd()
+        lcd = lcd(0x27)
     except OSError:
-        print("\n[ERROR] I2C Input/Output Error: LCD not found at address 0x27.")
-        print("Please check your wiring or verify the address using 'i2cdetect -y 1'.\n")
-        sys.exit(1)
+        try:
+            # Try fallback address 0x3F
+            lcd = lcd(0x3F)
+        except OSError:
+            print("\n[ERROR] I2C Input/Output Error: LCD not found at address 0x27 or 0x3F.")
+            print("Please check your wiring or verify the address using 'i2cdetect -y 1'.\n")
+            sys.exit(1)
     
     menu = MenuSystem(rotary, lcd, pot)
     
