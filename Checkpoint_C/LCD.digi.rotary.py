@@ -148,6 +148,7 @@ class lcd:
    # clear lcd and set to home
    def lcd_clear(self):
       self.lcd_write(LCD_CLEARDISPLAY)
+      sleep(0.002)
       self.lcd_write(LCD_RETURNHOME)
 
    # define backlight on/off (lcd.backlight(1); off= lcd.backlight(0)
@@ -267,6 +268,11 @@ class MenuSystem:
         # Track resistance (Ohms) directly
         self.pot_resistance = [self.rot.minR, self.rot.minR] 
 
+    def ohms_to_step(self, ohms):
+        """Converts resistance in Ohms to 0-128 step value."""
+        step = int(((ohms - 75) / self.rot.maxR) * 128)
+        return max(0, min(128, step))
+
     def update_ui(self):
         # lag prevention
         self.lcd.lcd_clear()
@@ -276,7 +282,7 @@ class MenuSystem:
         else:
             name = self.menu_options[self.current_selection]
             ohms = self.pot_resistance[self.current_selection]
-            step = int((ohms / self.rot.maxR) * 128)
+            step = self.ohms_to_step(ohms)
             
             self.lcd.lcd_display_string(f"{name} Step:{step}", line=1)
             self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
@@ -307,7 +313,7 @@ class MenuSystem:
                     self.pot_resistance[self.current_selection] = max(self.rot.minR, min(self.rot.maxR, new_ohms))
                     
                     # Convert to step for hardware
-                    step = int((self.pot_resistance[self.current_selection] / self.rot.maxR) * 128)
+                    step = self.ohms_to_step(self.pot_resistance[self.current_selection])
                     # Update the hardware
                     self.pot.set_step(step, pot_num=self.current_selection)
                 
