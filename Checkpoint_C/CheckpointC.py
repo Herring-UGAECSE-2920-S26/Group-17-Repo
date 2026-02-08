@@ -14,12 +14,17 @@ spi1 = spidev.SpiDev()
 rotary = RotaryFunctions.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 
-#create asynchronous tasks
-rotarySpin = asyncio.create_task(rotary.checkRotary)
-buttonPress = asyncio.create_task(rotary.checkButton)
 
-#perpetually run both tasks together
-asyncio.gather(rotarySpin, buttonPress)
+async def always(): 
+    #create asynchronous tasks
+    rotarySpin = asyncio.create_task(rotary.checkRotary)
+    buttonPress = asyncio.create_task(rotary.checkButton)
+
+    #perpetually run both tasks together
+    asyncio.gather(rotarySpin, buttonPress)
+
+#run the tasks in always()
+asyncio.run(always())
 
 #declare vars
 state = "menu1"
