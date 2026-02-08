@@ -17,8 +17,8 @@ digipot = Dual_Digipot.MCP4131(spi1)
 
 async def always(): 
     #create asynchronous tasks
-    rotarySpin = asyncio.create_task(rotary.checkRotary)
-    buttonPress = asyncio.create_task(rotary.checkButton)
+    rotarySpin = asyncio.create_task(rotary.checkRotary())
+    buttonPress = asyncio.create_task(rotary.checkButton())
 
     #perpetually run both tasks together
     asyncio.gather(rotarySpin, buttonPress)
