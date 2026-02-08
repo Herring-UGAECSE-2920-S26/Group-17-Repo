@@ -302,22 +302,24 @@ class MenuSystem:
                 # Wait while button is held
                 while self.rot.pi1.read(self.rot.switchPin) == 0:
                     await asyncio.sleep(0.05)
-                    # Long Press (0.75s) to switch between Control and Select menus
-                    if not long_press_triggered and (time.time() - press_start > 0.75):
-                        if self.state == "CONTROL":
+                    
+                    # Long Press (3s) to exit Control menu back to Select
+                    if self.state == "CONTROL":
+                        if not long_press_triggered and (time.time() - press_start > 3.0):
                             self.state = "SELECT"
-                        else: # state == "SELECT"
-                            self.state = "CONTROL"
-                        
-                        self.update_ui()
-                        long_press_triggered = True
+                            self.update_ui()
+                            long_press_triggered = True
                 
-                # Short Press (Set Digipot Value in Control Mode)
+                # Short Press logic
                 if not long_press_triggered:
                     if self.state == "CONTROL":
                         # Commit changes to hardware
                         step = self.ohms_to_step(self.pot_resistance[self.current_selection])
                         self.pot.set_step(step, pot_num=self.current_selection)
+                    elif self.state == "SELECT":
+                        # Select Digipot and enter Control mode
+                        self.state = "CONTROL"
+                        self.update_ui()
             
             if self.rot.changed: 
                 if self.state == "SELECT":
