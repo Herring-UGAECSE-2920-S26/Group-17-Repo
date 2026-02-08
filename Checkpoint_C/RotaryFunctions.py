@@ -1,5 +1,6 @@
 import pigpio
-import asyncio
+import threading
+#import asyncio
 import time
 
 class Rotary:
@@ -38,7 +39,7 @@ class Rotary:
         self.longClick = False
 
     #check direction and speed of encoder spinning    
-    async def checkRotary(self):
+    def checkRotary(self):
         startTime = time.perf_counter()
         self.prevA = self.pi1.read(self.rotaryA)
         
@@ -74,13 +75,13 @@ class Rotary:
             self.prevA = self.readA
 
             #lets other coroutines run
-            await asyncio.sleep(0)
+            #await asyncio.sleep(0)
 
             #update rotating
             self.rotating = False
 
     #checks if button is pressed and for how long
-    async def checkButton(self):
+    def checkButton(self):
 
         while True:
 
@@ -106,7 +107,7 @@ class Rotary:
                         print("Short")
 
                     #lets other coroutines run
-                    await asyncio.sleep(0)
+                    #await asyncio.sleep(0)
 
                     #updates values
                     self.clicked = False
@@ -124,14 +125,20 @@ if __name__ == "__main__":
     pi1 = pigpio.pi()
     rot = Rotary(18, 23, 24, pi1)
     
-    async def always(): 
+    #async def always(): 
         #create asynchronous tasks
-        rotarySpin = asyncio.create_task(rot.checkRotary())
-        buttonPress = asyncio.create_task(rot.checkButton())
+        #rotarySpin = asyncio.create_task(rot.checkRotary())
+        #buttonPress = asyncio.create_task(rot.checkButton())
 
         #perpetually run both tasks together
-        asyncio.gather(rotarySpin, buttonPress)
+        #asyncio.gather(rotarySpin, buttonPress)
 
     #run the tasks in always()
-    asyncio.run(always())
+    #asyncio.run(always())
+
+    rotThread = threading.Thread(target=rot.checkRotary(), args=(1))
+    buttonThread = threading.Thread(target=rot.checkButton(), args=(1))
+
+    rotThread.start()
+    buttonThread.start()
 
