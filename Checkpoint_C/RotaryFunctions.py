@@ -75,7 +75,7 @@ class Rotary:
             self.prevA = self.readA
 
             #lets other coroutines run
-            #await asyncio.sleep(0)
+            time.sleep(1)
 
             #update rotating
             self.rotating = False
@@ -107,16 +107,16 @@ class Rotary:
                         print("Short")
 
                     #lets other coroutines run
-                    #await asyncio.sleep(0)
+                    time.sleep(1)
 
                     #updates values
                     self.clicked = False
                     self.longClicked = False
                     
             #if button hasn't been pressed
-            #else:
+            else:
                 #lets other coroutines run
-                #await asyncio.sleep(0)
+                time.sleep(1)
 
 # --- For Testing ---
 if __name__ == "__main__":
