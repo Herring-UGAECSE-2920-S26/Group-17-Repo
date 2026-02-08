@@ -75,7 +75,7 @@ class Rotary:
             self.prevA = self.readA
 
             #lets other coroutines run
-            time.sleep(1)
+            time.sleep(0.01)
 
             #update rotating
             self.rotating = False
@@ -93,7 +93,7 @@ class Rotary:
                 print("Start Time Button:", startTime)
 
                 #if button is no longer pressed
-                if self.pi1.wait_for_edge(self.switchPin, pigpio.FALLING_EDGE, 3):
+                if self.pi1.wait_for_edge(self.switchPin, pigpio.FALLING_EDGE):
                     endTime = time.perf_counter()
                     print("Stop Press")
                     print("End Time Button:", endTime)
@@ -107,7 +107,7 @@ class Rotary:
                         print("Short")
 
                     #lets other coroutines run
-                    time.sleep(1)
+                    time.sleep(0.01)
 
                     #updates values
                     self.clicked = False
@@ -116,7 +116,7 @@ class Rotary:
             #if button hasn't been pressed
             else:
                 #lets other coroutines run
-                time.sleep(1)
+                time.sleep(0.01)
 
 # --- For Testing ---
 if __name__ == "__main__":
