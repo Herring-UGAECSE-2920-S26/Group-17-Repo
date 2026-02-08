@@ -1,7 +1,8 @@
 import spidev
 import pigpio
 import time
-import asyncio
+import threading
+#import asyncio
 import Dual_Digipot
 import RotaryFunctions
 #from transitions import AsyncMachine
@@ -25,16 +26,22 @@ menu2First = True
 digi1First = True
 digi2First = True
 
-async def always(): 
+#async def always(): 
     #create asynchronous tasks
-    rotarySpin = asyncio.create_task(rotary.checkRotary())
-    buttonPress = asyncio.create_task(rotary.checkButton())
+    #rotarySpin = asyncio.create_task(rotary.checkRotary())
+    #buttonPress = asyncio.create_task(rotary.checkButton())
 
     #perpetually run both tasks together
-    asyncio.gather(rotarySpin, buttonPress)
+    #asyncio.gather(rotarySpin, buttonPress)
 
 #run the tasks in always()
-asyncio.run(always())
+#asyncio.run(always())
+
+rotaryThread = threading.Thread(target=rotary.checkRotary)
+buttonThread = threading.Thread(target=rotary.checkButton)
+
+rotaryThread.start()
+buttonThread.start()
 
 while True:
 
