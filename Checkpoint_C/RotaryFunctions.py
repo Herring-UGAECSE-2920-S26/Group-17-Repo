@@ -67,15 +67,18 @@ class Rotary:
                 if self.pi1.read(self.rotaryB) != self.readA:
                     self.clockwise = True
                     print("Clockwise")
+                    print("Is Rotating:", self.rotating)
                     #lets other coroutines run
                     time.sleep(0.01)
                 else:
                     self.clockwise = False
                     print("Counterclockwise")
+                    print("Is Rotating:", self.rotating)
                     #lets other coroutines run
                     time.sleep(0.01)
             else:
                 self.rotating = False
+                print("Is Rotating:", self.rotating)
                 #lets other coroutines run
                 time.sleep(0.01)
 
