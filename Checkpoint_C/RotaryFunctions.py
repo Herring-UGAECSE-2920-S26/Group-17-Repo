@@ -116,7 +116,7 @@ class Rotary:
             #if button hasn't been pressed
             else:
                 #lets other coroutines run
-                await asyncio.sleep(0)
+                #await asyncio.sleep(0)
 
 # --- For Testing ---
 if __name__ == "__main__":
