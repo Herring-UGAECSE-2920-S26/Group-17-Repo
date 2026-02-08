@@ -93,7 +93,7 @@ class Rotary:
                 print("Start Time Button:", startTime)
 
                 #if button is no longer pressed
-                if self.pi1.wait_for_edge(self.switchPin, pigpio.FALLING_EDGE):
+                if self.pi1.wait_for_edge(self.switchPin, pigpio.EITHER_EDGE):
                     endTime = time.perf_counter()
                     print("Stop Press")
                     print("End Time Button:", endTime)
