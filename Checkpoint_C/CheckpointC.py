@@ -95,8 +95,8 @@ while True:
                 if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
-                elif rotary.longClick == False:
-                    print("Updated DigiPot1")
+                #elif rotary.longClick == False:
+                    #print("Updated DigiPot1")
                     #insert proper digipot updating code here
             digi1First = False
 
@@ -123,8 +123,8 @@ while True:
                 if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
-                elif rotary.longClick == False:
-                    print("Updated DigiPot2")
+                #elif rotary.longClick == False:
+                    #print("Updated DigiPot2")
                     #insert proper digipot updating code here
             digi2First = False
     
