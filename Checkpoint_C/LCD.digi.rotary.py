@@ -263,7 +263,11 @@ class MenuSystem:
         
         self.menu_options = ["Pot 0", "Pot 1"]
         self.current_selection = 0
-        self.is_changing = True # Start in edit mode
+        
+        # State: "CONTROL" or "SELECT"
+        self.state = "CONTROL" 
+        # Live Mode: False = Preview (LCD only), True = Live (Hardware update)
+        self.live_mode = False 
         
         # Track resistance (Ohms) directly
         self.pot_resistance = [self.rot.minR, self.rot.minR] 
@@ -277,15 +281,19 @@ class MenuSystem:
         # lag prevention
         self.lcd.lcd_clear()
         
-        name = self.menu_options[self.current_selection]
-        ohms = self.pot_resistance[self.current_selection]
-        step = self.ohms_to_step(ohms)
-        
-        # Indicate mode: * means Edit Mode (Hardware not updating yet)
-        mode_indicator = "*" if self.is_changing else " "
-        
-        self.lcd.lcd_display_string(f"{name} Step:{step}{mode_indicator}", line=1)
-        self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
+        if self.state == "SELECT":
+            self.lcd.lcd_display_string("Select Digipot:", line=1)
+            self.lcd.lcd_display_string(f"> {self.menu_options[self.current_selection]}", line=2)
+        else: # CONTROL state
+            name = self.menu_options[self.current_selection]
+            ohms = self.pot_resistance[self.current_selection]
+            step = self.ohms_to_step(ohms)
+            
+            # Indicate mode: "PREV" (Preview) or "LIVE" (Active)
+            mode_str = "LIVE" if self.live_mode else "PREV"
+            
+            self.lcd.lcd_display_string(f"{name} [{mode_str}]", line=1)
+            self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
 
     async def run(self):
         self.update_ui()
@@ -299,28 +307,38 @@ class MenuSystem:
                 # Wait while button is held
                 while self.rot.pi1.read(self.rot.switchPin) == 0:
                     await asyncio.sleep(0.05)
-                    # Long Press (~1.56s) to switch Digipot selection
+                    # Long Press (~1.56s) to switch between Control and Select menus
                     if not long_press_triggered and (time.time() - press_start > 1.56):
-                        self.current_selection = (self.current_selection + 1) % len(self.menu_options)
-                        self.is_changing = True # Reset to edit mode when switching
+                        if self.state == "CONTROL":
+                            self.state = "SELECT"
+                            self.live_mode = False # Reset live mode when exiting
+                        else: # state == "SELECT"
+                            self.state = "CONTROL"
+                            self.live_mode = False # Start in Preview mode
+                        
                         self.update_ui()
                         long_press_triggered = True
                 
-                # Short Press (Toggle Edit/Commit)
+                # Short Press (Toggle Preview/Live in Control Mode)
                 if not long_press_triggered:
-                    if self.is_changing:
-                        # Commit: Update Hardware
-                        step = self.ohms_to_step(self.pot_resistance[self.current_selection])
-                        self.pot.set_step(step, pot_num=self.current_selection)
-                        self.is_changing = False
-                    else:
-                        # Edit: Enable LCD changes
-                        self.is_changing = True
-                    self.update_ui()
+                    if self.state == "CONTROL":
+                        self.live_mode = not self.live_mode
+                        
+                        if self.live_mode:
+                            # Sync hardware immediately when entering Live mode
+                            step = self.ohms_to_step(self.pot_resistance[self.current_selection])
+                            self.pot.set_step(step, pot_num=self.current_selection)
+                            
+                        self.update_ui()
             
             if self.rot.changed: 
-                # Only allow resistance changes in Edit Mode
-                if self.is_changing:
+                if self.state == "SELECT":
+                    # Navigate Menu
+                    move = 1 if self.rot.clockwise else -1
+                    self.current_selection = (self.current_selection + move) % len(self.menu_options)
+                    self.update_ui()
+                    
+                elif self.state == "CONTROL":
                     #Fast turn = 100 Ohms, Slow turn = 10 Ohms
                     increment = 100 if self.rot.fast else 10
                     direction = 1 if self.rot.clockwise else -1
@@ -329,7 +347,11 @@ class MenuSystem:
                     # Constraint
                     self.pot_resistance[self.current_selection] = max(self.rot.minR, min(self.rot.maxR, new_ohms))
                     
-                    # Update UI only (Hardware update happens on button press)
+                    # If in Live Mode, update hardware immediately
+                    if self.live_mode:
+                        step = self.ohms_to_step(self.pot_resistance[self.current_selection])
+                        self.pot.set_step(step, pot_num=self.current_selection)
+                    
                     self.update_ui()
                     
                 self.rot.changed = False 
