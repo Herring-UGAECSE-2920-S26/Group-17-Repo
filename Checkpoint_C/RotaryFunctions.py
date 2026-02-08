@@ -124,10 +124,14 @@ if __name__ == "__main__":
     pi1 = pigpio.pi()
     rot = Rotary(18, 23, 24, pi1)
     
-    #create asynchronous tasks
-    rotarySpin = asyncio.create_task(rotary.checkRotary)
-    buttonPress = asyncio.create_task(rotary.checkButton)
+    async def always(): 
+        #create asynchronous tasks
+        rotarySpin = asyncio.create_task(rot.checkRotary())
+        buttonPress = asyncio.create_task(rot.checkButton())
 
-    #perpetually run both tasks together
-    asyncio.gather(rotarySpin, buttonPress)
+        #perpetually run both tasks together
+        asyncio.gather(rotarySpin, buttonPress)
+
+    #run the tasks in always()
+    asyncio.run(always())
 
