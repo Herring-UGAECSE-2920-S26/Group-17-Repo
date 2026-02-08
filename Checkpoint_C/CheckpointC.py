@@ -14,6 +14,16 @@ spi1 = spidev.SpiDev()
 rotary = RotaryFunctions.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 
+#declare vars
+state = "menu1"
+digi1R = 100
+digi2R = 100
+minR = 100
+maxR = 10000
+menu1First = True
+menu2First = True
+digi1First = True
+digi2First = True
 
 async def always(): 
     #create asynchronous tasks
@@ -25,17 +35,6 @@ async def always():
 
 #run the tasks in always()
 asyncio.run(always())
-
-#declare vars
-state = "menu1"
-digi1R = 100
-digi2R = 100
-minR = 100
-maxR = 10000
-menu1First = True
-menu2First = True
-digi1First = True
-digi2First = True
 
 while True:
 
