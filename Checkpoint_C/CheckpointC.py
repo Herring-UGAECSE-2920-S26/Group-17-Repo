@@ -79,24 +79,28 @@ while True:
             if rotary.rotating == True:
                 if rotary.clockwise == True and digi1R != maxR:
                     if rotary.fast == True:
+                        print("Plus 100")
                         digi1R = digi1R + 100
                         digi1First = True
                     else:
+                        print("Plus 10")
                         digi1R = digi1R + 10
                         digi1First = True
                 if rotary.clockwise == False and digi1R != minR:
                     if rotary.fast == True:
+                        print("Minus 100")
                         digi1R = digi1R - 100
                         digi1First = True
                     else:
+                        print("Minus 10")
                         digi1R = digi1R - 10
                         digi1First = True
             elif rotary.clicked == True:
                 if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
-                #elif rotary.longClick == False:
-                    #print("Updated DigiPot1")
+                elif rotary.longClick == False:
+                    print("Updated DigiPot1")
                     #insert proper digipot updating code here
             digi1First = False
 
