@@ -112,6 +112,9 @@ class Rotary:
                     #updates values
                     self.clicked = False
                     self.longClicked = False
+
+                   #lets other coroutines run
+                    time.sleep(0.01)
                     
             #if button hasn't been pressed
             else:
