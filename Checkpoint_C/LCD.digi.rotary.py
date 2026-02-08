@@ -233,7 +233,7 @@ class Rotary:
                     endTime = time.perf_counter()
                     
                     # Check speed (0.3s threshold)
-                    if (endTime - startTime) < 0.3:
+                    if (endTime - startTime) < 0.2:
                         self.fast = True
                     else:
                         self.fast = False
@@ -265,9 +265,7 @@ class MenuSystem:
         self.current_selection = 0
         
         # State: "CONTROL" or "SELECT"
-        self.state = "CONTROL" 
-        # Live Mode: False = Preview (LCD only), True = Live (Hardware update)
-        self.live_mode = False 
+        self.state = "SELECT" 
         
         # Track resistance (Ohms) directly
         self.pot_resistance = [self.rot.minR, self.rot.minR] 
@@ -289,10 +287,7 @@ class MenuSystem:
             ohms = self.pot_resistance[self.current_selection]
             step = self.ohms_to_step(ohms)
             
-            # Indicate mode: "PREV" (Preview) or "LIVE" (Active)
-            mode_str = "LIVE" if self.live_mode else "PREV"
-            
-            self.lcd.lcd_display_string(f"{name} [{mode_str}]", line=1)
+            self.lcd.lcd_display_string(f"{name} Step:{step}", line=1)
             self.lcd.lcd_display_string(f"Res: {ohms} Ohms", line=2)
 
     async def run(self):
@@ -307,29 +302,22 @@ class MenuSystem:
                 # Wait while button is held
                 while self.rot.pi1.read(self.rot.switchPin) == 0:
                     await asyncio.sleep(0.05)
-                    # Long Press (~1.56s) to switch between Control and Select menus
-                    if not long_press_triggered and (time.time() - press_start > 1.56):
+                    # Long Press (0.75s) to switch between Control and Select menus
+                    if not long_press_triggered and (time.time() - press_start > 0.75):
                         if self.state == "CONTROL":
                             self.state = "SELECT"
-                            self.live_mode = False # Reset live mode when exiting
                         else: # state == "SELECT"
                             self.state = "CONTROL"
-                            self.live_mode = False # Start in Preview mode
                         
                         self.update_ui()
                         long_press_triggered = True
                 
-                # Short Press (Toggle Preview/Live in Control Mode)
+                # Short Press (Set Digipot Value in Control Mode)
                 if not long_press_triggered:
                     if self.state == "CONTROL":
-                        self.live_mode = not self.live_mode
-                        
-                        if self.live_mode:
-                            # Sync hardware immediately when entering Live mode
-                            step = self.ohms_to_step(self.pot_resistance[self.current_selection])
-                            self.pot.set_step(step, pot_num=self.current_selection)
-                            
-                        self.update_ui()
+                        # Commit changes to hardware
+                        step = self.ohms_to_step(self.pot_resistance[self.current_selection])
+                        self.pot.set_step(step, pot_num=self.current_selection)
             
             if self.rot.changed: 
                 if self.state == "SELECT":
@@ -346,11 +334,6 @@ class MenuSystem:
                     new_ohms = self.pot_resistance[self.current_selection] + (direction * increment)
                     # Constraint
                     self.pot_resistance[self.current_selection] = max(self.rot.minR, min(self.rot.maxR, new_ohms))
-                    
-                    # If in Live Mode, update hardware immediately
-                    if self.live_mode:
-                        step = self.ohms_to_step(self.pot_resistance[self.current_selection])
-                        self.pot.set_step(step, pot_num=self.current_selection)
                     
                     self.update_ui()
                     
