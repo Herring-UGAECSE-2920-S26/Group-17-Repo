@@ -114,7 +114,7 @@ class Rotary:
                     self.longClicked = False
                     
             #if button hasn't been pressed
-            else:
+            #else:
                 #lets other coroutines run
                 #await asyncio.sleep(0)
 
