@@ -120,9 +120,9 @@ while True:
                 state = "menu1"
                 menu1First = True
                 rotary.clicked = False
-            elif rotary.clicked == True:
-                print("Updated DigiPot1")
-                rotary.clicked = False
+           # elif rotary.clicked == True:
+            #    print("Updated DigiPot1")
+             #   rotary.clicked = False
                 #insert proper digipot updating code here
             if digi1First == True:
                 print(digi1R)
