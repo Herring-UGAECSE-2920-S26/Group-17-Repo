@@ -76,7 +76,7 @@ while True:
             if digi1First == True:
                 #insert proper LCD updating code here
                 print(digi1R)
-            if rotary.readA != rotary.prevA:
+            if rotary.rotating == True:
                 if rotary.clockwise == True and digi1R != maxR:
                     if rotary.fast == True:
                         print("Plus 100")
@@ -95,11 +95,11 @@ while True:
                         print("Minus 10")
                         digi1R = digi1R - 10
                         digi1First = True
-            elif rotary.clicked == True:
+            if rotary.clicked == True:
                 if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
-                elif rotary.longClick == False:
+                if rotary.longClick == False:
                     print("Updated DigiPot1")
                     #insert proper digipot updating code here
             digi1First = False
