@@ -8,6 +8,7 @@ import RotaryFunctions
 import I2C_LCD_driver
 #from transitions import AsyncMachine
 # from RPLCD.i2c import CharLCD
+import Min_difference
 
 pi1 = pigpio.pi()
 spi1 = spidev.SpiDev()
@@ -51,8 +52,8 @@ while True:
     while state == "menu1":
         if menu1First == True:
             lcd.lcd_clear()
+            lcd.lcd_display_string("   Digipot0", 2)
             lcd.lcd_display_string("=> DigiPot1", 1)
-            lcd.lcd_display_string("   Digipot2", 2)
             print("=> DigiPot1    Digipot2")
             #insert proper LCD updating code here
         if rotary.rotating == True:
@@ -68,8 +69,8 @@ while True:
             if menu2First == True:
                 #insert proper LCD updating code here
                 lcd.lcd_clear()
+                lcd.lcd_display_string("=> Digipot0", 2)
                 lcd.lcd_display_string("   DigiPot1", 1)
-                lcd.lcd_display_string("=> Digipot2", 2)
                 print("   DigiPot1 => Digipot2")
             if rotary.rotating == True:
                 state = "menu1"
@@ -138,7 +139,7 @@ while True:
                     print("Updated DigiPot1")
                     rotary.clicked = False
                     #insert proper digipot updating code here
-                    step = int(((digi1R - 78) / maxR) * 128)
+                    step = Min_difference.min_difference(step, 0)
                     digipot.set_step(step, 0)
             if digi1First == True:
                 lcd.lcd_clear()
@@ -201,7 +202,7 @@ while True:
                     print("Updated DigiPot2")
                     rotary.clicked = False
                     #insert proper digipot updating code here
-                    step = int(((digi2R - 78) / maxR) * 128)
+                    step = Min_difference.min_difference(step, 0)
                     digipot.set_step(step, 1)
             if digi2First == True:
                 lcd.lcd_clear()
