@@ -116,7 +116,7 @@ while True:
                             rotary.rotating = False
                             digi1First = True
             if rotary.clicked == True:
-                pi1.wait_for_edge(self.switchPin, pigpio.EITHER_EDGE)
+                pi1.wait_for_edge(rotary.switchPin, pigpio.EITHER_EDGE)
                 if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
