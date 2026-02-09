@@ -8,11 +8,10 @@ class MCP4131:
 
     def set_step(self, step, pot_num=0):
         if 0 <= step <= 128:
-            # Address 0x00 for Pot 0, 0x10 for Pot 1
             cmd = 0x00 if pot_num == 0 else 0x10
             self.spi.xfer2([cmd, step])
         else:
-            print("Step must be 0-128")
+            print("Step must be between 0 and 128.")
 
     def close(self):
         self.spi.close()
