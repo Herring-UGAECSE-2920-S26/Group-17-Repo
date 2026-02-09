@@ -19,14 +19,15 @@ class Rotary:
         #set up rotary encoder
         self.pi1.set_mode(self.rotaryA, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryA, pigpio.PUD_UP)
+        self.pi1.set_glitch_filter(self.rotaryA, 3000) # 3ms debounce
         
         self.pi1.set_mode(self.rotaryB, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryB, pigpio.PUD_UP)
+        self.pi1.set_glitch_filter(self.rotaryB, 3000) # 3ms debounce
 
         self.pi1.set_mode(self.switchPin, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.switchPin, pigpio.PUD_UP)
-
-        self.pi1.set_glitch_filter(switchPin, 50000)
+        self.pi1.set_glitch_filter(self.switchPin, 20000) # 20ms debounce
 
         #set up other vars
         self.readA = None
@@ -69,18 +70,18 @@ class Rotary:
                     #print("Clockwise")
                     #print("Is Rotating:", self.rotating)
                     #lets other coroutines run
-                    time.sleep(0.01)
+                    time.sleep(0.001)
                 else:
                     self.clockwise = False
                     #print("Counterclockwise")
                     #print("Is Rotating:", self.rotating)
                     #lets other coroutines run
-                    time.sleep(0.01)
+                    time.sleep(0.001)
             else:
                 self.rotating = False
                 #print("Is Rotating:", self.rotating)
                 #lets other coroutines run
-                time.sleep(0.01)
+                time.sleep(0.001)
 
             #update A value
             self.prevA = self.readA
