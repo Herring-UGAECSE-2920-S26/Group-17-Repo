@@ -122,11 +122,6 @@ while True:
                 print(abs(startTime - endTime))
                 print(abs(startTime - endTime) >= 3)
                 if abs(startTime - endTime) >= 3:
-                    rotary.longClicked = True
-                else:
-                    rotary.longClocked = False
-                
-                if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
                     rotary.clicked = False
