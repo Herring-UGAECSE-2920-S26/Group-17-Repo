@@ -82,29 +82,29 @@ while True:
                 if rotary.clockwise == True: 
                     if digi1R < maxR:
                         if rotary.fast == True:
-                            print("Plus 100")
+                            #print("Plus 100")
                             digi1R = digi1R + 100
-                            print("digi1R:", digi1R)
+                            #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
                         else:
-                            print("Plus 10")
+                            #print("Plus 10")
                             digi1R = digi1R + 10
-                            print("digi1R:", digi1R)
+                            #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
                 if rotary.clockwise == False:
                     if digi1R > minR:
                         if rotary.fast == True:
-                            print("Minus 100")
+                            #print("Minus 100")
                             digi1R = digi1R - 100
-                            print("digi1R:", digi1R)
+                            #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
                         else:
-                            print("Minus 10")
+                            #print("Minus 10")
                             digi1R = digi1R - 10
-                            print("digi1R:", digi1R)
+                            #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
             if rotary.clicked == True:
@@ -114,7 +114,9 @@ while True:
                 if rotary.longClick == False:
                     print("Updated DigiPot1")
                     #insert proper digipot updating code here
-            digi1First = False
+            if digi1First == True:
+                print(digi1R)
+                digi1First = False
 
         #DigiPot2 handling
         while state == "digi2":
