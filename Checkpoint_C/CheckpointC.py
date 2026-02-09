@@ -143,7 +143,7 @@ while True:
             if digi1First == True:
                 lcd.lcd_clear()
                 lcd.lcd_display_string("DigiPot 1 Resistance", 1)
-                lcd.lcd_display_string("{digi1R} Ohms", 2)
+                lcd.lcd_display_string(f"{digi1R} Ohms", 2)
                 print(digi1R)
                 digi1First = False
 
@@ -206,7 +206,7 @@ while True:
             if digi2First == True:
                 lcd.lcd_clear()
                 lcd.lcd_display_string("DigiPot 2 Resistance", 1)
-                lcd.lcd_display_string("{digi2R} Ohms", 2)
+                lcd.lcd_display_string(f"{digi2R} Ohms", 2)
                 print(digi2R)
                 digi2First = False
 
