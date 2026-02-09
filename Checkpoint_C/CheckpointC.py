@@ -52,7 +52,7 @@ while True:
         if menu1First == True:
             lcd.lcd_clear()
             lcd.lcd_display_string("=> DigiPot1", 1)
-            lcd.lcd_display_string"    Digipot2", 2)
+            lcd.lcd_display_string("   Digipot2", 2)
             print("=> DigiPot1    Digipot2")
             #insert proper LCD updating code here
         if rotary.rotating == True:
@@ -69,7 +69,7 @@ while True:
                 #insert proper LCD updating code here
                 lcd.lcd_clear()
                 lcd.lcd_display_string("   DigiPot1", 1)
-                lcd.lcd_display_string( "=> Digipot2", 2)
+                lcd.lcd_display_string("=> Digipot2", 2)
                 print("   DigiPot1 => Digipot2")
             if rotary.rotating == True:
                 state = "menu1"
