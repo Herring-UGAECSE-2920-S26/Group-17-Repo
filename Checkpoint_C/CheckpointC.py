@@ -119,7 +119,8 @@ while True:
                 startTime = time.perf_counter()
                 pi1.wait_for_edge(rotary.switchPin, pigpio.EITHER_EDGE)
                 endTime = time.perf_counter()
-                print(startTime-endTime)
+                print(abs(startTime - endTime))
+                print(abs(startTime - endTime) >= 3)
                 if abs(startTime - endTime) >= 3:
                     rotary.longClicked = True
                 else:
