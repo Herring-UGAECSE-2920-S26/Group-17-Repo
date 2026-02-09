@@ -111,8 +111,10 @@ while True:
                 if rotary.longClick == True:
                     state = "menu1"
                     menu1First = True
+                    rotary.clicked = False
                 if rotary.longClick == False:
                     print("Updated DigiPot1")
+                    rotary.clicked = False
                     #insert proper digipot updating code here
             if digi1First == True:
                 print(digi1R)
