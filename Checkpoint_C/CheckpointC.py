@@ -73,32 +73,35 @@ while True:
 
         #DigiPot1 handling
         while state == "digi1":
+            rotary.clicked = False
             if digi1First == True:
                 #insert proper LCD updating code here
                 print(digi1R)
             if rotary.rotating == True:
-                if rotary.clockwise == True and digi1R != maxR:
-                    if rotary.fast == True:
-                        print("Plus 100")
-                        digi1R = digi1R + 100
-                        print("digi1R:", digi1R)
-                        digi1First = True
-                    else:
-                        print("Plus 10")
-                        digi1R = digi1R + 10
-                        print("digi1R:", digi1R)
-                        digi1First = True
-                if rotary.clockwise == False and digi1R != minR:
-                    if rotary.fast == True:
-                        print("Minus 100")
-                        digi1R = digi1R - 100
-                        print("digi1R:", digi1R)
-                        digi1First = True
-                    else:
-                        print("Minus 10")
-                        digi1R = digi1R - 10
-                        print("digi1R:", digi1R)
-                        digi1First = True
+                if rotary.clockwise == True 
+                    if digi1R < maxR:
+                        if rotary.fast == True:
+                            print("Plus 100")
+                            digi1R = digi1R + 100
+                            print("digi1R:", digi1R)
+                            digi1First = True
+                        else:
+                            print("Plus 10")
+                            digi1R = digi1R + 10
+                            print("digi1R:", digi1R)
+                            digi1First = True
+                if rotary.clockwise == False:
+                    if digi1R > minR:
+                        if rotary.fast == True:
+                            print("Minus 100")
+                            digi1R = digi1R - 100
+                            print("digi1R:", digi1R)
+                            digi1First = True
+                        else:
+                            print("Minus 10")
+                            digi1R = digi1R - 10
+                            print("digi1R:", digi1R)
+                            digi1First = True
             if rotary.clicked == True:
                 if rotary.longClick == True:
                     state = "menu1"
