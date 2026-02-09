@@ -5,6 +5,7 @@ import threading
 #import asyncio
 import Dual_Digipot
 import RotaryFunctions
+import I2C_LCD_driver
 #from transitions import AsyncMachine
 # from RPLCD.i2c import CharLCD
 
@@ -14,6 +15,7 @@ spi1 = spidev.SpiDev()
 #set up devices
 rotary = RotaryFunctions.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
+lcd = I2C_LCD_driver.lcd()
 
 #declare vars
 state = "menu1"
@@ -48,6 +50,8 @@ while True:
     #main menu part 1
     while state == "menu1":
         if menu1First == True:
+            lcd.lcd_clear()
+            lcd.lcd_display_string("=> DigiPot1    Digipot2", 1)
             print("=> DigiPot1    Digipot2")
             #insert proper LCD updating code here
         if rotary.rotating == True:
@@ -62,6 +66,8 @@ while True:
         while state == "menu2":
             if menu2First == True:
                 #insert proper LCD updating code here
+                lcd.lcd_clear()
+                lcd.lcd_display_string("   DigiPot1 => Digipot2", 1)
                 print("   DigiPot1 => Digipot2")
             if rotary.rotating == True:
                 state = "menu1"
@@ -133,6 +139,9 @@ while True:
                     step = int(((digi1R - 78) / maxR) * 128)
                     digipot.set_step(step, 0)
             if digi1First == True:
+                lcd.lcd_clear()
+                lcd.lcd_display_string("DigiPot 1 Resistance", 1)
+                lcd.lcd_display_string(digi1R, "Ohms", 2)
                 print(digi1R)
                 digi1First = False
 
@@ -193,6 +202,9 @@ while True:
                     step = int(((digi2R - 78) / maxR) * 128)
                     digipot.set_step(step, 1)
             if digi2First == True:
+                lcd.lcd_clear()
+                lcd.lcd_display_string("DigiPot 2 Resistance", 1)
+                lcd.lcd_display_string(digi2R, "Ohms", 2)
                 print(digi2R)
                 digi2First = False
 
