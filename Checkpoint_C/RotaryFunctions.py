@@ -130,7 +130,7 @@ class Rotary:
             #if button hasn't been pressed
             self.clicked = False
              #lets other coroutines run
-            time.sleep(0.01)
+            #time.sleep(0.01)
 
 # --- For Testing ---
 if __name__ == "__main__":
