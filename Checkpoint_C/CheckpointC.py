@@ -115,15 +115,17 @@ while True:
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
-            #if rotary.clicked == True:
-            if rotary.longClick == True:
-                state = "menu1"
-                menu1First = True
-                rotary.clicked = False
+            if rotary.clicked == True:
+                pi1.wait_for_edge(self.switchPin, pigpio.EITHER_EDGE)
+                if rotary.longClick == True:
+                    state = "menu1"
+                    menu1First = True
+                    rotary.clicked = False
            # elif rotary.clicked == True:
-            #    print("Updated DigiPot1")
-             #   rotary.clicked = False
-                #insert proper digipot updating code here
+                else:
+                    print("Updated DigiPot1")
+                    rotary.clicked = False
+                    #insert proper digipot updating code here
             if digi1First == True:
                 print(digi1R)
                 digi1First = False
