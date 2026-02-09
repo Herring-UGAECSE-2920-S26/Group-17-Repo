@@ -78,7 +78,7 @@ while True:
                 #insert proper LCD updating code here
                 print(digi1R)
             if rotary.rotating == True:
-                if rotary.clockwise == True 
+                if rotary.clockwise == True: 
                     if digi1R < maxR:
                         if rotary.fast == True:
                             print("Plus 100")
