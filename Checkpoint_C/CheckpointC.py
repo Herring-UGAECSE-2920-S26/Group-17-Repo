@@ -92,7 +92,7 @@ while True:
                         else:
                             #print("Plus 10")
                             digi1R = digi1R + 10
-                            if digi1R < maxR:
+                            if digi1R > maxR:
                                 digi1R = maxR
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
@@ -110,6 +110,8 @@ while True:
                         else:
                             #print("Minus 10")
                             digi1R = digi1R - 10
+                            if digi1R < minR:
+                                digi1R = minR
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
