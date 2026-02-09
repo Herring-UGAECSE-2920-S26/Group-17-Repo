@@ -75,21 +75,25 @@ while True:
         while state == "digi1":
             #rotary.clicked = False
             #rotary.rotating = False
-            if digi1First == True:
+            #if digi1First == True:
                 #insert proper LCD updating code here
-                print(digi1R)
+                #print(digi1R)
             if rotary.rotating == True:
                 if rotary.clockwise == True: 
                     if digi1R < maxR:
                         if rotary.fast == True:
                             #print("Plus 100")
                             digi1R = digi1R + 100
+                            if digi1R > maxR:
+                                digi1R = maxR
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
                         else:
                             #print("Plus 10")
                             digi1R = digi1R + 10
+                            if digi1R < maxR:
+                                digi1R = maxR
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
@@ -98,6 +102,8 @@ while True:
                         if rotary.fast == True:
                             #print("Minus 100")
                             digi1R = digi1R - 100
+                            if digi1R < minR:
+                                digi1R = minR
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
@@ -107,15 +113,15 @@ while True:
                             #print("digi1R:", digi1R)
                             rotary.rotating = False
                             digi1First = True
-            if rotary.clicked == True:
-                if rotary.longClick == True:
-                    state = "menu1"
-                    menu1First = True
-                    rotary.clicked = False
-                if rotary.longClick == False:
-                    print("Updated DigiPot1")
-                    rotary.clicked = False
-                    #insert proper digipot updating code here
+            #if rotary.clicked == True:
+            if rotary.longClick == True:
+                state = "menu1"
+                menu1First = True
+                rotary.clicked = False
+            elif rotary.clicked == True:
+                print("Updated DigiPot1")
+                rotary.clicked = False
+                #insert proper digipot updating code here
             if digi1First == True:
                 print(digi1R)
                 digi1First = False
