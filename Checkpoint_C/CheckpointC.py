@@ -73,7 +73,7 @@ while True:
 
         #DigiPot1 handling
         while state == "digi1":
-            rotary.clicked = False
+            #rotary.clicked = False
             #rotary.rotating = False
             if digi1First == True:
                 #insert proper LCD updating code here
