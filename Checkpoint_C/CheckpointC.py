@@ -130,6 +130,8 @@ while True:
                     print("Updated DigiPot1")
                     rotary.clicked = False
                     #insert proper digipot updating code here
+                    step = int(((digi1R - 78) / maxR) * 128)
+                    digipot.set_step(step, 0)
             if digi1First == True:
                 print(digi1R)
                 digi1First = False
@@ -188,6 +190,8 @@ while True:
                     print("Updated DigiPot2")
                     rotary.clicked = False
                     #insert proper digipot updating code here
+                    step = int(((digi2R - 78) / maxR) * 128)
+                    digipot.set_step(step, 1)
             if digi2First == True:
                 print(digi2R)
                 digi2First = False
