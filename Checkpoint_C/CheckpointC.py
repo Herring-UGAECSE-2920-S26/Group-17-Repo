@@ -85,11 +85,13 @@ while True:
                             print("Plus 100")
                             digi1R = digi1R + 100
                             print("digi1R:", digi1R)
+                            rotary.rotating = False
                             digi1First = True
                         else:
                             print("Plus 10")
                             digi1R = digi1R + 10
                             print("digi1R:", digi1R)
+                            rotary.rotating = False
                             digi1First = True
                 if rotary.clockwise == False:
                     if digi1R > minR:
@@ -97,11 +99,13 @@ while True:
                             print("Minus 100")
                             digi1R = digi1R - 100
                             print("digi1R:", digi1R)
+                            rotary.rotating = False
                             digi1First = True
                         else:
                             print("Minus 10")
                             digi1R = digi1R - 10
                             print("digi1R:", digi1R)
+                            rotary.rotating = False
                             digi1First = True
             if rotary.clicked == True:
                 if rotary.longClick == True:
