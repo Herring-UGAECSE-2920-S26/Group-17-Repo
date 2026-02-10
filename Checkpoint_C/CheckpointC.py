@@ -138,7 +138,7 @@ while True:
                     rotary.clicked = False
            # elif rotary.clicked == True:
                 else:
-                    print("Updated DigiPot1")
+                    print("Updated DigiPot0")
                     rotary.clicked = False
                     #insert proper digipot updating code here
                     step = Min_difference.min_difference(float(digi0R/1000))
@@ -201,7 +201,7 @@ while True:
                     rotary.clicked = False
            # elif rotary.clicked == True:
                 else:
-                    print("Updated DigiPot2")
+                    print("Updated DigiPot1")
                     rotary.clicked = False
                     #insert proper digipot updating code here
                     step = Min_difference.min_difference(float(digi1R/1000))
