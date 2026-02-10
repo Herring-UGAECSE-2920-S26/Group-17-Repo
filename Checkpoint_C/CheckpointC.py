@@ -19,15 +19,15 @@ digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 
 #declare vars
-state = "menu1"
+state = "menu0"
+digi0R = 100
 digi1R = 100
-digi2R = 100
 minR = 100
 maxR = 10000
+menu0First = True
 menu1First = True
-menu2First = True
+digi0First = True
 digi1First = True
-digi2First = True
 
 #async def always(): 
     #create asynchronous tasks
@@ -48,45 +48,110 @@ buttonThread.start()
 
 while True:
 
-    #main menu part 1
-    while state == "menu1":
-        if menu1First == True:
+    #main menu part 0
+    while state == "menu0":
+        if menu0First == True:
             lcd.lcd_clear()
-            lcd.lcd_display_string("   Digipot0", 1)
-            lcd.lcd_display_string("=> DigiPot1", 2)
-            print("=> DigiPot1    Digipot2")
+            lcd.lcd_display_string("=> Digipot0", 1)
+            lcd.lcd_display_string("   DigiPot1", 2)
+            print("=> DigiPot0    Digipot1")
             #insert proper LCD updating code here
         if rotary.rotating == True:
-            state = "menu2"
-            menu2First = True
-        elif rotary.clicked == True:
-            state = "digi1"
-            digi1First = True
-        menu1First = False
-
-        #main menu part 2
-        while state == "menu2":
-            if menu2First == True:
-                #insert proper LCD updating code here
-                lcd.lcd_clear()
-                lcd.lcd_display_string("=> Digipot0", 1)
-                lcd.lcd_display_string("   DigiPot1", 2)
-                print("   DigiPot1 => Digipot2")
-            if rotary.rotating == True:
+            if rotary.clockwise == True:
                 state = "menu1"
                 menu1First = True
+        elif rotary.clicked == True:
+            state = "digi0"
+            digi0First = True
+        menu0First = False
+
+        #main menu part 1
+        while state == "menu1":
+            if menu1First == True:
+                #insert proper LCD updating code here
+                lcd.lcd_clear()
+                lcd.lcd_display_string("   Digipot0", 1)
+                lcd.lcd_display_string("=> DigiPot1", 2)
+                print("   DigiPot0 => Digipot1")
+            if rotary.rotating == True:
+                if rotary.clockwise == False:
+                    state = "menu0"
+                    menu0First = True
             elif rotary.clicked == True:
-                state = "digi2"
-                digi2First = True
-            menu2First = False
+                state = "digi1"
+                digi1First = True
+            menu1First = False
+
+        #DigiPot0 handling
+        while state == "digi0":
+            #rotary.clicked = False
+            #rotary.rotating = False
+            #if digi0First == True:
+                #insert proper LCD updating code here
+                #print(digi0R)
+            if rotary.rotating == True:
+                if rotary.clockwise == True: 
+                    if digi0R < maxR:
+                        if rotary.fast == True:
+                            #print("Plus 100")
+                            digi0R = digi0R + 100
+                            if digi0R > maxR:
+                                digi0R = maxR
+                            #print("digi0R:", digi0R)
+                            rotary.rotating = False
+                            digi0First = True
+                        else:
+                            #print("Plus 10")
+                            digi0R = digi0R + 10
+                            if digi0R > maxR:
+                                digi0R = maxR
+                            #print("digi0R:", digi0R)
+                            rotary.rotating = False
+                            digi0First = True
+                if rotary.clockwise == False:
+                    if digi0R > minR:
+                        if rotary.fast == True:
+                            #print("Minus 100")
+                            digi0R = digi0R - 100
+                            if digi0R < minR:
+                                digi0R = minR
+                            #print("digi0R:", digi0R)
+                            rotary.rotating = False
+                            digi0First = True
+                        else:
+                            #print("Minus 10")
+                            digi0R = digi0R - 10
+                            if digi0R < minR:
+                                digi0R = minR
+                            #print("digi0R:", digi0R)
+                            rotary.rotating = False
+                            digi0First = True
+            if rotary.clicked == True:
+                startTime = time.perf_counter()
+                pi1.wait_for_edge(rotary.switchPin, pigpio.EITHER_EDGE)
+                endTime = time.perf_counter()
+                #print(abs(startTime - endTime))
+                #print(abs(startTime - endTime) >= 3)
+                if abs(startTime - endTime) >= 3:
+                    state = "menu0"
+                    menu0First = True
+                    rotary.clicked = False
+           # elif rotary.clicked == True:
+                else:
+                    print("Updated DigiPot1")
+                    rotary.clicked = False
+                    #insert proper digipot updating code here
+                    step = Min_difference.min_difference(float(digi0R/1000))
+                    digipot.set_step(step, 0)
+            if digi0First == True:
+                lcd.lcd_clear()
+                lcd.lcd_display_string("DigiPot 0 Resistance", 1)
+                lcd.lcd_display_string(f"{digi0R} Ohms", 2)
+                print(digi0R)
+                digi0First = False
 
         #DigiPot1 handling
         while state == "digi1":
-            #rotary.clicked = False
-            #rotary.rotating = False
-            #if digi1First == True:
-                #insert proper LCD updating code here
-                #print(digi1R)
             if rotary.rotating == True:
                 if rotary.clockwise == True: 
                     if digi1R < maxR:
@@ -131,84 +196,21 @@ while True:
                 #print(abs(startTime - endTime))
                 #print(abs(startTime - endTime) >= 3)
                 if abs(startTime - endTime) >= 3:
-                    state = "menu1"
-                    menu1First = True
-                    rotary.clicked = False
-           # elif rotary.clicked == True:
-                else:
-                    print("Updated DigiPot1")
-                    rotary.clicked = False
-                    #insert proper digipot updating code here
-                    step = Min_difference.min_difference(step, 0)
-                    digipot.set_step(step, 0)
-            if digi1First == True:
-                lcd.lcd_clear()
-                lcd.lcd_display_string("DigiPot 1 Resistance", 1)
-                lcd.lcd_display_string(f"{digi1R} Ohms", 2)
-                print(digi1R)
-                digi1First = False
-
-        #DigiPot2 handling
-        while state == "digi2":
-            if rotary.rotating == True:
-                if rotary.clockwise == True: 
-                    if digi2R < maxR:
-                        if rotary.fast == True:
-                            #print("Plus 100")
-                            digi2R = digi2R + 100
-                            if digi2R > maxR:
-                                digi2R = maxR
-                            #print("digi2R:", digi2R)
-                            rotary.rotating = False
-                            digi2First = True
-                        else:
-                            #print("Plus 10")
-                            digi2R = digi2R + 10
-                            if digi2R > maxR:
-                                digi2R = maxR
-                            #print("digi2R:", digi2R)
-                            rotary.rotating = False
-                            digi2First = True
-                if rotary.clockwise == False:
-                    if digi2R > minR:
-                        if rotary.fast == True:
-                            #print("Minus 100")
-                            digi2R = digi2R - 100
-                            if digi2R < minR:
-                                digi2R = minR
-                            #print("digi2R:", digi2R)
-                            rotary.rotating = False
-                            digi2First = True
-                        else:
-                            #print("Minus 10")
-                            digi2R = digi2R - 10
-                            if digi2R < minR:
-                                digi2R = minR
-                            #print("digi2R:", digi2R)
-                            rotary.rotating = False
-                            digi2First = True
-            if rotary.clicked == True:
-                startTime = time.perf_counter()
-                pi1.wait_for_edge(rotary.switchPin, pigpio.EITHER_EDGE)
-                endTime = time.perf_counter()
-                #print(abs(startTime - endTime))
-                #print(abs(startTime - endTime) >= 3)
-                if abs(startTime - endTime) >= 3:
-                    state = "menu1"
-                    menu1First = True
+                    state = "menu0"
+                    menu0First = True
                     rotary.clicked = False
            # elif rotary.clicked == True:
                 else:
                     print("Updated DigiPot2")
                     rotary.clicked = False
                     #insert proper digipot updating code here
-                    step = Min_difference.min_difference(step, 0)
+                    step = Min_difference.min_difference(float(digi1R/1000))
                     digipot.set_step(step, 1)
-            if digi2First == True:
+            if digi1First == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("DigiPot 2 Resistance", 1)
-                lcd.lcd_display_string(f"{digi2R} Ohms", 2)
-                print(digi2R)
-                digi2First = False
+                lcd.lcd_display_string("DigiPot 1 Resistance", 1)
+                lcd.lcd_display_string(f"{digi1R} Ohms", 2)
+                print(digi1R)
+                digi1First = False
 
     
