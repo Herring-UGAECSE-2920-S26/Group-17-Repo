@@ -39,50 +39,49 @@ class Rotary:
         self.rotating = False
         self.clicked = False
         self.longClick = False
+        self.tally = 0
 
     #check direction and speed of encoder spinning    
+   #check direction and speed of encoder spinning    
     def checkRotary(self):
-        startTime = time.perf_counter()
         self.prevA = self.pi1.read(self.rotaryA)
+        last_time = time.perf_counter()
         
         while True:
-            self.readA = self.pi1.read(self.rotaryA) #find current A pin value
+            self.readA = self.pi1.read(self.rotaryA)
+            self.readB = self.pi1.read(self.rotaryB)
 
-            #if rotary encoder is spinning
+            # If the knob has moved (State Change)
             if self.readA != self.prevA:
                 self.rotating = True
-                endTime = time.perf_counter()
-                #print("End Time Rot:", endTime)
-                #print("Click!")
+                current_time = time.perf_counter()
                 
-                #checks speed
-                if abs(startTime - endTime) >= 0.5:
-                    self.fast = False
-                    #print("Slow")
-                else:
+                # 1. Check Speed
+                # If less than 0.05s (50ms) has passed, it is FAST
+                if (current_time - last_time) < 0.05:
                     self.fast = True
-                    #print("Fast")
-                startTime = time.perf_counter()
-                #print("Start Time Rot:", startTime)
+                else:
+                    self.fast = False
                 
-                #checks direction
-                if self.pi1.read(self.rotaryB) != self.readA:
+                last_time = current_time # Reset timer
+                
+                # 2. Check Direction
+                # If Pin A != Pin B, it is Clockwise. Otherwise Counter-Clockwise.
+                if self.readA != self.readB:
                     self.clockwise = True
-                    #print("Clockwise")
-                    #print("Is Rotating:", self.rotating)
+                    self.tally += 1   # Increment for Main Loop
                 else:
                     self.clockwise = False
-                    #print("Counterclockwise")
-                    #print("Is Rotating:", self.rotating)
+                    self.tally -= 1   # Decrement for Main Loop
+
             else:
                 self.rotating = False
-                #print("Is Rotating:", self.rotating)
 
-            #update A value
+            # Update previous state
             self.prevA = self.readA
 
-            #lets other threads run
-            time.sleep(0.0001)
+            # Sleep 1ms (0.001) - Fast enough to catch spins, slow enough for CPU
+            time.sleep(0.001)
 
     #checks if button is pressed and for how long
     def checkButton(self):
