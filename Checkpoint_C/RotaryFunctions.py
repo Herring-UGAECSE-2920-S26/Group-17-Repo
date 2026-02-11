@@ -20,11 +20,11 @@ class Rotary:
         #set up rotary encoder
         self.pi1.set_mode(self.rotaryA, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryA, pigpio.PUD_UP)
-        self.pi1.set_glitch_filter(self.rotaryA, 3000) # 3ms debounce
+        self.pi1.set_glitch_filter(self.rotaryA, 1000) # 3ms debounce
         
         self.pi1.set_mode(self.rotaryB, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.rotaryB, pigpio.PUD_UP)
-        self.pi1.set_glitch_filter(self.rotaryB, 3000) # 3ms debounce
+        self.pi1.set_glitch_filter(self.rotaryB, 1000) # 3ms debounce
 
         self.pi1.set_mode(self.switchPin, pigpio.INPUT)
         self.pi1.set_pull_up_down(self.switchPin, pigpio.PUD_UP)
