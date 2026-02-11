@@ -1,8 +1,9 @@
-import pigpio
+import pigpio #https://abyz.me.uk/rpi/pigpio/index.html
 import threading
-#import asyncio
 import time
 
+#class that sets up the rotary encoder component and checks status of 
+#rotary encoder and button
 class Rotary:
 
     #min and max resistor values
@@ -69,28 +70,19 @@ class Rotary:
                     self.clockwise = True
                     #print("Clockwise")
                     #print("Is Rotating:", self.rotating)
-                    #lets other coroutines run
-                    #time.sleep(0.01)
                 else:
                     self.clockwise = False
                     #print("Counterclockwise")
                     #print("Is Rotating:", self.rotating)
-                    #lets other coroutines run
-                    #time.sleep(0.01)
             else:
                 self.rotating = False
                 #print("Is Rotating:", self.rotating)
-                #lets other coroutines run
-                #time.sleep(0.01)
 
             #update A value
             self.prevA = self.readA
 
-            #lets other coroutines run
+            #lets other threads run
             time.sleep(0.0001)
-
-            #update rotating
-            #self.rotating = False
 
     #checks if button is pressed and for how long
     def checkButton(self):
@@ -118,20 +110,11 @@ class Rotary:
                         self.longClicked = False
                         #print("Short")
 
-                    #lets other coroutines run
-                    #time.sleep(0.01)
-
-                    #updates values
-                    #self.clicked = False
-                    #self.longClicked = False
-
-                   #lets other coroutines run
+                   #lets other threads run
                     time.sleep(0.0001)
                     
             #if button hasn't been pressed
             self.clicked = False
-             #lets other coroutines run
-            #time.sleep(0.01)
 
 # --- For Testing ---
 if __name__ == "__main__":
@@ -139,18 +122,8 @@ if __name__ == "__main__":
     #setup
     pi1 = pigpio.pi()
     rot = Rotary(18, 23, 24, pi1)
-    
-    #async def always(): 
-        #create asynchronous tasks
-        #rotarySpin = asyncio.create_task(rot.checkRotary())
-        #buttonPress = asyncio.create_task(rot.checkButton())
 
-        #perpetually run both tasks together
-        #asyncio.gather(rotarySpin, buttonPress)
-
-    #run the tasks in always()
-    #asyncio.run(always())
-
+    #threading
     rotThread = threading.Thread(target=rot.checkRotary)
     buttonThread = threading.Thread(target=rot.checkButton)
 
