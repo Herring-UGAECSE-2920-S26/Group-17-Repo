@@ -27,6 +27,10 @@ menu1First = True
 digi0First = True
 digi1First = True
 
+# --- FIX: Define this before the loop starts ---
+last_tally = 0 
+# -----------------------------------------------
+
 #set up threads
 rotaryThread = threading.Thread(target=rotary.checkRotary)
 buttonThread = threading.Thread(target=rotary.checkButton)
@@ -96,7 +100,7 @@ while True:
             lcd.lcd_display_string(f"{digi0R} Ohms    ", 2)
             print(f"Digi0: {digi0R}")
         
-        # FIX: Trust the thread flags, don't wait_for_edge here!
+        # Check buttons (non-blocking)
         if rotary.longClicked == True:
             rotary.longClicked = False
             state = "menu0"
@@ -119,7 +123,7 @@ while True:
         if change != 0:
             step_size = 20 if rotary.fast else 5
             
-            # FIX: You had digi0R here, I changed it to digi1R
+            # Use digi1R (Fixed copy-paste error)
             digi1R += (change * step_size)
             
             if digi1R > maxR: digi1R = maxR
@@ -128,7 +132,7 @@ while True:
             lcd.lcd_display_string(f"{digi1R} Ohms    ", 2)
             print(f"Digi1: {digi1R}")
 
-        # FIX: Trust the thread flags
+        # Check buttons (non-blocking)
         if rotary.longClicked == True:
             rotary.longClicked = False
             state = "menu0"
