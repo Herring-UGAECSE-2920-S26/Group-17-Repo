@@ -70,18 +70,18 @@ class Rotary:
                     #print("Clockwise")
                     #print("Is Rotating:", self.rotating)
                     #lets other coroutines run
-                    time.sleep(0.0001)
+                    time.sleep(0.001)
                 else:
                     self.clockwise = False
                     #print("Counterclockwise")
                     #print("Is Rotating:", self.rotating)
                     #lets other coroutines run
-                    time.sleep(0.0001)
+                    time.sleep(0.001)
             else:
                 self.rotating = False
                 #print("Is Rotating:", self.rotating)
                 #lets other coroutines run
-                time.sleep(0.0001)
+                time.sleep(0.001)
 
             #update A value
             self.prevA = self.readA
@@ -126,7 +126,7 @@ class Rotary:
                     #self.longClicked = False
 
                    #lets other coroutines run
-                    time.sleep(0.0001)
+                    time.sleep(0.001)
                     
             #if button hasn't been pressed
             self.clicked = False
