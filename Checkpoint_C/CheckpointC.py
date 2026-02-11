@@ -57,7 +57,7 @@ while True:
             print("=> DigiPot0    Digipot1")
             #insert proper LCD updating code here
         if rotary.rotating == True: 
-            rotary.clockwise == True:
+            if rotary.clockwise == True:
                 state = "menu1"
                 menu1First = True
         elif rotary.clicked == True:
@@ -74,7 +74,7 @@ while True:
                 lcd.lcd_display_string("=> DigiPot1", 2)
                 print("   DigiPot0 => Digipot1")
             if rotary.rotating == True: 
-                rotary.clockwise == False:
+                if rotary.clockwise == False:
                     state = "menu0"
                     menu0First = True
             elif rotary.clicked == True:
