@@ -48,24 +48,24 @@ class Rotary:
             self.readA = self.pi1.read(self.rotaryA) #find current A pin value
 
             #if rotary encoder is spinning
-            if self.readA != self.prevA:
+            if self.readA == 0:
                 self.rotating = True
                 endTime = time.perf_counter()
                 #print("End Time Rot:", endTime)
                 #print("Click!")
                 
                 #checks speed
-                if abs(startTime - endTime) >= 2:
-                    self.fast = False
+                if abs(startTime - endTime) < 0.2:
+                    self.fast = True
                     #print("Slow")
                 else:
-                    self.fast = True
+                    self.fast = False
                     #print("Fast")
                 startTime = time.perf_counter()
                 #print("Start Time Rot:", startTime)
                 
                 #checks direction
-                if self.pi1.read(self.rotaryB) != self.readA:
+                if self.pi1.read(self.rotaryB) == 1:
                     self.clockwise = True
                     #print("Clockwise")
                     #print("Is Rotating:", self.rotating)
