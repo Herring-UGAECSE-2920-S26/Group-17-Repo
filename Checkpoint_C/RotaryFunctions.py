@@ -48,35 +48,38 @@ class Rotary:
             self.readA = self.pi1.read(self.rotaryA) #find current A pin value
 
             #if rotary encoder is spinning
-            if self.readA == 0:
+            if self.readA != self.prevA: 
                 self.rotating = True
-                endTime = time.perf_counter()
-                #print("End Time Rot:", endTime)
-                #print("Click!")
+                #endTime = time.perf_counter()
+                #only trigger on falling edge
+                if self.readA == 0:
+                    endTime = time.perf_counter()
+                    #print("End Time Rot:", endTime)
+                    #print("Click!")
                 
-                #checks speed
-                if abs(startTime - endTime) < 0.2:
-                    self.fast = True
-                    #print("Slow")
-                else:
-                    self.fast = False
-                    #print("Fast")
-                startTime = time.perf_counter()
-                #print("Start Time Rot:", startTime)
+                    #checks speed
+                    if abs(startTime - endTime) < 0.2:
+                        self.fast = True
+                        #print("Slow")
+                    else:
+                        self.fast = False
+                        #print("Fast")
+                    startTime = time.perf_counter()
+                    #print("Start Time Rot:", startTime)
                 
-                #checks direction
-                if self.pi1.read(self.rotaryB) == 1:
-                    self.clockwise = True
-                    #print("Clockwise")
-                    #print("Is Rotating:", self.rotating)
-                    #lets other coroutines run
-                    #time.sleep(0.001)
-                else:
-                    self.clockwise = False
-                    #print("Counterclockwise")
-                    #print("Is Rotating:", self.rotating)
-                    #lets other coroutines run
-                    #time.sleep(0.001)
+                    #checks direction
+                    if self.pi1.read(self.rotaryB) == 1:
+                        self.clockwise = True
+                        #print("Clockwise")
+                        #print("Is Rotating:", self.rotating)
+                        #lets other coroutines run
+                        #time.sleep(0.001)
+                    else:
+                        self.clockwise = False
+                        #print("Counterclockwise")
+                        #print("Is Rotating:", self.rotating)
+                        #lets other coroutines run
+                        #time.sleep(0.001)
             else:
                 self.rotating = False
                 #print("Is Rotating:", self.rotating)
