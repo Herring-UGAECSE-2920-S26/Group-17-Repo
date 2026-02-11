@@ -48,7 +48,8 @@ class Rotary:
             self.readA = self.pi1.read(self.rotaryA) #find current A pin value
 
             #if rotary encoder is spinning
-            if self.readA != self.prevA:
+            if self.pi1.wait_for_edge(self.rotaryA, pigpio.EITHER_EDGE):
+            #if self.readA != self.prevA:
                 self.rotating = True
                 endTime = time.perf_counter()
                 #print("End Time Rot:", endTime)
