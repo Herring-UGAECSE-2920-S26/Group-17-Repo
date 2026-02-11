@@ -70,24 +70,24 @@ class Rotary:
                     #print("Clockwise")
                     #print("Is Rotating:", self.rotating)
                     #lets other coroutines run
-                    time.sleep(0.001)
+                    #time.sleep(0.001)
                 else:
                     self.clockwise = False
                     #print("Counterclockwise")
                     #print("Is Rotating:", self.rotating)
                     #lets other coroutines run
-                    time.sleep(0.001)
+                    #time.sleep(0.001)
             else:
                 self.rotating = False
                 #print("Is Rotating:", self.rotating)
                 #lets other coroutines run
-                time.sleep(0.001)
+                #time.sleep(0.001)
 
             #update A value
             self.prevA = self.readA
 
             #lets other coroutines run
-            #time.sleep(0.01)
+            time.sleep(0.001)
 
             #update rotating
             #self.rotating = False
