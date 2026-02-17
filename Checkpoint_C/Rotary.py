@@ -33,8 +33,8 @@ class Rotary:
         self.lastTick = 0
 
         #create callbacks
-        self.rotaryCallback = self.pi1.callback(self.rotaryA, pi1.EITHER_EDGE, self.rotaryFunction)
-        self.buttonCallback = self.pi1.callback(self.switchPin, pi1.EITHER_EDGE, self.buttonFunction)
+        self.rotaryCallback = self.pi1.callback(self.rotaryA, pigpio.EITHER_EDGE, self.rotaryFunction)
+        self.buttonCallback = self.pi1.callback(self.switchPin, pigpio.EITHER_EDGE, self.buttonFunction)
         
 
     def rotaryFunction(self, gpio, level, tick):
