@@ -41,7 +41,7 @@ class Rotary:
 
         if level == 1:
             
-            self.fast = (50000 > self.pi1.tickDiff(self.lastTick, tick))
+            self.fast = (50000 > pigpio.tickDiff(self.lastTick, tick))
             self.lastTick = tick
 
             if self.pi1.read(self.rotaryB) == 0:
@@ -59,7 +59,7 @@ class Rotary:
 
             while (looped):
                 endTime = self.pi1.get_current_tick()
-                if (self.pi1.tickDiff(startTime, endTime) > 3000000):
+                if (pigpio.tickDiff(startTime, endTime) > 3000000):
                     self.longClick = True
                     self.looped = False
                 if level == 1:
