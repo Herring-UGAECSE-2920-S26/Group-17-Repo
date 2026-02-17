@@ -34,7 +34,7 @@ try:
         print("Clockwise:", clockwise)
         print("Fast:", fast)
         print("Clicked:", clicked)
-        print("LongClick:" longClick)
+        print("LongClick:", longClick)
 
         #main menu part 0
         if state == "menu0":
