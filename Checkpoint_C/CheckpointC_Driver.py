@@ -90,7 +90,7 @@ try:
 
                     lcd.lcd_display_string(f"{digi0R} Ohms", 2)
 
-                if longClicked:
+                if longClick:
                     state = "menu0"
                     menu0First = True
                 elif clicked:
@@ -119,7 +119,7 @@ try:
 
                     lcd.lcd_display_string(f"{digi1R} Ohms", 2)
 
-                if longClicked:
+                if longClick:
                     state = "menu0"
                     menu0First = True
                 elif clicked:
