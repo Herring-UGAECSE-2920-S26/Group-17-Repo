@@ -31,6 +31,10 @@ try:
     while True:
         clockwise, fast = rotary.getRotary()
         clicked, longClick = rotary.getButton()
+        print("Clockwise:", clockwise)
+        print("Fast:", fast)
+        print("Clicked:", clicked)
+        print("LongClick:" longClick)
 
         #main menu part 0
         if state == "menu0":
@@ -44,6 +48,7 @@ try:
                 
             #switch to other menu option if rotating
             if clockwise != 0: 
+                print("Switch to menu1")
                 state = "menu1"
                 menu1First = True
             #switch to digipot 0 if clicked
@@ -88,7 +93,8 @@ try:
                     if digi0R > maxR: digi0R = maxR
                     if digi0R < minR: digi0R = minR
 
-                    lcd.lcd_display_string(f"{digi0R} Ohms", 2)
+                    digi0First = True
+                    #lcd.lcd_display_string(f"{digi0R} Ohms", 2)
 
                 if longClick:
                     state = "menu0"
@@ -117,7 +123,8 @@ try:
                     if digi1R > maxR: digi1R = maxR
                     if digi1R < minR: digi1R = minR
 
-                    lcd.lcd_display_string(f"{digi1R} Ohms", 2)
+                    digi1First = True
+                    #lcd.lcd_display_string(f"{digi1R} Ohms", 2)
 
                 if longClick:
                     state = "menu0"
