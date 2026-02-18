@@ -116,6 +116,9 @@ if __name__ == "__main__":
     prevLongClick = longClick
     
     while True:
+        clockwise, fast = rotary.getRotary()
+        clicked, longClick = rotary.getButton()
+        
         if prevClockwise != clockwise: print("Main Clockwise:", clockwise)
         if prevFast != fast: print("Main Fast:", fast)
         if prevClicked != clicked: print("Main Clicked:", clicked)
