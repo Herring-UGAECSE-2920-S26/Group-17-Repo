@@ -26,7 +26,7 @@ class Rotary:
         self.pi1.set_glitch_filter(self.switchPin, 20000) # 20ms debounce
 
         #set up other vars
-        self.clockwise = None
+        self.clockwise = 0
         self.fast = False
         self.clicked = False
         self.longClick = False
