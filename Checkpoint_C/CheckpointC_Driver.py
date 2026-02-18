@@ -45,7 +45,7 @@ try:
                 lcd.lcd_display_string("   DigiPot1", 2)
                 print("=> DigiPot0    Digipot1")
                 menu0First = False
-                
+
             #switch to other menu option if rotating
             if clockwise != 0: 
                 print("Switch to menu1")
@@ -66,15 +66,15 @@ try:
                 print("   DigiPot0 => Digipot1")
                 menu1First = False
                 
-                #switch to other menu option if rotating
-                if clockwise != 0: 
-                    print("Switch to menu0")
-                    state = "menu0"
-                    menu0First = True 
-                #switch to digipot1 if clicked  
-                elif clicked == True:
-                    state = "digi1"
-                    digi1First = True
+            #switch to other menu option if rotating
+            if clockwise != 0: 
+                print("Switch to menu0")
+                state = "menu0"
+                menu0First = True 
+            #switch to digipot1 if clicked  
+            elif clicked == True:
+                state = "digi1"
+                digi1First = True
 
         #DigiPot0 handling
         elif state == "digi0":
@@ -87,25 +87,25 @@ try:
                 print(digi0R)
                 digi0First = False
 
-                if clockwise != 0:
-                    stepSize = 100 if fast else 10
-                    print("StepSize:", stepSize)
-                    digi0R += (clockwise * stepSize)
-                    print("Digi0R:", digi0R)
+            if clockwise != 0:
+                stepSize = 100 if fast else 10
+                print("StepSize:", stepSize)
+                digi0R += (clockwise * stepSize)
+                print("Digi0R:", digi0R)
 
-                    if digi0R > maxR: digi0R = maxR
-                    if digi0R < minR: digi0R = minR
+                if digi0R > maxR: digi0R = maxR
+                if digi0R < minR: digi0R = minR
 
-                    digi0First = True
-                    #lcd.lcd_display_string(f"{digi0R} Ohms", 2)
+                #digi0First = True
+                lcd.lcd_display_string(f"{digi0R} Ohms", 2)
 
-                if longClick:
-                    state = "menu0"
-                    menu0First = True
-                elif clicked:
-                    print("Updated DigiPot0")
-                    step = Min_difference.min_difference(float(digi0R/1000))
-                    digipot.set_step(step, 1)
+            if longClick:
+                state = "menu0"
+                menu0First = True
+            elif clicked:
+                print("Updated DigiPot0")
+                step = Min_difference.min_difference(float(digi0R/1000))
+                digipot.set_step(step, 1)
 
                     
         #DigiPot1 handling
@@ -119,25 +119,25 @@ try:
                 print(digi1R)
                 digi1First = False
 
-                if clockwise != 0:
-                    stepSize = 100 if fast else 10
-                    print("StepSize:", stepSize)
-                    digi1R += (clockwise * stepSize)
-                    print("Digi1R:", digi1R)
+            if clockwise != 0:
+                stepSize = 100 if fast else 10
+                print("StepSize:", stepSize)
+                digi1R += (clockwise * stepSize)
+                print("Digi1R:", digi1R)
 
-                    if digi1R > maxR: digi1R = maxR
-                    if digi1R < minR: digi1R = minR
+                if digi1R > maxR: digi1R = maxR
+                if digi1R < minR: digi1R = minR
 
-                    digi1First = True
-                    #lcd.lcd_display_string(f"{digi1R} Ohms", 2)
+                #digi1First = True
+                lcd.lcd_display_string(f"{digi1R} Ohms", 2)
 
-                if longClick:
-                    state = "menu0"
-                    menu0First = True
-                elif clicked:
-                    print("Updated DigiPot1")
-                    step = Min_difference.min_difference(float(digi1R/1000))
-                    digipot.set_step(step, 1)
+            if longClick:
+                state = "menu0"
+                menu0First = True
+            elif clicked:
+                print("Updated DigiPot1")
+                step = Min_difference.min_difference(float(digi1R/1000))
+                digipot.set_step(step, 1)
 
 
         time.sleep(0.05)
