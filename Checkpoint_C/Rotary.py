@@ -48,7 +48,7 @@ class Rotary:
 
             if self.pi1.read(self.rotaryB) == 0:
                 self.clockwise = 1 #clockwise
-            else:
+            elif self.pi1.read(self.rotaryB) == 1:
                 self.clockwise = -1 #counterclockwise
 
                 
