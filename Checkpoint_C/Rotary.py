@@ -42,7 +42,7 @@ class Rotary:
         if level == 1:
             print("Rotation Detected")
             
-            self.fast = (50000 > pigpio.tickDiff(self.lastTick, tick))
+            self.fast = (100000 > pigpio.tickDiff(self.lastTick, tick))
             self.lastTick = tick
             print("Fast:", self.fast)
 
