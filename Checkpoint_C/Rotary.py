@@ -44,6 +44,7 @@ class Rotary:
             
             self.fast = (50000 > pigpio.tickDiff(self.lastTick, tick))
             self.lastTick = tick
+            print("Fast:", self.fast)
 
             if self.pi1.read(self.rotaryB) == 0:
                 self.clockwise = 1 #clockwise
