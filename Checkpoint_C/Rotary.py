@@ -41,11 +41,11 @@ class Rotary:
 
         if level == 1:
             levelB = self.pi1.read(self.rotaryB)
-            print("Rotation Detected")
+            #print("Rotation Detected")
             
             self.fast = (500000 > pigpio.tickDiff(self.lastTick, tick))
             self.lastTick = tick
-            print("Fast:", self.fast)
+            #print("Fast:", self.fast)
 
             if levelB == 0:
                 self.clockwise = 1 #clockwise
@@ -56,7 +56,7 @@ class Rotary:
     def buttonFunction(self, gpio, level, tick):
 
         if level == 0:
-            print("Click Detected")
+            #print("Click Detected")
             self.clicked = True
             looped = True
             startTime = tick
