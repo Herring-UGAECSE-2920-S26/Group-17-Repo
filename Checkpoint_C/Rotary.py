@@ -59,14 +59,16 @@ class Rotary:
             looped = True
             startTime = tick
 
-            while (looped):
+            looped = self.p1.read(self.switchPin)
+        
+            while : looped != 1
                 endTime = self.pi1.get_current_tick()
                 if (pigpio.tickDiff(startTime, endTime) > 3000000):
                     self.longClick = True
-                    self.looped = False
-                if level == 1:
-                    looped = False
-            print("Exit Loop")
+                    looped = 1
+                else: looped = self.p1.read(self.switchPin)
+                
+                
 
     def getRotary(self):
         
