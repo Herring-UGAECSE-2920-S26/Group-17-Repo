@@ -64,7 +64,7 @@ try:
                 lcd.lcd_display_string("   DigiPot0", 1)
                 lcd.lcd_display_string("=> DigiPot1", 2)
                 print("   DigiPot0 => Digipot1")
-                menuFirst = False
+                menu1First = False
                 
                 #switch to other menu option if rotating
                 if clockwise != 0: 
@@ -88,7 +88,9 @@ try:
 
                 if clockwise != 0:
                     stepSize = 100 if fast else 10
+                    print("StepSize:", stepSize)
                     digi0R += (clockwise * stepSize)
+                    print("Digi0R:", digi0R)
 
                     if digi0R > maxR: digi0R = maxR
                     if digi0R < minR: digi0R = minR
@@ -118,7 +120,9 @@ try:
 
                 if clockwise != 0:
                     stepSize = 100 if fast else 10
+                    print("StepSize:", stepSize)
                     digi1R += (clockwise * stepSize)
+                    print("Digi1R:", digi1R)
 
                     if digi1R > maxR: digi1R = maxR
                     if digi1R < minR: digi1R = minR
