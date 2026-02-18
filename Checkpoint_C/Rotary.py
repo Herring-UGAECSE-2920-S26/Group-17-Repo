@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
     #setup
     pi1 = pigpio.pi()
-    rot = Rotary(18, 23, 24, pi1)
+    rotary = Rotary(18, 23, 24, pi1)
 
     clockwise, fast = rotary.getRotary()
     clicked, longClick = rotary.getButton()
