@@ -84,6 +84,9 @@ try:
                 lcd.lcd_clear()
                 lcd.lcd_display_string("DigiPot 0 Resistance", 1)
                 lcd.lcd_display_string(f"{digi0R} Ohms", 2)
+                if digi0R == minR: 
+                    step = Min_difference.min_difference(float(digi0R/1000))
+                    digipot.set_step(step, 0)
                 print(digi0R)
                 digi0First = False
 
@@ -115,7 +118,7 @@ try:
                 else:
                     print("Updated DigiPot0")
                     step = Min_difference.min_difference(float(digi0R/1000))
-                    digipot.set_step(step, 1)
+                    digipot.set_step(step, 0)
 
                     
         #DigiPot1 handling
@@ -126,6 +129,9 @@ try:
                 lcd.lcd_clear()
                 lcd.lcd_display_string("DigiPot 1 Resistance", 1)
                 lcd.lcd_display_string(f"{digi1R} Ohms", 2)
+                if digi1R == minR:
+                    step = Min_difference.min_difference(float(digi1R/1000))
+                    digipot.set_step(step, 1)
                 print(digi1R)
                 digi1First = False
 
