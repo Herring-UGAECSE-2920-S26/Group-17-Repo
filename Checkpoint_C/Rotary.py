@@ -40,17 +40,17 @@ class Rotary:
     def rotaryFunction(self, gpio, level, tick):
 
         if level == 1:
+            levelB = self.pi1.read(self.rotaryB)
             print("Rotation Detected")
             
             self.fast = (500000 > pigpio.tickDiff(self.lastTick, tick))
             self.lastTick = tick
             print("Fast:", self.fast)
 
-            if self.pi1.wait_for_edge(self.rotaryB, pigpio.EITHER_EDGE, 1):
-                if self.pi1.read(self.rotaryB) == 0:
-                    self.clockwise = 1 #clockwise
-                else:
-                    self.clockwise = -1 #counterclockwise
+            if levelB == 0:
+                self.clockwise = 1 #clockwise
+            else:
+                self.clockwise = -1 #counterclockwise
 
                 
     def buttonFunction(self, gpio, level, tick):
