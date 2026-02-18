@@ -31,10 +31,10 @@ try:
     while True:
         clockwise, fast = rotary.getRotary()
         clicked, longClick = rotary.getButton()
-        print("Clockwise:", clockwise)
-        print("Fast:", fast)
-        print("Clicked:", clicked)
-        print("LongClick:", longClick)
+        #print("Clockwise:", clockwise)
+        #print("Fast:", fast)
+        #print("Clicked:", clicked)
+        #print("LongClick:", longClick)
 
         #main menu part 0
         if state == "menu0":
@@ -68,6 +68,7 @@ try:
                 
                 #switch to other menu option if rotating
                 if clockwise != 0: 
+                    print("Switch to menu0")
                     state = "menu0"
                     menu0First = True 
                 #switch to digipot1 if clicked  
