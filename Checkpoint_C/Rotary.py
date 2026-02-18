@@ -66,7 +66,7 @@ class Rotary:
                     self.looped = False
                 if level == 1:
                     looped = False
-
+            print("Exit Loop")
 
     def getRotary(self):
         
@@ -92,7 +92,38 @@ class Rotary:
     def cancel(self):
         self.rotaryCallback.cancel()
         self.buttonCallback.cancel()
+
+# --- For Testing ---
+if __name__ == "__main__":
+
+    #setup
+    pi1 = pigpio.pi()
+    rot = Rotary(18, 23, 24, pi1)
+
+    clockwise, fast = rotary.getRotary()
+    clicked, longClick = rotary.getButton()
+
+    print("Main Clockwise:", clockwise)
+    print("Main Fast:", fast)
+    print("Main Clicked:", clicked)
+    print("Main LongClick:", longClick)
+
+    prevClockwise = clockwise
+    prevFast = fast 
+    prevClicked = clicked
+    prevLongClick = longClick
+    
+    while True:
+        if prevClockwise != clockwise: print("Main Clockwise:", clockwise)
+        if prevFast != fast: print("Main Fast:", fast)
+        if prevClicked != clicked: print("Main Clicked:", clicked)
+        if prevLongClick != longClick: print("Main LongClick:", longClick)
+
+        prevClockwise = clockwise
+        prevFast = fast 
+        prevClicked = clicked
+        prevLongClick = longClick
         
-                
+        
             
             
