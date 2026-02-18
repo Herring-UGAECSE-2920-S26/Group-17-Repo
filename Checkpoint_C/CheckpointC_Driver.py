@@ -96,8 +96,8 @@ try:
                 if digi0R > maxR: digi0R = maxR
                 if digi0R < minR: digi0R = minR
 
-                #digi0First = True
-                lcd.lcd_display_string(f"{digi0R} Ohms", 2)
+                digi0First = True
+                #lcd.lcd_display_string(f"{digi0R} Ohms", 2)
 
             if clicked:
                 startTime = time.perf_counter()
@@ -138,8 +138,8 @@ try:
                 if digi1R > maxR: digi1R = maxR
                 if digi1R < minR: digi1R = minR
 
-                #digi1First = True
-                lcd.lcd_display_string(f"{digi1R} Ohms", 2)
+                digi1First = True
+                #lcd.lcd_display_string(f"{digi1R} Ohms", 2)
 
             if clicked:
                 startTime = time.perf_counter()
