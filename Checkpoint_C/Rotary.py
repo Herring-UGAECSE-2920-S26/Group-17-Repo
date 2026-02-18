@@ -46,10 +46,11 @@ class Rotary:
             self.lastTick = tick
             print("Fast:", self.fast)
 
-            if self.pi1.read(self.rotaryB) == 0:
-                self.clockwise = 1 #clockwise
-            elif self.pi1.read(self.rotaryB) == 1:
-                self.clockwise = -1 #counterclockwise
+            if self.pi1.wait_for_edge(self.rotaryB, pigpio.EITHER_EDGE, 1):
+                if self.pi1.read(self.rotaryB) == 0:
+                    self.clockwise = 1 #clockwise
+                else:
+                    self.clockwise = -1 #counterclockwise
 
                 
     def buttonFunction(self, gpio, level, tick):
