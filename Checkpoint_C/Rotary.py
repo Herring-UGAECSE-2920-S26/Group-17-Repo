@@ -35,26 +35,30 @@ class Rotary:
         #create callbacks
         self.rotaryCallback = self.pi1.callback(self.rotaryA, pigpio.EITHER_EDGE, self.rotaryFunction)
         self.buttonCallback = self.pi1.callback(self.switchPin, pigpio.EITHER_EDGE, self.buttonFunction)
-        
 
+    
+    #callback function that checks speen and direction of encoder spinning
     def rotaryFunction(self, gpio, level, tick):
 
-        if level == 1:
-            levelB = self.pi1.read(self.rotaryB)
+        if level == 1: #if A value is 1
+            levelB = self.pi1.read(self.rotaryB) #gets B value
             #print("Rotation Detected")
-            
+
+            #checks if fast
             self.fast = (500000 > pigpio.tickDiff(self.lastTick, tick))
             self.lastTick = tick
             #print("Fast:", self.fast)
 
+            #finds direction
             if levelB == 0:
                 self.clockwise = 1 #clockwise
             else:
                 self.clockwise = -1 #counterclockwise
 
-                
+    #callback function that checks if button is pressed and if long press
     def buttonFunction(self, gpio, level, tick):
 
+        #if pressed
         if level == 0:
             #print("Click Detected")
             self.clicked = True
@@ -62,7 +66,8 @@ class Rotary:
             startTime = tick
 
             looped = self.pi1.read(self.switchPin)
-        
+
+            #exits if long press and sets longClick to True
             while looped != 1:
                 endTime = self.pi1.get_current_tick()
                 if (pigpio.tickDiff(startTime, endTime) > 3000000):
@@ -71,7 +76,7 @@ class Rotary:
                 else: looped = self.pi1.read(self.switchPin)
                 
                 
-
+    #returns and resets clockwise and fast
     def getRotary(self):
         
         readClockwise = self.clockwise
@@ -81,7 +86,8 @@ class Rotary:
 
         return readClockwise, readFast
 
-
+    
+    #returns and resets clicked and longClick
     def getButton(self):
 
         readClicked = self.clicked
@@ -93,6 +99,7 @@ class Rotary:
         return readClicked, readLongClick
 
 
+    #closes the callbacks
     def cancel(self):
         self.rotaryCallback.cancel()
         self.buttonCallback.cancel()
@@ -104,33 +111,37 @@ if __name__ == "__main__":
     pi1 = pigpio.pi()
     rotary = Rotary(18, 23, 24, pi1)
 
+    #update values
     clockwise, fast = rotary.getRotary()
     clicked, longClick = rotary.getButton()
 
+    #initial prints
     print("Main Clockwise:", clockwise)
     print("Main Fast:", fast)
     print("Main Clicked:", clicked)
     print("Main LongClick:", longClick)
 
+    #set previous values
     prevClockwise = clockwise
     prevFast = fast 
     prevClicked = clicked
     prevLongClick = longClick
     
     while True:
+        #update values
         clockwise, fast = rotary.getRotary()
         clicked, longClick = rotary.getButton()
-        
+
+        #print new value if changed
         if prevClockwise != clockwise: print("Main Clockwise:", clockwise)
         if prevFast != fast: print("Main Fast:", fast)
         if prevClicked != clicked: print("Main Clicked:", clicked)
         if prevLongClick != longClick: print("Main LongClick:", longClick)
 
+        #set new previous values
         prevClockwise = clockwise
         prevFast = fast 
         prevClicked = clicked
         prevLongClick = longClick
         
-        
-            
-            
+
