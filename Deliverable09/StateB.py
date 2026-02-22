@@ -972,6 +972,8 @@ try:
 
         checkState(state)
 
+        time.sleep(0.05)
+
 #cleanly stops on keyboard interrupt 
 except KeyboardInterrupt:
     rotary.cancel()
