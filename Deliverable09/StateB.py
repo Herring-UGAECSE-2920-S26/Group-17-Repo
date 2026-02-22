@@ -27,6 +27,11 @@ square = False
 
 def checkState(state):
 
+    #declare global vars
+    global state
+    global menuFirst
+    global square
+    
     match state:
 
         #level 1
@@ -38,16 +43,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Ohmmeter", 2)
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
-                global menuFirst = False
+                menuFirst = False
 
             #switch to other menu option 
             if clockwise == 1: 
-                global state = "Ohm"
-                global menuFirst = True
+                state = "Ohm"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGenT"
-                global menuFirst = True
+                state = "FunGenT"
+                menuFirst = True
 
         #level 1
         case "Ohm":
@@ -58,20 +63,20 @@ def checkState(state):
                 lcd.lcd_display_string("> Ohmmeter", 2)
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "Volt"
-                global menuFirst = True
+                state = "Volt"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "OhmB"
-                global menuFirst = True
+                state = "OhmB"
+                menuFirst = True
 
         #level 1
         case "Volt":
@@ -82,20 +87,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Ohmmeter", 2)
                 lcd.lcd_display_string("> Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "Ohm"
-                global menuFirst = True
+                state = "Ohm"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "DCRef"
-                global menuFirst = True
+                state = "DCRef"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "VoltS"
-                global menuFirst = True
+                state = "VoltS"
+                menuFirst = True
 
         #level 1
         case "DCRef":
@@ -106,20 +111,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Ohmmeter", 2)
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("> DC Reference", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "Volt"
-                global menuFirst = True
+                state = "Volt"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "Back"
-                global menuFirst = True
+                state = "Back"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "DCRefVolt"
-                global menuFirst = True
+                state = "DCRefVolt"
+                menuFirst = True
                 
         #level 1
         case "Back":
@@ -130,20 +135,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Voltmeter", 2)
                 lcd.lcd_display_string("  DC Reference", 3)
                 lcd.lcd_display_string("> Back", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCRef"
-                global menuFirst = True
+                state = "DCRef"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "Main"
-                global menuFirst = True
+                state = "Main"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "DCRef"
-                global menuFirst = True
+                state = "DCRef"
+                menuFirst = True
 
         #level 1
         case "Main":
@@ -154,16 +159,16 @@ def checkState(state):
                 lcd.lcd_display_string("  DC Reference", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "Back"
-                global menuFirst = True
+                state = "Back"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 2 under FunGen
         case "FunGenT":
@@ -174,16 +179,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Frequency", 2)
                 lcd.lcd_display_string("  Amplitude", 3)
                 lcd.lcd_display_string("  Output", 4)
-                global menuFirst = False
+                menuFirst = False
                                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "FunGenF"
-                global menuFirst = True
+                state = "FunGenF"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "TypeS"
-                global menuFirst = True
+                state = "TypeS"
+                menuFirst = True
 
         #level 2 under FunGen
         case "FunGenF":
@@ -194,20 +199,20 @@ def checkState(state):
                 lcd.lcd_display_string("> Frequency", 2)
                 lcd.lcd_display_string("  Amplitude", 3)
                 lcd.lcd_display_string("  Output", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunGenT"
-                global menuFirst = True
+                state = "FunGenT"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FunGenA"
-                global menuFirst = True
+                state = "FunGenA"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FreqI"
-                global menuFirst = True
+                state = "FreqI"
+                menuFirst = True
 
         #level 2 under FunGen
         case "FunGenA":
@@ -218,20 +223,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Frequency", 2)
                 lcd.lcd_display_string("> Amplitude", 3)
                 lcd.lcd_display_string("  Output", 4)
-                global menuFirst = False
+                menuFirst = False
                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunGenF"
-                global menuFirst = True
+                state = "FunGenF"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FunGenO"
-                global menuFirst = True
+                state = "FunGenO"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "AmpI"
-                global menuFirst = True
+                state = "AmpI"
+                menuFirst = True
 
         #level 2 under FunGen
         case "FunGenO":
@@ -242,20 +247,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Frequency", 2)
                 lcd.lcd_display_string("  Amplitude", 3)
                 lcd.lcd_display_string("> Output", 4)
-                global menuFirst = False
+                menuFirst = False
                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunGenA"
-                global menuFirst = True
+                state = "FunGenA"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FenGenB"
-                global menuFirst = True
+                state = "FenGenB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGenOutOn"
-                global menuFirst = True
+                state = "FunGenOutOn"
+                menuFirst = True
 
         #level 2 under FunGen
         case "FunGenB":
@@ -266,20 +271,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Amplitude", 2)
                 lcd.lcd_display_string("  Output", 3)
                 lcd.lcd_display_string("> Back", 4)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunGenO"
-                global menuFirst = True
+                state = "FunGenO"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FunGenM"
-                global menuFirst = True
+                state = "FunGenM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
                 
         #level 2 under FunGen
         case "FunGenM":
@@ -290,16 +295,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunGenB"
-                global menuFirst = True
+                state = "FunGenB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 3 under FunGenT
         case "TypeS":
@@ -311,22 +316,22 @@ def checkState(state):
                     lcd.lcd_display_string("> Square", 2)
                     lcd.lcd_display_string("  Back", 3)
                     lcd.lcd_display_string("  Main", 4)
-                    global menuFirst = False
+                    menuFirst = False
                 else:
                     lcd.lcd_clear()
                     lcd.lcd_display_string("> Square", 1)
                     lcd.lcd_display_string("  Back", 2)
                     lcd.lcd_display_string("  Main", 3)
-                    global menuFirst = False
+                    menuFirst = False
                                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "TypeB"
-                global menuFirst = True
+                state = "TypeB"
+                menuFirst = True
             #do action
             elif clicked == True:
-                global square = True
-                global menuFirst = True
+                square = True
+                menuFirst = True
 
         #level 3 under FunGenT
         case "TypeB":
@@ -338,26 +343,26 @@ def checkState(state):
                     lcd.lcd_display_string("  Square", 2)
                     lcd.lcd_display_string("> Back", 3)
                     lcd.lcd_display_string("  Main", 4)
-                    global menuFirst = False
+                    menuFirst = False
                 else:
                     lcd.lcd_clear()
                     lcd.lcd_display_string("  Square", 1)
                     lcd.lcd_display_string("> Back", 2)
                     lcd.lcd_display_string("  Main", 3)
-                    global menuFirst = False
+                    menuFirst = False
                                     
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "TypeS"
-                global menuFirst = True
+                state = "TypeS"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "TypeM"
-                global menuFirst = True
+                state = "TypeM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGenT"
-                global menuFirst = True
+                state = "FunGenT"
+                menuFirst = True
 
         #level 3 under FunGenT
         case "TypeM":
@@ -369,22 +374,22 @@ def checkState(state):
                     lcd.lcd_display_string("  Square", 2)
                     lcd.lcd_display_string("  Back", 3)
                     lcd.lcd_display_string("> Main", 4)
-                    global menuFirst = False
+                    menuFirst = False
                 else:
                     lcd.lcd_clear()
                     lcd.lcd_display_string("  Square", 1)
                     lcd.lcd_display_string("  Back", 2)
                     lcd.lcd_display_string("> Main", 3)
-                    global menuFirst = False
+                    menuFirst = False
                                     
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "TypeB"
-                global menuFirst = True
+                state = "TypeB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 3 under FunGenF
         case "FreqI":
@@ -394,12 +399,12 @@ def checkState(state):
                 lcd.lcd_display_string("> Input Frequency", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("  Main", 3)
-                global menuFirst = False
+                menuFirst = False
 
             #switch to other menu option
             if clockwise == 1:
-                global state = "FreqB"
-                global menuFirst = True
+                state = "FreqB"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -412,20 +417,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Input Frequency", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
-                global menuFirst = False
+                menuFirst = False
                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FreqI"
-                global menuFirst = True
+                state = "FreqI"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FreqM"
-                global menuFirst = True
+                state = "FreqM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGenF"
-                global menuFirst = True
+                state = "FunGenF"
+                menuFirst = True
 
         #level 3 under FunGenF
         case "FreqM":
@@ -435,16 +440,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Input Frequency", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("> Main", 3)
-                global menuFirst = False
+                menuFirst = False
                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FreqB"
-                global menuFirst = True
+                state = "FreqB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 3 under FunGenA
         case "AmpI":
@@ -454,12 +459,12 @@ def checkState(state):
                 lcd.lcd_display_string("> Input Amplitude", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("  Main", 3)
-                global menuFirst = False
+                menuFirst = False
                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "AmpB"
-                global menuFirst = True
+                state = "AmpB"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -472,20 +477,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Input Amplitude", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "AmpI"
-                global menuFirst = True
+                state = "AmpI"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "AmpM"
-                global menuFirst = True
+                state = "AmpM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGenA"
-                global menuFirst = True
+                state = "FunGenA"
+                menuFirst = True
 
         #level 3 under FunGenA
         case "AmpM":
@@ -495,16 +500,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Input Amplitude", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("> Main", 3)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "AmpB"
-                global menuFirst = True
+                state = "AmpB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 3 under FunGenO
         case "FunOutOn":
@@ -515,12 +520,12 @@ def checkState(state):
                 lcd.lcd_display_string("  Off", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "FunOutOff"
-                global menuFirst = True
+                state = "FunOutOff"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -534,16 +539,16 @@ def checkState(state):
                 lcd.lcd_display_string("> Off", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunOutOn"
-                global menuFirst = True
+                state = "FunOutOn"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FunOutB"
-                global menuFirst = True
+                state = "FunOutB"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -557,20 +562,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Off", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunOutOff"
-                global menuFirst = True
+                state = "FunOutOff"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "FunOutM"
-                global menuFirst = True
+                state = "FunOutM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGenO"
-                global menuFirst = True
+                state = "FunGenO"
+                menuFirst = True
 
         #level 3 under FunGenO
         case "FunOutM":
@@ -581,16 +586,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Off", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "FunOutB"
-                global menuFirst = True
+                state = "FunOutB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 2 under Ohm
         case "OhmB":
@@ -601,16 +606,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Threshold", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "OhmM"
-                global menuFirst = True
+                state = "OhmM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "Ohm"
-                global menuFirst = True
+                state = "Ohm"
+                menuFirst = True
 
         #level 2 under Ohm
         case "OhmM":
@@ -621,16 +626,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Threshold", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "OhmB"
-                global menuFirst = True
+                state = "OhmB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 2 under Volt
         case "VoltS":
@@ -641,16 +646,16 @@ def checkState(state):
                 lcd.lcd_display_string("> Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "VoltB"
-                global menuFirst = True
+                state = "VoltB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "SourceEx"
-                global menuFirst = True
+                state = "SourceEx"
+                menuFirst = True
 
         #level 2 under Volt
         case "VoltB":
@@ -661,20 +666,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "VoltS"
-                global menuFirst = True
+                state = "VoltS"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "VoltM"
-                global menuFirst = True
+                state = "VoltM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "Volt"
-                global menuFirst = True
+                state = "Volt"
+                menuFirst = True
             
         #level 2 under Volt
         case "VoltM":
@@ -685,16 +690,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "VoltB"
-                global menuFirst = True
+                state = "VoltB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
                 
         #level 3 under VoltS
         case "SourceEx":
@@ -705,12 +710,12 @@ def checkState(state):
                 lcd.lcd_display_string("  Internal Reference", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option
             elif clockwise == 1:
-                global state = "SourceIn"
-                global menuFirst = True
+                state = "SourceIn"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -724,20 +729,20 @@ def checkState(state):
                 lcd.lcd_display_string("> Internal Reference", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "SourceEx"
-                global menuFirst = True
+                state = "SourceEx"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "SourceB"
-                global menuFirst = True
+                state = "SourceB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "DCRefVolt"
-                global menuFirst = True
+                state = "DCRefVolt"
+                menuFirst = True
 
         #level 3 under VoltS
         case "SourceB":
@@ -748,20 +753,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Internal Reference", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "SourceIn"
-                global menuFirst = True
+                state = "SourceIn"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "SourceM"
-                global menuFirst = True
+                state = "SourceM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "VoltS"
-                global menuFirst = True
+                state = "VoltS"
+                menuFirst = True
 
         #level 3 under VoltS
         case "SourceM":
@@ -772,16 +777,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Internal Reference", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "SourceB"
-                global menuFirst = True
+                state = "SourceB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 2 under DCRef
         case "DCRefVolt":
@@ -792,12 +797,12 @@ def checkState(state):
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option
             if clockwise == 1:
-                global state = "DCRefOut"
-                global menuFirst = True
+                state = "DCRefOut"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -811,20 +816,20 @@ def checkState(state):
                 lcd.lcd_display_string("> Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCRefVolt"
-                global menuFirst = True
+                state = "DCRefVolt"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "DCRefB"
-                global menuFirst = True
+                state = "DCRefB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "DCOutOn"
-                global menuFirst = True
+                state = "DCOutOn"
+                menuFirst = True
 
         #level 2 under DCRef
         case "DCRefB":
@@ -835,20 +840,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCRefOut"
-                global menuFirst = True
+                state = "DCRefOut"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "DCRefM"
-                global menuFirst = True
+                state = "DCRefM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "DCRef"
-                global menuFirst = True
+                state = "DCRef"
+                menuFirst = True
 
         #level 2 under DCRef
         case "DCRefM":
@@ -859,16 +864,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCRefB"
-                global menuFirst = True
+                state = "DCRefB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
         #level 3 under DCRefOut
         case "DCOutOn":
@@ -879,12 +884,12 @@ def checkState(state):
                 lcd.lcd_display_string("  Off", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
 
             #switch to other menu option
             if clockwise == 1:
-                global state = "DCOutOff"
-                global menuFirst = True
+                state = "DCOutOff"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -898,16 +903,16 @@ def checkState(state):
                 lcd.lcd_display_string("> Off", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCOutOn"
-                global menuFirst = True
+                state = "DCOutOn"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "DCOutB"
-                global menuFirst = True
+                state = "DCOutB"
+                menuFirst = True
             #do action
             elif clicked == True:
                 print("Implement later")
@@ -921,20 +926,20 @@ def checkState(state):
                 lcd.lcd_display_string("  Off", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCOutOff"
-                global menuFirst = True
+                state = "DCOutOff"
+                menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                global state = "DCOutM"
-                global menuFirst = True
+                state = "DCOutM"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "DCRefOut"
-                global menuFirst = True
+                state = "DCRefOut"
+                menuFirst = True
 
         #level 3 under DCRefOut
         case "DCOutM":
@@ -945,16 +950,16 @@ def checkState(state):
                 lcd.lcd_display_string("  Off", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
-                global menuFirst = False
+                menuFirst = False
                                                 
             #switch to other menu option 
             if clockwise == -1: 
-                global state = "DCOutB"
-                global menuFirst = True
+                state = "DCOutB"
+                menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                global state = "FunGen"
-                global menuFirst = True
+                state = "FunGen"
+                menuFirst = True
 
 
 
