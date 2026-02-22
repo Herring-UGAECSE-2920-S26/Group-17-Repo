@@ -6,10 +6,9 @@ import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
 
-#set up devices
-rotary = Rotary.Rotary(18,23,24, pi1)
-digipot = Dual_Digipot.MCP4131(spi1)
-lcd = I2C_LCD_driver.lcd()
+#set up libraries
+pi1 = pigpio.pi()
+spi1 = spidev.SpiDev()
 
 #set up devices
 rotary = Rotary.Rotary(18,23,24, pi1)
