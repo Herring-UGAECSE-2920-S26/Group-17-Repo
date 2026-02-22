@@ -792,7 +792,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("> Voltage Value Input", 1)
+                lcd.lcd_display_string("> VoltageValue Input", 1)
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -811,7 +811,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("  Voltage Value Input", 1)
+                lcd.lcd_display_string("  VoltageValue Input", 1)
                 lcd.lcd_display_string("> Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -835,7 +835,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("  Voltage Value Input", 1)
+                lcd.lcd_display_string("  VoltageValue Input", 1)
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -859,7 +859,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("  Voltage Value Input", 1)
+                lcd.lcd_display_string("  VoltageValue Input", 1)
                 lcd.lcd_display_string("  Output", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
