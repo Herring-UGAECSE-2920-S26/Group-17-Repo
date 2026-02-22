@@ -254,7 +254,7 @@ def checkState(thisState):
                 menuFirst = True
             #switch to other menu option
             elif clockwise == 1:
-                state = "FenGenB"
+                state = "FunGenB"
                 menuFirst = True
             #switch to other menu option
             elif clicked == True:
