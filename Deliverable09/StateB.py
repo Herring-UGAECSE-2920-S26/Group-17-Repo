@@ -25,14 +25,14 @@ maxR = 10000
 menuFirst = True
 square = False
 
-def checkState(state):
+def checkState(thisState):
 
     #declare global vars
     global state
     global menuFirst
     global square
     
-    match state:
+    match thisState:
 
         #level 1
         case "FunGen":
