@@ -25,6 +25,7 @@ menuFirst = True
 square = False
 clear = True
 
+#function that checks and updates the state
 def checkState(thisState):
 
     #declare global vars
@@ -32,7 +33,8 @@ def checkState(thisState):
     global menuFirst
     global square
     global clear
-    
+
+    #match case statement that handles the states changing
     match thisState:
 
         #level 1
@@ -1067,17 +1069,20 @@ def checkState(thisState):
                 clear = True
 
 
-
+#------ Main Running Code ------#
 try:
 
+    #keeps allowing the states to change
     while True:
 
         #updates values
         clockwise, fast = rotary.getRotary()
         clicked, longClick = rotary.getButton()
 
+        #checks and changes state
         checkState(state)
 
+        #saves cpu
         time.sleep(0.05)
 
 #cleanly stops on keyboard interrupt 
