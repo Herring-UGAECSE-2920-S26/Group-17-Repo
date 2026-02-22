@@ -641,7 +641,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading   Threshold", 1)
+                lcd.lcd_display_string("  Reading  Threshold", 1)
                 lcd.lcd_display_string("> Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -661,7 +661,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading   Threshold", 1)
+                lcd.lcd_display_string("  Reading  Threshold", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -685,7 +685,7 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading   Threshold", 1)
+                lcd.lcd_display_string("  Reading  Threshold", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
