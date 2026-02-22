@@ -258,7 +258,7 @@ def checkState(thisState):
                 menuFirst = True
             #switch to other menu option
             elif clicked == True:
-                state = "FunGenOutOn"
+                state = "FunOutOn"
                 menuFirst = True
 
         #level 2 under FunGen
