@@ -13,7 +13,7 @@ Deliverable05/Checkpoint C- https://docs.google.com/document/d/1gN0W35BMU3cElsEH
 
 Deliverable06- https://docs.google.com/document/d/1OR8q6JVmUQl91yfNTtua-DgmhVLAO8rV/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
-Deliverable07-
+Deliverable07- https://docs.google.com/document/d/1zSDn742JS-D2WtFQbwPni7vy2MXRYBRD/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
 Deliverable08-
 
