@@ -73,9 +73,8 @@ def checkState(thisState):
                 menuFirst = True
                 clear = True
 
-        #level 1
+      # level 1 - Navigation to the Ohmmeter Menu
         case "Ohm":
-            #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("  Function Generator", 1)
@@ -83,20 +82,60 @@ def checkState(thisState):
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
                 menuFirst = False
-                
+            
             #switch to other menu option 
             if clockwise == -1: 
                 state = "FunGen"
                 menuFirst = True
                 clear = False
-            #switch to other menu option
+            #switch to other menu option 
             elif clockwise == 1:
                 state = "Volt"
                 menuFirst = True
                 clear = False
-            #switch to other menu option
+            #switch to other menu option 
             elif clicked == True:
-                state = "OhmB"
+                state = "OhmB" # Takes you into the measurement submenu
+                menuFirst = True
+                clear = True
+
+    # level 2 under Ohm - MEASUREMENT TRIGGER
+        case "OhmB":
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("> Reading", 1) # Highlight Reading
+                lcd.lcd_display_string("  Threshold", 2)
+                lcd.lcd_display_string("  Back", 3)
+                lcd.lcd_display_string("  Main", 4)
+                menuFirst = False
+
+            #switch to other menu option 
+            if clockwise == 1:
+                state = "OhmM" # Scroll down to 'Main'
+                menuFirst = True
+                clear = False
+            
+            # --- THE LIVE MEASUREMENT TRIGGER ---
+            elif clicked == True:
+                lcd.lcd_clear()
+                lcd.lcd_display_string("Measuring...", 1)
+                
+                # Perform the sweep
+                reading = get_ohmmeter_reading()
+                
+                # Display results for photo/deliverable
+                lcd.lcd_clear()
+                lcd.lcd_display_string("Result:", 1)
+                lcd.lcd_display_string(f"{reading:.3f} kOhms", 2)
+                lcd.lcd_display_string("Click to return", 4)
+                
+                # Stay here until user clicks again
+                time.sleep(0.5) # Debounce delay
+                while True:
+                    if rotary.getButton()[0]: 
+                        break
+                    time.sleep(0.1)
+                
                 menuFirst = True
                 clear = True
 
