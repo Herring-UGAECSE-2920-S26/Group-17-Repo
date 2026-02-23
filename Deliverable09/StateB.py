@@ -25,6 +25,20 @@ menuFirst = True
 square = False
 clear = True
 
+def get_ohmmeter_reading():
+    found_step = 0
+    # Sweep through all steps to find the comparator flip on GPIO4
+    for step in range(0, 129):
+        digipot.set_step(step, pot_num=0) 
+        time.sleep(0.01) # Settle time for C3 in your ADC schematic
+        
+        if pi1.read(4) == 0: 
+            found_step = step
+            break
+    
+    # R = 0.0732 * step + 0.124 (from your Min_difference characterization)
+    resistance = (0.0732 * found_step) + 0.124
+    return resistance
 #function that checks and updates the state
 def checkState(thisState):
 
