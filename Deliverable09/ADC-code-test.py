@@ -2,8 +2,8 @@ import time        # Manages T1 and T2
 import pigpio	   # Controls GPIO pins
 
 # --- Configuration ---
-GPIO_VIN_CTRL = 5  # Controls P-channel (via NPN)
-GPIO_VREF_CTRL = 6 # Controls N-channel
+GPIO_VIN_CTRL = 5  # Controls Vin Op-Amp 
+GPIO_VREF_CTRL = 6 # Controls Vref Op-Amp
 GPIO_COMP_IN = 4   # Comparator Output
 
 pi = pigpio.pi()
@@ -47,7 +47,7 @@ def run_measurement():
 
 	# --- DEAD TIME ---
 	# Wait 10 microseconds to ensure P-channel is fully closed
-	time.sleep(0.00001)
+	# time.sleep(0.00001)
 
 	# --- PHASE 2: T2 (Measurement) ---
 	t2_start = pi.get_current_tick()	# Hardware timestamp
