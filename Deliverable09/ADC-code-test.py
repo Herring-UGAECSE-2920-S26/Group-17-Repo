@@ -40,7 +40,7 @@ def run_measurement():
     # 2. PHASE 1: INTEGRATION (T1)
     print("Phase 1: Charging...")
     pi.write(GPIO_VIN_CTRL, 1)
-    time.sleep(0.1)             # 100ms integration
+    time.sleep(0.2)             # 100ms integration
     pi.write(GPIO_VIN_CTRL, 0)
 
     # 3. PRE-CHECK: Is the ramp actually above zero?
