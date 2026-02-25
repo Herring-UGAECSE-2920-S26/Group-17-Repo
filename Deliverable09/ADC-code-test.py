@@ -56,7 +56,7 @@ def run_measurement():
 	# Wait for comparator to callback to update t2_stop
 	# Use a timeout to prevent infinite loops if circuit fails
 	timeout = time.time() + 0.5
-	while t2_stop == 0
+	while t2_stop == 0:
 		if time.time() > timeout:
 			pi.write(GPIO_VREF_CTRL, 0)	# Stop
 			return None # Error: Ramp never returned to 0
