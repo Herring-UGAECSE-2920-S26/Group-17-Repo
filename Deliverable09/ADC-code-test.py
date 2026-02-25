@@ -51,7 +51,7 @@ def run_measurement():
     # --- PRE-CHECK ---
     # If the comparator isn't HIGH here, the ramp never started or 
     # it's already below the threshold.
-    if pi.read(GPIO_COMP_IN) == 0:
+    if pi.read(GPIO_COMP_IN) == 1:
         print("Error: Comparator is LOW before T2 starts. Voltage too low or circuit issue.")
         return None
 
