@@ -15,7 +15,7 @@ pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
 
 # LM339 needs pull-up to 3.3V
-pi.set_pull_up_pull_down(GPIO_COMP_IN, pigpio.PUD_UP)
+pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
 
 
 # Callback variables
