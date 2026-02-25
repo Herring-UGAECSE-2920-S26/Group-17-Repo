@@ -68,5 +68,5 @@ def run_measurement():
 	return t2_duration
 
 # Example Usage:
-# result = run_measurement()
-# print(f"De-integration time: {result} us")
+result = run_measurement()
+print(f"De-integration time: {result} us")
