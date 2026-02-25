@@ -2,89 +2,93 @@ import time
 import pigpio
 
 # --- Configuration ---
-GPIO_VIN_CTRL = 5   # Controls Vin (Ramp Up)
-GPIO_VREF_CTRL = 6  # Controls Vref (Ramp Down)
-GPIO_COMP_IN = 4    # Comparator Output (LM339)
-# Note: Ensure you have a way to discharge the capacitor 
-# (e.g., a MOSFET across the cap or waiting for it to bleed)
+GPIO_VIN_CTRL = 5   
+GPIO_VREF_CTRL = 6  
+GPIO_COMP_IN = 4    
 
 pi = pigpio.pi()
 
 if not pi.connected:
-    exit("Could not connect to pigpio daemon!")
+    print("Error: pigpio daemon not running. Run 'sudo pigpiod'")
+    exit()
 
 # Pin Setup
 pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
-
-# LM339 is open-collector; pull-up to 3.3V is mandatory
 pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
 
-# Global variables for the callback
+# Global for the callback
 t2_stop = 0
 
 def comp_callback(gpio, level, tick):
     global t2_stop
-    if level == 0:  # Falling edge detected
+    if level == 0:  # Falling edge (crossing zero)
         t2_stop = tick
 
-# Setup the callback
 cb = pi.callback(GPIO_COMP_IN, pigpio.FALLING_EDGE, comp_callback)
 
 def run_measurement():
     global t2_stop
-    t2_stop = 0  # Reset
+    t2_stop = 0
     
-    # --- PHASE 0: RESET/DISCHARGE ---
-    # Ensure all switches are off and cap is at baseline
+    # 1. RESET PHASE
     pi.write(GPIO_VIN_CTRL, 0)
     pi.write(GPIO_VREF_CTRL, 0)
-    time.sleep(0.5) # Allow time for residual charge to dissipate
+    time.sleep(0.2) 
 
-    # --- PHASE 1: T1 (Integration) ---
-    print("Starting Phase 1 (Integration)...")
+    # 2. PHASE 1: INTEGRATION (T1)
+    print("Phase 1: Charging...")
     pi.write(GPIO_VIN_CTRL, 1)
-    time.sleep(0.1)             # Fixed T1 = 100ms
-    pi.write(GPIO_VIN_CTRL, 0)  # Stop charging
+    time.sleep(0.1)             # 100ms integration
+    pi.write(GPIO_VIN_CTRL, 0)
 
-    # --- PRE-CHECK ---
-    # If the comparator isn't HIGH here, the ramp never started or 
-    # it's already below the threshold.
-    if pi.read(GPIO_COMP_IN) == 1:
-        print("Error: Comparator is LOW before T2 starts. Voltage too low or circuit issue.")
+    # 3. PRE-CHECK: Is the ramp actually above zero?
+    comp_state = pi.read(GPIO_COMP_IN)
+    if comp_state == 0:
+        print("Error: Comparator is LOW before Phase 2. Ramp failed to rise.")
         return None
 
-    # --- PHASE 2: T2 (De-integration) ---
-    print("Starting Phase 2 (De-integration)...")
-    t2_start = pi.get_current_tick() # Start the clock
-    pi.write(GPIO_VREF_CTRL, 1)      # Apply Reference voltage
+    # 4. PHASE 2: DE-INTEGRATION (T2)
+    print(f"Phase 2: Discharging with Vref (-0.8V)...")
+    t2_start = pi.get_current_tick()
+    pi.write(GPIO_VREF_CTRL, 1)
     
-    # Wait for the falling edge with a 1-second timeout
-    timeout_time = time.time() + 1.0
+    # Use a 3-second timeout because Vref is small (-0.8V)
+    timeout_limit = 3.0
+    start_time = time.time()
+    
     while t2_stop == 0:
-        if time.time() > timeout_time:
+        elapsed = time.time() - start_time
+        
+        # Diagnostic: Print status every 500ms so we aren't "blind"
+        if int(elapsed * 10) % 5 == 0 and elapsed > 0.1:
+            print(f"  ...Still waiting. Pin {GPIO_COMP_IN} state: {pi.read(GPIO_COMP_IN)}")
+
+        if elapsed > timeout_limit:
             pi.write(GPIO_VREF_CTRL, 0)
-            print("Error: Timeout reached. Comparator never flipped.")
+            print("Error: Timeout! Comparator never flipped to 0.")
             return None
-        time.sleep(0.001)
-    
+        
+        time.sleep(0.01) # Small sleep to prevent CPU hogging
+
     pi.write(GPIO_VREF_CTRL, 0) # Turn off Reference
 
-    # Calculate duration using hardware ticks (accurate to 1us)
+    # 5. CALCULATION
     t2_duration = pigpio.tickDiff(t2_start, t2_stop)
     return t2_duration
 
 # Main Loop
 try:
+    print("Starting Dual-Slope ADC Sequence. Press Ctrl+C to stop.")
     while True:
         result = run_measurement()
-        if result is not None:
-            print(f"De-integration time: {result} us")
-        print("-" * 30)
-        time.sleep(1) # Wait before next reading
+        if result:
+            print(f">>> SUCCESS: T2 = {result} us")
+        print("-" * 40)
+        time.sleep(1.5)
 except KeyboardInterrupt:
-    print("\nStopping...")
+    print("\nCleaning up...")
 finally:
     pi.write(GPIO_VIN_CTRL, 0)
     pi.write(GPIO_VREF_CTRL, 0)
