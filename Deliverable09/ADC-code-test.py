@@ -10,7 +10,7 @@ pi = pigpio.pi()
 
 
 # Pin Setup
-pi.set_mode(GPIO_VIN_CTR, pigpio.OUTPUT)
+pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
 
