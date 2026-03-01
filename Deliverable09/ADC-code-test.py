@@ -35,56 +35,61 @@ def comp_callback(gpio, level, tick):
 cb = pi.callback(GPIO_COMP_IN, pigpio.FALLING_EDGE, comp_callback)
 
 def run_measurement():
-	global t2_start, t2_stop
-	t2_stop = 0		# Reset for new run
-	
-	# Ensure everything is OFF before starting
-	pi.write(GPIO_VIN_CTRL, 0)
-	pi.write(GPIO_VREF_CTRL, 0)
-	time.sleep(0.001)
+    global t2_start, t2_stop
+    t2_stop = 0  # Reset for new run
+    
+    # --- PHASE 0: RESET (Must be at the start) ---
+    # Discharge capacitor to ensure we start at exactly 0V
+    pi.write(GPIO_CAP_RS, 1)
+    time.sleep(0.05)           # Give it 50ms to fully clear
+    pi.write(GPIO_CAP_RS, 0)
+    
+    # Ensure all signal switches are OFF
+    pi.write(GPIO_VIN_CTRL, 0)
+    pi.write(GPIO_VREF_CTRL, 0)
+    time.sleep(0.01)           # Stability pause for the power supply
 
-	# --- PHASE 1: T1 (Set Time) ---
-	pi.write(GPIO_VIN_CTRL, 1) 	# Start ramp-up
-	time.sleep(0.2)			# Ramp-up for 200ms
-	pi.write(GPIO_VIN_CTRL, 0)	# Stop ramp-up
+    # --- PHASE 1: T1 (Integration) ---
+    t1_start = pi.get_current_tick()   # Capture hardware start tick
+    pi.write(GPIO_VIN_CTRL, 1)         # Start ramp
+    time.sleep(0.2)                    # Target 200ms
+    pi.write(GPIO_VIN_CTRL, 0)         # Stop ramp
+    t1_stop = pi.get_current_tick()    # Capture hardware stop tick
+    
+    # Calculate actual T1 duration in microseconds
+    t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
 
-	# --- DEAD TIME ---
-	# Wait 10 microseconds to ensure P-channel is fully closed
-	# time.sleep(0.00001)
+    # --- DEAD TIME ---
+    # Increased to 1ms to allow MOSFETs to settle with your supply issues
+    time.sleep(0.001)
 
-	# --- PHASE 2: T2 (Measurement) ---
-	t2_start = pi.get_current_tick()	# Hardware timestamp
-	pi.write(GPIO_VREF_CTRL, 1)		# Start ramp-down
-	
-	# Wait for comparator to callback to update t2_stop
-	# Use a timeout to prevent infinite loops if circuit fails
-	timeout = time.time() + 0.5
-	while t2_stop == 0:
-		if time.time() > timeout:
-			pi.write(GPIO_VREF_CTRL, 0)	# Stop
-			return None # Error: Ramp never returned to 0
-		time.sleep(0.0001)
-	pi.write(GPIO_VREF_CTRL, 0) # Turn off Reference
+    # --- PHASE 2: T2 (De-integration) ---
+    t2_start = pi.get_current_tick()
+    pi.write(GPIO_VREF_CTRL, 1)        # Start reference ramp-down
+    
+    # Wait for comparator to flip (FALLING_EDGE sets t2_stop in callback)
+    timeout = time.time() + 1.0        # Increased timeout for -20V rail recovery
+    while t2_stop == 0:
+        if time.time() > timeout:
+            pi.write(GPIO_VREF_CTRL, 0)
+            return None, None 
+        time.sleep(0.0001)
 
-	# Calculate T2 in microseconds
-	t2_duration = pigpio.tickDiff(t2_start, t2_stop)
-	return t2_duration
+    pi.write(GPIO_VREF_CTRL, 0)        # Turn off Reference
 
-	pi.write(GPIO_CAP_RS, 1) # Turn on capacitor reset switch
-	time.sleep(0.0001)
-	pi.write(GPIO_CAP_RS, 0)
+    # Calculate T2 in microseconds
+    t2_actual = float(pigpio.tickDiff(t2_start, t2_stop))
+    
+    return t1_actual, t2_actual
 
 # --- Example Usage ---
-result = run_measurement()
+t1, t2 = run_measurement()
 
-if result is not None:
-    # Now it is safe to convert to float and calculate
-    result_float = float(result)
-    print(f"De-integration time: {result_float} us")
-    
-    # Calculation: (Vref * T2) / T1
-    # T1 is 0.2s, which is 200,000 microseconds
-    vin = (-vref * result_float) / 200000
+if t1 is not None:
+    # Vin = -(Vref * T2) / T1
+    # Ensure the sign of Vref matches your integrator's direction
+    vin = (abs(vref) * t2) / t1
+    print(f"Actual T1: {t1} us | Actual T2: {t2} us")
     print(f"Measured Vin: {vin:.4f} V")
 else:
     print("Error: Measurement timed out. The comparator never triggered.")
