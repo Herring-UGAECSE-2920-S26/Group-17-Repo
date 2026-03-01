@@ -1,13 +1,16 @@
 def min_difference(digi1R):
     select_resistance = digi1R
-    min_difference = float(100000) #sets the value used to compare to differnce very high so that any mesured
+    #sets the value used to compare to differnce very high so that any mesured will be less
+    min_difference = float(100000) 
     #print("start")
 
     for i in range(0, 128): # 1 - 128 steps of digipot
         resistance = 0.0732*i + 0.124 # characteristic eqn of our dual digipot
-        difference = abs(select_resistance - resistance) # goes through difference between every resistance at each step and the resistance choosen by the user #
+        # goes through difference between every resistance at each step and the resistance choosen by the user #
+        difference = abs(select_resistance - resistance) 
 
-        if difference < min_difference: # goes through range and sets min_diff to smallest difference and sets i at that step
+        # goes through range and sets min_diff to smallest difference and sets i at that step
+        if difference < min_difference: 
             min_difference = difference
             step = i
             #print("min difference:", min_difference)
