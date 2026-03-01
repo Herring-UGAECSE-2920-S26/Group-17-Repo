@@ -53,7 +53,7 @@ def run_measurement():
     # --- PHASE 1: T1 (Integration) ---
     t1_start = pi.get_current_tick()   # Capture hardware start tick
     pi.write(GPIO_VIN_CTRL, 1)         # Start ramp
-    time.sleep(0.2)                    # Target 200ms
+    time.sleep(1)                    # Target 200ms
     pi.write(GPIO_VIN_CTRL, 0)         # Stop ramp
     t1_stop = pi.get_current_tick()    # Capture hardware stop tick
     
