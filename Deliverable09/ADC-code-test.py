@@ -53,7 +53,7 @@ def run_measurement():
     # --- PHASE 1: T1 (Integration) ---
     t1_start = pi.get_current_tick()   # Capture hardware start tick
     pi.write(GPIO_VIN_CTRL, 1)         # Start ramp
-    time.sleep(5)                    # Target 200ms
+    time.sleep(1)                    # Target 200ms
     pi.write(GPIO_VIN_CTRL, 0)         # Stop ramp
     t1_stop = pi.get_current_tick()    # Capture hardware stop tick
     
@@ -69,7 +69,7 @@ def run_measurement():
     pi.write(GPIO_VREF_CTRL, 1)        # Start reference ramp-down
     
     # Wait for comparator to flip (FALLING_EDGE sets t2_stop in callback)
-    timeout = time.time() + 1.0        # Increased timeout for -20V rail recovery
+    timeout = time.time() + 15.0        # Increased timeout for -20V rail recovery
     while t2_stop == 0:
         if time.time() > timeout:
             pi.write(GPIO_VREF_CTRL, 0)
