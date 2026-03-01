@@ -75,7 +75,7 @@ def run_measurement():
 	pi.write(GPIO_CAP_RS, 0)
 
 # Example Usage:
-result = run_measurement()
+result = float(run_measurement())
 print(f"De-integration time: {result} us")
 
 vin = (-vref * result) / 200000
