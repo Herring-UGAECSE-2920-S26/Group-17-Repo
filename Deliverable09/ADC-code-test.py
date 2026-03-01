@@ -1,5 +1,6 @@
 import time        # Manages T1 and T2
 import pigpio	   # Controls GPIO pins
+import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 
 # --- Configuration ---
 GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
