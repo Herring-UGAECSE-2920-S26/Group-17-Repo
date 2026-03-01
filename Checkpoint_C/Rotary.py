@@ -37,7 +37,7 @@ class Rotary:
         self.buttonCallback = self.pi1.callback(self.switchPin, pigpio.EITHER_EDGE, self.buttonFunction)
 
     
-    #callback function that checks speen and direction of encoder spinning
+    #callback function that checks speed and direction of encoder spinning
     def rotaryFunction(self, gpio, level, tick):
 
         if level == 1: #if A value is 1
