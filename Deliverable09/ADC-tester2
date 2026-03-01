@@ -1,6 +1,7 @@
 import time
 import pigpio
 
+# GPIO Pin Setup
 GPIO_VIN_CTRL = 5
 GPIO_VREF_CTRL = 6
 GPIO_COMP_IN = 4
@@ -8,6 +9,7 @@ GPIO_CAP_RS = 12
 
 pi = pigpio.pi()
 
+# Initialize Modes
 pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
@@ -15,16 +17,45 @@ pi.set_mode(GPIO_CAP_RS, pigpio.OUTPUT)
 
 pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
 
-user_input = int(input("Enter 1 (Vref switch), 2 (Vin switch), 3 (Capacitor Reset): "))
-if user_input == 1:
-  pi.write(GPIO_VREF_CTRL, 1)
-  pi.write(GPIO_VIN_CTRL, 0)
-  pi.write(GPIO_CAP_RS, 0)
-if user_input == 2:
-  pi.write(GPIO_VIN_CTRL, 1)
-  pi.write(GPIO_VREF_CTRL, 0)
-  pi.write(GPIO_CAP_RS, 0)
-if user_input == 3:
-  pi.write(GPIO_CAP_RS, 1)
-  pi.write(GPIO_VIN_CTRL, 0)
-  pi.write(GPIO_VREF_CTRL, 0)
+print("Manual ADC Switch Tester")
+print("-------------------------")
+
+while True:
+    # Use input() and convert to int for comparison
+    try:
+        user_input = int(input("\nEnter 1 (Vref), 2 (Vin), 3 (Reset), 4 (Exit): "))
+    except ValueError:
+        print("Please enter a valid number.")
+        continue
+
+    if user_input == 1:
+        print("Activating Vref Switch...")
+        pi.write(GPIO_VREF_CTRL, 1)
+        pi.write(GPIO_VIN_CTRL, 0)
+        pi.write(GPIO_CAP_RS, 0)
+
+    elif user_input == 2:
+        print("Activating Vin Switch...")
+        pi.write(GPIO_VIN_CTRL, 1)
+        pi.write(GPIO_VREF_CTRL, 0)
+        pi.write(GPIO_CAP_RS, 0)
+
+    elif user_input == 3:
+        print("Resetting Capacitor...")
+        pi.write(GPIO_CAP_RS, 1)
+        pi.write(GPIO_VIN_CTRL, 0)
+        pi.write(GPIO_VREF_CTRL, 0)
+
+    elif user_input == 4:
+        print("Exiting and clearing pins.")
+        # Set all outputs to 0 before leaving
+        pi.write(GPIO_VIN_CTRL, 0)
+        pi.write(GPIO_VREF_CTRL, 0)
+        pi.write(GPIO_CAP_RS, 0)
+        break 
+
+    else:
+        print("Invalid choice, try again.")
+
+# Cleanup
+pi.stop()
