@@ -1,0 +1,30 @@
+import time
+import pigpio
+
+GPIO_VIN_CTRL = 5
+GPIO_VREF_CTRL = 6
+GPIO_COMP_CTRL = 4
+GPIO_CAP_RS = 12
+
+pi = pigpio.pi()
+
+pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
+pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
+pi.set_mode(GPIO_COMP_CTRL, pigpio.INPUT)
+pi.set_mode(GPIO_CAP_RS, pigpit.OUTPUT)
+
+pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
+
+user_input = input("Enter 1 (Vref switch), 2 (Vin switch), 3 (Capacitor Reset): ")
+if user_input == 1
+  pi.write(GPIO_VREF_CTRL, 1)
+  pi.write(GPIO_VIN_CTRL, 0)
+  pi.write(GPIO_CAP_RS, 0)
+if user_input == 2
+  pi.write(GPIO_VIN_CTRL, 1)
+  pi.write(GPIO_VREF_CTRL, 0)
+  pi.write(GPIO_CAP_RS, 0)
+if user_input == 3
+  pi.write(GPIO_CAP_RS, 1)
+  pi.write(GPIO_VIN_CTRL, 0)
+  pi.write(GPIO_VREF_CTRL, 0)
