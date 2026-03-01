@@ -78,5 +78,5 @@ def run_measurement():
 result = run_measurement()
 print(f"De-integration time: {result} us")
 
-vin = (-vref)*(result)/(0.2)
+vin = (-vref * result) / 200000
 print(f"Measured Vin: {vin} V")
