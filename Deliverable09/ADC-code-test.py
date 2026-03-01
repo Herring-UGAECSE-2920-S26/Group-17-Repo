@@ -2,9 +2,10 @@ import time        # Manages T1 and T2
 import pigpio	   # Controls GPIO pins
 
 # --- Configuration ---
-GPIO_VIN_CTRL = 5  # Controls Vin Op-Amp 
-GPIO_VREF_CTRL = 6 # Controls Vref Op-Amp
+GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
+GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
 GPIO_COMP_IN = 4   # Comparator Output
+GPIO_CAP_RS = 12   # Capacitor reset switch
 
 pi = pigpio.pi()
 
@@ -13,6 +14,7 @@ pi = pigpio.pi()
 pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
+pi.set_mode(GPIO_CAP_RS, pigpio.OUTPUT)
 
 # LM339 needs pull-up to 3.3V
 pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
@@ -21,6 +23,7 @@ pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
 # Callback variables
 t2_start = 0
 t2_stop = 0
+vref = -6.0
 
 def comp_callback(gpio, level, tick):
 	global t2_stop
@@ -42,7 +45,7 @@ def run_measurement():
 
 	# --- PHASE 1: T1 (Set Time) ---
 	pi.write(GPIO_VIN_CTRL, 1) 	# Start ramp-up
-	time.sleep(0.1)			# Ramp-up for 100ms
+	time.sleep(0.2)			# Ramp-up for 200ms
 	pi.write(GPIO_VIN_CTRL, 0)	# Stop ramp-up
 
 	# --- DEAD TIME ---
@@ -67,6 +70,13 @@ def run_measurement():
 	t2_duration = pigpio.tickDiff(t2_start, t2_stop)
 	return t2_duration
 
+	pi.write(GPIO_CAP_RS, 1) # Turn on capacitor reset switch
+	time.sleep(0.0001)
+	pi.write(GPIO_CAP_RS, 0)
+
 # Example Usage:
 result = run_measurement()
 print(f"De-integration time: {result} us")
+
+vin = (-vref)(result/0.2)
+print(f"Measured Vin: {vin} V")
