@@ -74,9 +74,18 @@ def run_measurement():
 	time.sleep(0.0001)
 	pi.write(GPIO_CAP_RS, 0)
 
-# Example Usage:
-result = float(run_measurement())
-print(f"De-integration time: {result} us")
+# --- Example Usage ---
+result = run_measurement()
 
-vin = (-vref * result) / 200000
-print(f"Measured Vin: {vin} V")
+if result is not None:
+    # Now it is safe to convert to float and calculate
+    result_float = float(result)
+    print(f"De-integration time: {result_float} us")
+    
+    # Calculation: (Vref * T2) / T1
+    # T1 is 0.2s, which is 200,000 microseconds
+    vin = (-vref * result_float) / 200000
+    print(f"Measured Vin: {vin:.4f} V")
+else:
+    print("Error: Measurement timed out. The comparator never triggered.")
+    print("Check if GPIO 4 is connected and if the integrator is ramping.")
