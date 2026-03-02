@@ -1,0 +1,42 @@
+import spidev
+import pigpio
+import time
+
+# Setup
+pi = pigpio.pi()
+spi = spidev.SpiDev()
+spi.open(0, 0)
+spi.max_speed_hz = 1000000
+
+COMP_PIN = 24
+POT_MAX_RESISTANCE = 10000 # Use 10k, 50k, or 100k depending on your chip model
+pi.set_mode(COMP_PIN, pigpio.INPUT)
+
+def set_pot(step):
+    # MCP4231: Address 0x00 for Pot 0, followed by data
+    spi.xfer2([0x00, step])
+
+def find_resistance():
+    low = 0
+    high = 128 # MCP4231 is 7-bit (0-128 steps)
+    
+    for _ in range(8): # Binary search takes ~8 iterations
+        mid = (low + high) // 2
+        set_pot(mid)
+        time.sleep(0.01) # Let voltage settle
+        
+        if pi.read(COMP_PIN) == 1:
+            # Voltage is > 1.65V, so Pot resistance is too LOW
+            # We need more resistance to drop voltage, so lower the step
+            high = mid
+        else:
+            # Voltage is < 1.65V, Pot resistance is too HIGH
+            low = mid
+            
+    # Calculate Rx based on the wiper step
+    # Resistance from Wiper to A = R_total * (128 - step) / 128
+    final_step = (low + high) // 2
+    r_pot_actual = POT_MAX_RESISTANCE * (128 - final_step) / 128
+    return r_pot_actual
+
+print(f"Measured Rx: {find_resistance():.2f} Ohms")
