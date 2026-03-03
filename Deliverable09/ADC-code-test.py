@@ -29,7 +29,7 @@ vref = -6.0
 def comp_callback(gpio, level, tick):
 	global t2_stop
 	# When the comparator crosses zero, record the 'tick'
-	if level == 0:
+	if level == 1:
 		t2_stop = tick
 
 # Setup the callback to watch for the edge on GPIO 4
