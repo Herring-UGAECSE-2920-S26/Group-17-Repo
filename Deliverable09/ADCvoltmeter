@@ -72,7 +72,7 @@ t1, t2 = run_measurement()
 if t2 is not None:
     # --- Empirical Calibration Curve ---
     # Derived from breadboard data: Vin = (0.00008544 * t2) - 5.018
-    vin = (0.00008544 * t2) - 5.018
+    vin = (0.00008352 * t2) - 4.901
     
     print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
     print(f"Measured Vin: {vin:.4f} V")
