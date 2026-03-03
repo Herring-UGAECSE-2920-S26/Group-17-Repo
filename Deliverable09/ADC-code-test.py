@@ -42,13 +42,13 @@ def run_measurement():
     # --- PHASE 0: RESET (Must be at the start) ---
     # Discharge capacitor to ensure we start at exactly 0V
     pi.write(GPIO_CAP_RS, 1)
-    time.sleep(0.05)           # Give it 50ms to fully clear
+    time.sleep(0.5)           # Give it 50ms to fully clear
     pi.write(GPIO_CAP_RS, 0)
     
     # Ensure all signal switches are OFF
     pi.write(GPIO_VIN_CTRL, 0)
     pi.write(GPIO_VREF_CTRL, 0)
-    time.sleep(0.01)           # Stability pause for the power supply
+    time.sleep(0.1)           # Stability pause for the power supply
 
     # --- PHASE 1: T1 (Integration) ---
     t1_start = pi.get_current_tick()   # Capture hardware start tick
