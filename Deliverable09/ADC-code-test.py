@@ -68,8 +68,8 @@ def run_measurement():
     t2_start = pi.get_current_tick()
     pi.write(GPIO_VREF_CTRL, 1)        # Start reference ramp-down
     
-    # Wait for comparator to flip (FALLING_EDGE sets t2_stop in callback)
-    timeout = time.time() + 15.0        # Increased timeout for -20V rail recovery
+    # Wait for comparator to flip (RISING_EDGE sets t2_stop in callback)
+    timeout = time.time() + 15.0        # Increased timeout
     while t2_stop == 0:
         if time.time() > timeout:
             pi.write(GPIO_VREF_CTRL, 0)
