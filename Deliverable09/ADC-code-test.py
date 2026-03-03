@@ -33,7 +33,7 @@ def comp_callback(gpio, level, tick):
 		t2_stop = tick
 
 # Setup the callback to watch for the edge on GPIO 4
-cb = pi.callback(GPIO_COMP_IN, pigpio.FALLING_EDGE, comp_callback)
+cb = pi.callback(GPIO_COMP_IN, pigpio.RISING_EDGE, comp_callback)
 
 def run_measurement():
     global t2_start, t2_stop
