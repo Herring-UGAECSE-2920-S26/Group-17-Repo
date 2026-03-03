@@ -43,7 +43,7 @@ def run_measurement():
     # --- PHASE 1: T1 (Integration) ---
     t1_start = pi.get_current_tick()
     pi.write(GPIO_VIN_CTRL, 1) 
-    time.sleep(1.5)            # Fixed 100ms run-up
+    time.sleep(.8)            # Fixed 100ms run-up
     pi.write(GPIO_VIN_CTRL, 0) 
     t1_stop = pi.get_current_tick()
     
