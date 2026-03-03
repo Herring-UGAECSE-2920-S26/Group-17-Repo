@@ -24,7 +24,7 @@ pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
 # Callback variables
 t2_start = 0
 t2_stop = 0
-vref = -6.0
+vref = 6.0
 
 def comp_callback(gpio, level, tick):
 	global t2_stop
