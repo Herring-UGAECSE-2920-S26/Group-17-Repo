@@ -6,24 +6,24 @@ class Voltmeter:
 
     def __init__(self, pi):
     # --- Configuration ---
-        GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
-        GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
-        GPIO_COMP_IN = 4   # Comparator Output
-        GPIO_CAP_RS = 12   # Capacitor reset switch
+        self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
+        self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
+        self.GPIO_COMP_IN = 4   # Comparator Output
+        self.GPIO_CAP_RS = 12   # Capacitor reset switch
 
         self.pi = pi
 
         # Pin Setup
-        self.pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
-        self.pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
-        self.pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
-        self.pi.set_mode(GPIO_CAP_RS, pigpio.OUTPUT)
-        self.pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
+        self.pi.set_mode(self.GPIO_VIN_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_VREF_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
+        self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
+        self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
 
         # Callback variables
         t2_stop = 0
 
-        cb = self.pi.callback(GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
+        cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
 
 
     def comp_callback(self, gpio, level, tick):
@@ -36,19 +36,19 @@ class Voltmeter:
         t2_stop = 0  # Reset for new run
     
         # --- PHASE 0: RESET ---
-        self.pi.write(GPIO_CAP_RS, 1)
+        self.pi.write(self.GPIO_CAP_RS, 1)
         time.sleep(0.05)           # 50ms is plenty for a dead short
-        self.pi.write(GPIO_CAP_RS, 0)
+        self.pi.write(self.GPIO_CAP_RS, 0)
     
-        self.pi.write(GPIO_VIN_CTRL, 0)
-        self.pi.write(GPIO_VREF_CTRL, 0)
+        self.pi.write(self.GPIO_VIN_CTRL, 0)
+        self.pi.write(self.GPIO_VREF_CTRL, 0)
         time.sleep(0.01)           # Settling time
 
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
-        self.pi.write(GPIO_VIN_CTRL, 1) 
+        self.pi.write(self.GPIO_VIN_CTRL, 1) 
         time.sleep(.1)            # Fixed 100ms run-up
-        self.pi.write(GPIO_VIN_CTRL, 0) 
+        self.pi.write(self.GPIO_VIN_CTRL, 0) 
         t1_stop = self.pi.get_current_tick()
     
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
@@ -56,16 +56,16 @@ class Voltmeter:
 
         # --- PHASE 2: T2 (De-integration) ---
         t2_start = self.pi.get_current_tick()
-        self.pi.write(GPIO_VREF_CTRL, 1)
+        self.pi.write(self.GPIO_VREF_CTRL, 1)
     
         timeout = time.time() + 0.5 # 500ms timeout is plenty
         while t2_stop == 0:
             if time.time() > timeout:
-                self.pi.write(GPIO_VREF_CTRL, 0)
+                self.pi.write(self.GPIO_VREF_CTRL, 0)
                 return t1_actual, None # Return None for t2 to indicate timeout
             time.sleep(0.0001)
 
-        self.pi.write(GPIO_VREF_CTRL, 0)
+        self.pi.write(self.GPIO_VREF_CTRL, 0)
         t2_actual = float(pigpio.tickDiff(t2_start, t2_stop))
     
         return t1_actual, t2_actual
