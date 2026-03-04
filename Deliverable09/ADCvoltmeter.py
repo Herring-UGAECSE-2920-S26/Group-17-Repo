@@ -29,7 +29,7 @@ class Voltmeter:
     def comp_callback(self, gpio, level, tick):
         global t2_stop
         if level == 1:
-        t2_stop = tick
+            t2_stop = tick
 
     def run_measurement(self):
         global t2_stop
