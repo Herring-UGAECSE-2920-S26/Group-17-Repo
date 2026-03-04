@@ -120,7 +120,7 @@ class Voltmeter:
         Assumes 10kOhm known resistor and 5V reference.
         """
         vin = self.get_voltage()
-        resx = (vin * 10000) / 5
+        resx = (vin * 9837.90) / 5
         return resx
 
     def _display_resistance(self, resistance):
