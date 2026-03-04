@@ -44,6 +44,7 @@ class Voltmeter:
     
         self.pi.write(self.GPIO_VIN_CTRL, 0)
         self.pi.write(self.GPIO_VREF_CTRL, 0)
+        self.pi.write(self.GPIO_OHM, 0)
         time.sleep(0.01)           # Settling time
 
         # --- PHASE 1: T1 (Integration) ---
