@@ -1,0 +1,69 @@
+import time
+import pigpio
+# import I2C_LCD_driver # Un-comment when ready for LCD
+
+class Voltmeter:
+
+    def __init__(self, pi):
+    # --- Configuration ---
+        self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
+        self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
+        self.GPIO_COMP_IN = 4   # Comparator Output
+        self.GPIO_CAP_RS = 12   # Capacitor reset switch
+        self.GPIO_OHM_ON = 13   # Ohmmeter activated
+
+        self.pi = pi
+
+        # Pin Setup
+        self.pi.set_mode(self.GPIO_VIN_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_VREF_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
+        self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_OHM_ON, pigpio.OUTPUT) # Setup Ohm control pin
+        self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
+
+        # Callback variables (Changed from global to instance variable)
+        self.t2_stop = 0
+
+        self.cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
+
+    def comp_callback(self, gpio, level, tick):
+        if level == 1:
+            self.t2_stop = tick
+
+    def run_measurement(self, mode="voltage"):
+        self.t2_stop = 0  # Reset for new run
+        
+        # Determine which pin drives the integration based on user mode
+        if mode == "ohms":
+            active_ctrl_pin = self.GPIO_OHM_ON
+        else:
+            active_ctrl_pin = self.GPIO_VIN_CTRL
+    
+        # --- PHASE 0: RESET ---
+        self.pi.write(self.GPIO_CAP_RS, 1)
+        time.sleep(0.05)           # 50ms is plenty for a dead short
+        self.pi.write(self.GPIO_CAP_RS, 0)
+    
+        # Ensure all inputs are disconnected before settling
+        self.pi.write(self.GPIO_VIN_CTRL, 0)
+        self.pi.write(self.GPIO_OHM_ON, 0)
+        self.pi.write(self.GPIO_VREF_CTRL, 0)
+        time.sleep(0.01)           # Settling time
+
+        # --- PHASE 1: T1 (Integration) ---
+        t1_start = self.pi.get_current_tick()
+        self.pi.write(active_ctrl_pin, 1) # Turns on either Vin OR Ohmmeter
+        time.sleep(.075)            # Fixed 75ms run-up
+        self.pi.write(active_ctrl_pin, 0) 
+        t1_stop = self.pi.get_current_tick()
+    
+        t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
+        time.sleep(0.001)          # Dead time
+
+        # --- PHASE 2: T2 (De-integration) ---
+        t2_start = self.pi.get_current_tick()
+        self.pi.write(self.GPIO_VREF_CTRL, 1)
+    
+        timeout = time.time() + 0.5 # 500ms timeout is plenty
+        while self.t2_
