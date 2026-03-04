@@ -15,7 +15,7 @@ spi1 = spidev.SpiDev()
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
-voltmeter = ADCvoltmeter.Voltmeter(pi1)
+voltmeter = voltADC2.Voltmeter(pi1)
 
 #declare vars
 state = "FunGen"
