@@ -736,7 +736,7 @@ def checkState(thisState):
             #update voltage measurement
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
-            #time.sleep(10) #sleepy
+            time.sleep(.10) #sleepy
                                                 
             #switch to other menu option
             if clockwise == 1:
