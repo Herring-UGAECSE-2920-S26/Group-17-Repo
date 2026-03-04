@@ -1,6 +1,6 @@
 import time
 import pigpio
-# import I2C_LCD_driver # Un-comment when ready for LCD
+import I2C_LCD_driver # Un-comment when ready for LCD
 
 class Voltmeter:
 
@@ -93,6 +93,7 @@ class Voltmeter:
 if __name__ == "__main__":
 
     pi = pigpio.pi()
+    lcd = I2C_LCD_driver.lcd()
 
     voltmeter = Voltmeter(pi)
     
@@ -104,7 +105,10 @@ if __name__ == "__main__":
             vin = ( 0.000293* t2) - 5.21
     
             print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
-            print(f"Measured Vin: {vin:.4f} V")
+            print(f"Measured Vin: {vin:.4f} V") 
+
+            lcd.lcd_clear()
+            lcd.lcd_display_string(f"{vin:.4f} V Threshold", 1)
     
             if vin > 1.5:
                 print("Warning: Voltage is entering the nonlinear clipping region!")
