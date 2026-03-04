@@ -75,9 +75,9 @@ class Voltmeter:
         t1, t2 = self.run_measurement()
 
         if t2 is not None:
-            # --- Empirical Calibration Curve ---
-            # Derived from breadboard data: Vin = (0.00008544 * t2) - 5.018
-            vin = (0.00008544 * t2) - 5.018
+            # --- Updated Empirical Calibration Curve ---
+            # Derived from your latest data: Vin = (slope * t2) + intercept
+            vin = (0.00008333 * t2) - 5.0113
         else:
             vin = 0
 
