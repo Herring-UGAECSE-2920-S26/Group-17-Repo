@@ -36,6 +36,7 @@ def checkState(thisState):
     global menuFirst
     global square
     global clear
+    global voltage
 
     #match case statement that handles the states changing
     match thisState:
