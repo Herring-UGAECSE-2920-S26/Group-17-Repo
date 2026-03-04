@@ -27,6 +27,7 @@ menuFirst = True
 square = False
 clear = True
 voltage = 0
+resistance = 0
 
 #function that checks and updates the state
 def checkState(thisState):
@@ -37,6 +38,7 @@ def checkState(thisState):
     global square
     global clear
     global voltage
+    global resistance
 
     #match case statement that handles the states changing
     match thisState:
@@ -672,11 +674,16 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading", 1)
-                lcd.lcd_display_string("  Threshold", 2)
+                lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
+                lcd.lcd_display_string("Threshold", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
+            
+            #update resistance measurement
+            resistance = voltmeter.get_resistance()
+            lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
+            #time.sleep(10) #sleepy
                                                 
             #switch to other menu option
             if clockwise == 1:
@@ -694,11 +701,15 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading", 1)
-                lcd.lcd_display_string("  Threshold", 2)
+                lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
+                lcd.lcd_display_string("Threshold", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
                 menuFirst = False
+            
+            #update resistance measurement
+            resistance = voltmeter.get_resistance()
+            lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -725,6 +736,7 @@ def checkState(thisState):
             #update voltage measurement
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            #time.sleep(10) #sleepy
                                                 
             #switch to other menu option
             if clockwise == 1:

@@ -82,6 +82,12 @@ class Voltmeter:
 
         return vin
 
+    def get_resistance(self):
+
+        rin = 0
+
+        return rin
+
 # --- Main Execution ---
 if __name__ == "__main__":
 
