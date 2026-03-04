@@ -1,6 +1,5 @@
 import time
 import pigpio
-import I2C_LCD_driver # Un-comment when ready for LCD
 
 class Voltmeter:
 
@@ -38,7 +37,7 @@ class Voltmeter:
     
         # --- PHASE 0: RESET ---
         self.pi.write(self.GPIO_CAP_RS, 1)
-        time.sleep(0.05)           # 50ms is plenty for a dead short
+        time.sleep(0.05)           # 50ms dead short
         self.pi.write(self.GPIO_CAP_RS, 0)
     
         self.pi.write(self.GPIO_VIN_CTRL, 0)
@@ -48,7 +47,7 @@ class Voltmeter:
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
         self.pi.write(self.GPIO_VIN_CTRL, 1) 
-        time.sleep(.075)            # Fixed 100ms run-up
+        time.sleep(.075)            # Fixed 75 ms run-up
         self.pi.write(self.GPIO_VIN_CTRL, 0) 
         t1_stop = self.pi.get_current_tick()
     
@@ -59,7 +58,7 @@ class Voltmeter:
         t2_start = self.pi.get_current_tick()
         self.pi.write(self.GPIO_VREF_CTRL, 1)
     
-        timeout = time.time() + 0.5 # 500ms timeout is plenty
+        timeout = time.time() + 0.5 # 500ms timeout 
         while t2_stop == 0:
             if time.time() > timeout:
                 self.pi.write(self.GPIO_VREF_CTRL, 0)
@@ -76,18 +75,19 @@ class Voltmeter:
 
         if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
-            # Derived from your latest data: Vin = (slope * t2) + intercept
+            # Vin = (slope * t2) + intercept
             vin = (0.0000293 * t2) - 5.21
         else:
             vin = 0
 
         return vin
 
-    def get_resistance(self):
+  # We eventually plan to merge the Ohmmeter Code and Voltmeter code into one file, did not do that for this deliverable
+    # def get_resistance(self):
 
-        rin = 0
+       # rin = 0
 
-        return rin
+       # return rin
 
 # --- Main Execution ---
 if __name__ == "__main__":
