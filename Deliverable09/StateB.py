@@ -725,7 +725,6 @@ def checkState(thisState):
             #update voltage measurement
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
-            time.sleep(0.67)
                                                 
             #switch to other menu option
             if clockwise == 1:
@@ -752,7 +751,6 @@ def checkState(thisState):
             #update voltage measurement
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
-            time.sleep(0.67)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -784,7 +782,6 @@ def checkState(thisState):
             #update voltage measurement
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
-            time.sleep(0.67)
             
             #switch to other menu option 
             if clockwise == -1: 
