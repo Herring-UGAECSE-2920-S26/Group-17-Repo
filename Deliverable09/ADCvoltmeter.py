@@ -98,16 +98,16 @@ if __name__ == "__main__":
     
     t1, t2 = voltmeter.run_measurement()
 
-if t2 is not None:
-        # --- Updated Empirical Calibration Curve ---
-        # Derived from your latest data: Vin = (slope * t2) + intercept
-        vin = (0.00008333 * t2) - 5.0113
+    if t2 is not None:
+            # --- Updated Empirical Calibration Curve ---
+            # Derived from your latest data: Vin = (slope * t2) + intercept
+            vin = (0.00008333 * t2) - 5.0113
     
-        print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
-        print(f"Measured Vin: {vin:.4f} V")
+            print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
+            print(f"Measured Vin: {vin:.4f} V")
     
-        if vin > 1.5:
-            print("Warning: Voltage is entering the nonlinear clipping region!")
+            if vin > 1.5:
+                print("Warning: Voltage is entering the nonlinear clipping region!")
     else:
         # If t2 is None, the callback never fired (usually means 0V output from shifter)
         print("Measurement Timeout: Integrator did not ramp. Likely at bottom limit (-5V).")
