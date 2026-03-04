@@ -683,7 +683,7 @@ def checkState(thisState):
             #update resistance measurement
             resistance = voltmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
-            #time.sleep(10) #sleepy
+            time.sleep(10) #sleepy
                                                 
             #switch to other menu option
             if clockwise == 1:
