@@ -96,20 +96,19 @@ class Voltmeter:
         Disable all other GPIO outputs, then activate the ohmmeter circuit.
         Reads resistance and displays it on the LCD.
         """
-        # Step 1: Kill every other output pin first
+        # Step 1: Enable ohmmeter circuit only (all others already low from _disable_all_outputs)
         self._disable_all_outputs()
-        time.sleep(0.01)  # Brief settling time after pin shutdown
-
-        # Step 2: Enable ohmmeter circuit
+        time.sleep(0.01)
         self.pi.write(self.GPIO_OHM_ON, 1)
+        time.sleep(0.01)  # Let ohmmeter circuit settle
 
-        # Step 3: Read resistance
+        # Step 2: Take voltage reading with ohmmeter active
         resistance = self._read_resistance_raw()
 
-        # Step 4: Turn off ohmmeter
+        # Step 3: Turn off ohmmeter
         self.pi.write(self.GPIO_OHM_ON, 0)
 
-        # Step 5: Display on LCD
+        # Step 4: Display on LCD
         self._display_resistance(resistance)
 
         return resistance
@@ -118,9 +117,12 @@ class Voltmeter:
         """
         Resistance via voltage divider: R_unknown = (Vin * 10000) / 5
         Assumes 10kOhm known resistor and 5V reference.
+        The voltage measurement runs while GPIO_OHM_ON is HIGH.
         """
         vin = self.get_voltage()
-        resx = (vin * 9837.90) / 5
+        if vin <= 0:
+            return 0
+        resx = (vin * 10000) / 5
         return resx
 
     def _display_resistance(self, resistance):
