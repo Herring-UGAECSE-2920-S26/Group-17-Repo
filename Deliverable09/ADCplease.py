@@ -92,58 +92,35 @@ class Voltmeter:
         return vin
 
     def get_resistance(self):
-        """
-        Disable all other GPIO outputs, then activate the ohmmeter circuit.
-        Reads resistance and displays it on the LCD.
-        """
-        # Step 1: Enable ohmmeter circuit only (all others already low from _disable_all_outputs)
+        # Step 1: Disable all outputs
         self._disable_all_outputs()
         time.sleep(0.01)
+
+        # Step 2: Enable ohmmeter circuit
         self.pi.write(self.GPIO_OHM_ON, 1)
-        time.sleep(0.01)  # Let ohmmeter circuit settle
+        time.sleep(0.01)
 
-        # Step 2: Take voltage reading with ohmmeter active
-        resistance = self._read_resistance_raw()
+        # Step 3: Get voltage reading
+        vin = self.get_voltage()
 
-        # Step 3: Turn off ohmmeter
+        # Step 4: Calculate resistance
+        resx = (vin * 10000) / 5
+
+        # Step 5: Disable ohmmeter
         self.pi.write(self.GPIO_OHM_ON, 0)
 
-        # Step 4: Display on LCD
-        self._display_resistance(resistance)
-
-        return resistance
-
-    def _read_resistance_raw(self):
-        """
-        Resistance via voltage divider: R_unknown = (Vin * 10000) / 5
-        Assumes 10kOhm known resistor and 5V reference.
-        The voltage measurement runs while GPIO_OHM_ON is HIGH.
-        """
-        vin = self.get_voltage()
-        if vin <= 0:
-            return 0
-        resx = (vin * 10000) / 5
-        return resx
-
-    def _display_resistance(self, resistance):
-        """Format and display a resistance value on the LCD."""
-        if resistance is None or resistance <= 0:
-            line1 = "Resistance:"
-            line2 = "No reading"
-        elif resistance >= 1_000_000:
-            line1 = "Resistance:"
-            line2 = f"{resistance / 1_000_000:.3f} MOhm"
-        elif resistance >= 1_000:
-            line1 = "Resistance:"
-            line2 = f"{resistance / 1_000:.3f} kOhm"
+        # Step 6: Display ONLY resistance on LCD
+        self.lcd.lcd_clear()
+        if resx >= 1_000_000:
+            self.lcd.lcd_display_string(f"{resx / 1_000_000:.3f} MOhm", 1)
+        elif resx >= 1_000:
+            self.lcd.lcd_display_string(f"{resx / 1_000:.3f} kOhm", 1)
         else:
-            line1 = "Resistance:"
-            line2 = f"{resistance:.2f} Ohm"
+            self.lcd.lcd_display_string(f"{resx:.2f} Ohm", 1)
 
-        self.lcd.lcd_display_string(line1[:16], 1)
-        self.lcd.lcd_display_string(line2[:16], 2)
+        print(f"Vin: {vin:.4f} V | Resistance: {resx:.2f} Ohm")
 
-        print(f"Measured Resistance: {resistance} Ohm")
+        return resx
 
     def display_result(self, t1, t2):
         """Format and push voltage measurement results to the LCD."""
