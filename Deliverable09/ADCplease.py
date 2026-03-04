@@ -81,7 +81,13 @@ class Voltmeter:
         return vin
 
     def get_resistance(self):
-        return 0
+        t1, t2 = self.run_measurement()
+        if t2 is not None:
+                vin = (0.0000293 * t2) - 5.21
+                resx = (vin * 10000) / 10000
+        else:
+            vin = 0
+            
 
     def display_result(self, t1, t2):
         """Format and push measurement results to the LCD."""
