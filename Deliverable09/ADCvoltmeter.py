@@ -47,7 +47,7 @@ class Voltmeter:
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
         self.pi.write(self.GPIO_VIN_CTRL, 1) 
-        time.sleep(.1)            # Fixed 100ms run-up
+        time.sleep(.075)            # Fixed 100ms run-up
         self.pi.write(self.GPIO_VIN_CTRL, 0) 
         t1_stop = self.pi.get_current_tick()
     
