@@ -5,6 +5,7 @@ import Dual_Digipot
 import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
+import ADCvoltmeter
 
 #set up libraries
 pi1 = pigpio.pi()
@@ -14,6 +15,7 @@ spi1 = spidev.SpiDev()
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
+voltmeter = Voltmeter(pi1)
 
 #declare vars
 state = "FunGen"
@@ -24,6 +26,7 @@ maxR = 10000
 menuFirst = True
 square = False
 clear = True
+voltage = 0
 
 #function that checks and updates the state
 def checkState(thisState):
@@ -712,11 +715,15 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading  Threshold", 1)
+                lcd.lcd_display_string(f"{voltageString: .4f} V Threshold", 1)
                 lcd.lcd_display_string("> Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
+
+            #update voltage measurement
+            voltage = voltmeter.get_voltage()
+            lcd.lcd_display_string(f"{voltageString: .4f} V Threshold", 1)
                                                 
             #switch to other menu option
             if clockwise == 1:
@@ -734,11 +741,15 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading  Threshold", 1)
+                lcd.lcd_display_string(f"{voltageString: .4f} V Threshold", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
+
+            #update voltage measurement
+            voltage = voltmeter.get_voltage()
+            lcd.lcd_display_string(f"{voltageString: .4f} V Threshold", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -761,12 +772,16 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Reading  Threshold", 1)
+                lcd.lcd_display_string(f"{voltageString: .4f} V Threshold", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
                 menuFirst = False
-                                                
+
+            #update voltage measurement
+            voltage = voltmeter.get_voltage()
+            lcd.lcd_display_string(f"{voltageString: .4f} V Threshold", 1)
+            
             #switch to other menu option 
             if clockwise == -1: 
                 state = "VoltB"
