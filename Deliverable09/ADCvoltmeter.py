@@ -77,7 +77,7 @@ class Voltmeter:
         if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
             # Derived from your latest data: Vin = (slope * t2) + intercept
-            vin = (0.00008333 * t2) - 5.0113
+            vin = (0.0000293 * t2) - 5.21
         else:
             vin = 0
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
             # Derived from your latest data: Vin = (slope * t2) + intercept
-            vin = ( 0.00028075* t2) - 5.1162
+            vin = ( 0.000293* t2) - 5.21
     
             print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
             print(f"Measured Vin: {vin:.4f} V")
