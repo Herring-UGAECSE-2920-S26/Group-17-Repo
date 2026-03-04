@@ -5,7 +5,7 @@ import Dual_Digipot
 import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
-import ADCvoltmeter
+import voltADC2
 
 #set up libraries
 pi1 = pigpio.pi()
