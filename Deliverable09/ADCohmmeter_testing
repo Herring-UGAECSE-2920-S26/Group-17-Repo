@@ -5,7 +5,7 @@ import pigpio
 class Voltmeter:
 
     def __init__(self, pi):
-    # --- Configuration ---
+        # --- Configuration ---
         self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
         self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
         self.GPIO_COMP_IN = 4   # Comparator Output
@@ -66,4 +66,87 @@ class Voltmeter:
         self.pi.write(self.GPIO_VREF_CTRL, 1)
     
         timeout = time.time() + 0.5 # 500ms timeout is plenty
-        while self.t2_
+        while self.t2_stop == 0:
+            if time.time() > timeout:
+                self.pi.write(self.GPIO_VREF_CTRL, 0)
+                return t1_actual, None # Return None for t2 to indicate timeout
+            time.sleep(0.0001)
+
+        self.pi.write(self.GPIO_VREF_CTRL, 0)
+        t2_actual = float(pigpio.tickDiff(t2_start, self.t2_stop))
+    
+        return t1_actual, t2_actual
+
+    def get_voltage(self):    
+        t1, t2 = self.run_measurement(mode="voltage")
+
+        if t2 is not None:
+            # --- Updated Empirical Calibration Curve ---
+            vin = (0.0000293 * t2) - 5.21
+            return t1, t2, vin
+        else:
+            return t1, None, 0
+
+    def get_resistance(self):
+        t1, t2 = self.run_measurement(mode="ohms")
+
+        if t2 is not None:
+            # You will need to build an empirical calibration curve here 
+            # similar to your voltage curve once you capture some T2 data!
+            rin = t2 * 1.0 # Placeholder math 
+            return t1, t2, rin
+        else:
+            return t1, None, 0
+
+# --- Main Execution ---
+if __name__ == "__main__":
+    pi = pigpio.pi()
+    
+    if not pi.connected:
+        print("Failed to connect to pigpio daemon.")
+        exit()
+
+    voltmeter = Voltmeter(pi)
+    
+    print("--- Dual-Slope ADC Initialized ---")
+    
+    # --- Interactive UI Loop ---
+    while True:
+        print("\nSelect Measurement Mode:")
+        print(" [1] Voltage (V)")
+        print(" [2] Ohmmeter (Ω)")
+        print(" [Q] Quit")
+        
+        choice = input("Enter choice (1/2/Q): ").strip().upper()
+        
+        if choice in ('1', 'V'):
+            print("\nMeasuring Voltage...")
+            t1, t2, vin = voltmeter.get_voltage()
+            
+            if t2 is not None:
+                print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
+                print(f"Measured Vin: {vin:.4f} V")
+        
+                if vin > 1.5:
+                    print("Warning: Voltage is entering the nonlinear clipping region!")
+            else:
+                print("Measurement Timeout: Integrator did not ramp. Likely at bottom limit (-5V).")
+                
+        elif choice in ('2', 'O', 'R'):
+            print("\nMeasuring Resistance...")
+            t1, t2, rin = voltmeter.get_resistance()
+            
+            if t2 is not None:
+                print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
+                print(f"Measured Resistance: {rin:.2f} Ohms (Needs calibration curve)")
+            else:
+                print("Measurement Timeout: Integrator did not ramp.")
+                
+        elif choice == 'Q':
+            print("Exiting and cleaning up...")
+            break
+            
+        else:
+            print("Invalid selection. Please try again.")
+
+    pi.stop()
