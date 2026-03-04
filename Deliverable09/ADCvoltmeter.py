@@ -98,10 +98,10 @@ if __name__ == "__main__":
     
     t1, t2 = voltmeter.run_measurement()
 
-    if t2 is not None:
-        # --- Empirical Calibration Curve ---
-        # Derived from breadboard data: Vin = (0.00008544 * t2) - 5.018
-        vin = (0.00008544 * t2) - 5.018
+if t2 is not None:
+        # --- Updated Empirical Calibration Curve ---
+        # Derived from your latest data: Vin = (slope * t2) + intercept
+        vin = (0.00008333 * t2) - 5.0113
     
         print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
         print(f"Measured Vin: {vin:.4f} V")
