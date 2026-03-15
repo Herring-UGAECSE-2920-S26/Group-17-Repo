@@ -1,5 +1,6 @@
 import time
 import pigpio
+import I2C_LCD_driver
 
 class Voltmeter:
 
@@ -25,11 +26,10 @@ class Voltmeter:
 
         cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
 
-
     def comp_callback(self, gpio, level, tick):
         if level == 1:
             self.t2_stop = tick
-
+            
     def run_measurement(self):
         self.t2_stop = 0  # Reset for new run
     
@@ -74,11 +74,22 @@ class Voltmeter:
         if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
             # Vin = (slope * t2) + intercept
-            vin = (0.0000293 * t2) - 5.21
+            vin = (0.000293 * t2) - 5.21
         else:
             vin = 0
 
         return vin
+
+def get_resistance(self):
+    vin = self.get_voltage()
+
+    if vin != 0:
+        # 2. Calculate Ohms from Vin (Using ** for power)
+        rin = 300 + (1042 * vin) + (236 * (vin**2))
+    else: 
+        rin = 0
+        
+    return rin
 
   # We eventually plan to merge the Ohmmeter Code and Voltmeter code into one file, did not do that for this deliverable
     # def get_resistance(self):
@@ -96,20 +107,36 @@ if __name__ == "__main__":
     voltmeter = Voltmeter(pi)
     
     t1, t2 = voltmeter.run_measurement()
+    volt = voltmeter.get_voltage()
+    ohm = voltmeter.get_resistance()
 
     if t2 is not None:
-            # --- Updated Empirical Calibration Curve ---
-            # Derived from your latest data: Vin = (slope * t2) + intercept
-            vin = ( 0.000293* t2) - 5.21
-    
-            print(f"Actual T1: {t1:.0f} us | Actual T2: {t2:.0f} us")
-            print(f"Measured Vin: {vin:.4f} V") 
+        # --- Updated Empirical Calibration Curve ---
+        # Derived from your latest data: Vin = (slope * t2) + intercept
+        # 1. Calculate Vin from T2
+        vin = ( 0.000293* t2) - 5.21
 
-            lcd.lcd_clear()
-            lcd.lcd_display_string(f"{vin:.4f} V Threshold", 1)
+        # 2. Calculate Ohms from Vin (Using ** for power)
+        ohms = 300 + (1042 * vin) + (236 * (vin**2))
     
-            if vin > 1.5:
-                print("Warning: Voltage is entering the nonlinear clipping region!")
+        # --- Terminal Output ---
+        print("-" * 30)
+        print(f"T1: {t1:.0f} us | T2: {t2:.0f} us")
+        print(f"Voltage: {vin:.4f} V")
+        print(f"Resistance: {ohms:.2f} Ohms") 
+        print("-" * 30)
+        print("Function Results")
+        print(f"Voltage: {volt:.4f} V")
+        print(f"Resistance: {ohm:.2f} Ohms")
+        print("-" * 30)
+
+        # --- LCD Output ---
+        lcd.lcd_clear()
+        lcd.lcd_display_string(f"Vin: {vin:.2f}V", 1)
+        lcd.lcd_display_string(f"Res: {ohms:.1f} Ohm", 2)
+    
+        if vin > 1.5:
+            print("Warning: Voltage is entering the nonlinear clipping region!")
     else:
         # If t2 is None, the callback never fired (usually means 0V output from shifter)
         print("Measurement Timeout: Integrator did not ramp. Likely at bottom limit (-5V).")
