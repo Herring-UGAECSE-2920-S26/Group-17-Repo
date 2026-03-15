@@ -681,7 +681,7 @@ def checkState(thisState):
                 menuFirst = False
             
             #update resistance measurement
-            resistance = voltmeter.get_resistance()
+            #resistance = voltmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
             time.sleep(10) #sleepy
                                                 
@@ -708,7 +708,7 @@ def checkState(thisState):
                 menuFirst = False
             
             #update resistance measurement
-            resistance = voltmeter.get_resistance()
+            #resistance = voltmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
                                                 
             #switch to other menu option 
