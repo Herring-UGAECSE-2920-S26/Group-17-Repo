@@ -21,19 +21,17 @@ class Voltmeter:
         self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
 
         # Callback variables
-        t2_stop = 0
+        self.t2_stop = 0
 
         cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
 
 
     def comp_callback(self, gpio, level, tick):
-        global t2_stop
         if level == 1:
-            t2_stop = tick
+            self.t2_stop = tick
 
     def run_measurement(self):
-        global t2_stop
-        t2_stop = 0  # Reset for new run
+        self.t2_stop = 0  # Reset for new run
     
         # --- PHASE 0: RESET ---
         self.pi.write(self.GPIO_CAP_RS, 1)
@@ -59,14 +57,14 @@ class Voltmeter:
         self.pi.write(self.GPIO_VREF_CTRL, 1)
     
         timeout = time.time() + 0.5 # 500ms timeout 
-        while t2_stop == 0:
+        while self.t2_stop == 0:
             if time.time() > timeout:
                 self.pi.write(self.GPIO_VREF_CTRL, 0)
                 return t1_actual, None # Return None for t2 to indicate timeout
             time.sleep(0.0001)
 
         self.pi.write(self.GPIO_VREF_CTRL, 0)
-        t2_actual = float(pigpio.tickDiff(t2_start, t2_stop))
+        t2_actual = float(pigpio.tickDiff(t2_start, self.t2_stop))
     
         return t1_actual, t2_actual
 
