@@ -1,6 +1,6 @@
 import spidev #https://pypi.org/project/spidev/
 import sys
-import RPi.GPIO as GPIO # Added GPIO library
+from gpiozero import OutputDevice # Modern GPIO library
 
 class MCP4131:
     def __init__(self, spi, bus=0, device=0):
@@ -24,16 +24,31 @@ class MCP4131:
 #control for user input 
 if __name__ == "__main__":
     # --- Set up GPIO 19 ---
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(19, GPIO.OUT)
-    GPIO.output(19, GPIO.LOW) # Default to off
+    # OutputDevice automatically sets it as an output and defaults to off
+    pin19 = OutputDevice(19, initial_value=False) 
 
     spi = spidev.SpiDev()
     pot = MCP4131(spi)
     
     print("manual digipot control")
     print("Type 'exit' to quit.")
-    print("Type 'gpio on' or 'gpio off' at any prompt to control pin 19.") # Added instruction
+    print("Type 'gpio on' or 'gpio off' at any prompt to control pin 19.")
 
-    #code that allows the user
+    #code that allows the user to change the resistor value
+    #through keyboard input
+    try:
+        while True:
+            pot_input = input("\nEnter Pot Number (0 or 1): ").strip().lower()
+            
+            if pot_input == 'exit':
+                break
+            # Intercept GPIO command at prompt 1
+            if pot_input in ['gpio on', 'gpio off']:
+                if pot_input == 'gpio on':
+                    pin19.on()
+                else:
+                    pin19.off()
+                print(f"GPIO 19 is now {'ON' if pot_input == 'gpio on' else 'OFF'}")
+                continue
+            
+            # Use a small loop here so a GPIO command doesn't wipe out the pot_
