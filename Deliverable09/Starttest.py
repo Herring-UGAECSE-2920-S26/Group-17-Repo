@@ -1,6 +1,6 @@
 import spidev #https://pypi.org/project/spidev/
 import sys
-from gpiozero import OutputDevice # Modern GPIO library
+import pigpio # Swapped to pigpio per your example
 
 class MCP4131:
     def __init__(self, spi, bus=0, device=0):
@@ -23,9 +23,14 @@ class MCP4131:
 
 #control for user input 
 if __name__ == "__main__":
-    # --- Set up GPIO 19 ---
-    # OutputDevice automatically sets it as an output and defaults to off
-    pin19 = OutputDevice(19, initial_value=False) 
+    # --- Set up pigpio for GPIO 19 ---
+    pi = pigpio.pi()
+    if not pi.connected:
+        print("Failed to connect to pigpio. Did you run 'sudo pigpiod'?")
+        sys.exit(1)
+        
+    pi.set_mode(19, pigpio.OUTPUT)
+    pi.write(19, 0) # Default to off
 
     spi = spidev.SpiDev()
     pot = MCP4131(spi)
@@ -42,13 +47,48 @@ if __name__ == "__main__":
             
             if pot_input == 'exit':
                 break
+            
             # Intercept GPIO command at prompt 1
             if pot_input in ['gpio on', 'gpio off']:
                 if pot_input == 'gpio on':
-                    pin19.on()
+                    pi.write(19, 1)
+                    print("GPIO 19 is now ON")
                 else:
-                    pin19.off()
-                print(f"GPIO 19 is now {'ON' if pot_input == 'gpio on' else 'OFF'}")
+                    pi.write(19, 0)
+                    print("GPIO 19 is now OFF")
                 continue
             
-            # Use a small loop here so a GPIO command doesn't wipe out the pot_
+            # Use a small loop here so a GPIO command doesn't wipe out the pot_input
+            while True:
+                step_input = input("Enter Step Value (0-128): ").strip().lower()
+                
+                # Intercept GPIO command at prompt 2
+                if step_input in ['gpio on', 'gpio off']:
+                    if step_input == 'gpio on':
+                        pi.write(19, 1)
+                        print("GPIO 19 is now ON")
+                    else:
+                        pi.write(19, 0)
+                        print("GPIO 19 is now OFF")
+                    continue # Re-asks for the Step Value
+                break # If it wasn't a GPIO command, break inner loop to process
+
+            if step_input == 'exit':
+                break
+
+            try:
+                p = int(pot_input)
+                s = int(step_input)
+                pot.set_step(s, pot_num=p)
+            except ValueError:
+                print("Invalid input. Please enter whole numbers.")
+
+    except KeyboardInterrupt:
+        print("\nProgram interrupted.")
+    finally:
+        pot.close()
+        # Ensure GPIO pin is set to 0 and pigpio stops safely
+        if pi.connected:
+            pi.write(19, 0)
+            pi.stop() 
+        print("SPI and pigpio connections closed.")
