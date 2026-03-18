@@ -24,37 +24,37 @@ first = True
 
 while True:
 
-        #updates lcd when something has changed
-            if first == True:
-                lcd.lcd_clear()
-                lcd.lcd_display_string("Voltage Reference", 1)
-                lcd.lcd_display_string(f"{voltage:.4f} V", 2)
-                if voltage == minV:
-                    step = Min_difference.min_difference_volts(voltage)
-                    digipot.set_step(step, 1)
+    #updates lcd when something has changed
+    if first == True:
+        lcd.lcd_clear()
+        lcd.lcd_display_string("Voltage Reference", 1)
+        lcd.lcd_display_string(f"{voltage:.4f} V", 2)
+        if voltage == minV:
+                step = Min_difference.min_difference_volts(voltage)
+                digipot.set_step(step, 1)
                 #print(digi1R)
                 first = False
               
-        #updates values
-        clockwise, fast = rotary.getRotary()
-        clicked, longClick = rotary.getButton()
+    #updates values
+    clockwise, fast = rotary.getRotary()
+    clicked, longClick = rotary.getButton()
 
-        #if rotating
-        if clockwise != 0:
+    #if rotating
+    if clockwise != 0:
           
-            #updates the onscreen voltage value
-            voltage += (clockwise * stepSize)
+        #updates the onscreen voltage value
+        voltage += (clockwise * stepSize)
 
-            #makes sure voltage is in range
-            if voltage > maxV: voltage = maxV
-            if voltage < minV: voltage = minV
+        #makes sure voltage is in range
+        if voltage > maxV: voltage = maxV
+        if voltage < minV: voltage = minV
             
-            #updates lcd
-            lcd.lcd_display_string(f"{voltage:.4f} V     ", 2)
+        #updates lcd
+        lcd.lcd_display_string(f"{voltage:.4f} V     ", 2)
 
-        if clicked: 
-            #update voltage values
-            step = Min_difference.min_difference_volts(voltage)
-            digipot.set_step(step, 1)
+    if clicked: 
+        #update voltage values
+        step = Min_difference.min_difference_volts(voltage)
+        digipot.set_step(step, 1)
 
           
