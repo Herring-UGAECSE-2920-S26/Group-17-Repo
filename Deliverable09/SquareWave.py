@@ -14,7 +14,7 @@ def waveOff(gpio, pi):
 
 #function that updates the amplitude of the square wave
 def updateAmplitude(amplitude, digipot):
-    #insert code here
+    print("Not Implemented") 
 
 # --- For Testing ---
 if __name__ == "__main__":
