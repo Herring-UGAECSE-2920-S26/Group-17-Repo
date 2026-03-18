@@ -42,7 +42,7 @@ if __name__ == "__main__":
             if count > 12:
                 count = 1
 
-            if count = 1: #+5V 100Hz
+            if count == 1: #+5V 100Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: +5V", 1)
@@ -52,7 +52,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 100, pi1)
                 updateAmplitude(5, digipot)
               
-            elif count = 2: #+5V 5000Hz
+            elif count == 2: #+5V 5000Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: +5V", 1)
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 5000, pi1)
                 updateAmplitude(5, digipot)
               
-            elif count = 3: #+5V 10Khz
+            elif count == 3: #+5V 10Khz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: +5V", 1)
@@ -72,7 +72,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 10000, pi1)
                 updateAmplitude(5, digipot)
               
-            elif count = 4: #-5V 100Hz
+            elif count == 4: #-5V 100Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: -5V", 1)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 100, pi1)
                 updateAmplitude(-5, digipot)
               
-            elif count = 5: #-5V 5000Hz
+            elif count == 5: #-5V 5000Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: -5V", 1)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 5000, pi1)
                 updateAmplitude(-5, digipot)
                 
-            elif count = 6: #-5V 10kHz
+            elif count == 6: #-5V 10kHz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: -5V", 1)
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 10000, pi1)
                 updateAmplitude(-5, digipot)
                 
-            elif count = 7: #+10V 100Hz
+            elif count == 7: #+10V 100Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: +10V", 1)
@@ -112,7 +112,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 100, pi1)
                 updateAmplitude(10, digipot)
                 
-            elif count = 8: #+10V 5000Hz
+            elif count == 8: #+10V 5000Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: +10V", 1)
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 5000, pi1)
                 updateAmplitude(10, digipot)
                 
-            elif count = 9: #+10V 10kHz
+            elif count == 9: #+10V 10kHz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: +10V", 1)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 10000, pi1)
                 updateAmplitude(10, digipot)
                 
-            elif count = 10: #-10V 100Hz
+            elif count == 10: #-10V 100Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: -10V", 1)
@@ -142,7 +142,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 100, pi1)
                 updateAmplitude(-10, digipot)
                 
-            elif count = 11: #-10V 5000Hz
+            elif count == 11: #-10V 5000Hz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: -10V", 1)
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                 updateFrequency(waveOutpin, 5000, pi1)
                 updateAmplitude(-10, digipot)
                 
-            elif count = 12 #-10V 10kHz
+            elif count == 12 #-10V 10kHz
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Amplitude: -10V", 1)
