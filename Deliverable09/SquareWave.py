@@ -15,7 +15,7 @@ def waveOff(gpio, pi):
 
 #function that updates the amplitude of the square wave
 def updateAmplitude(amplitude, digipot):
-    step = Min_difference.min_difference_volts(amplitude/2)
+    step = Min_difference.min_difference_volts(amplitude)
     digipot.set_step(step, 1)
 
 # --- For Testing ---
