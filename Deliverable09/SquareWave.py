@@ -134,7 +134,7 @@ if __name__ == "__main__":
                 #update lcd
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Voltage: +/-10V", 1)
-                lcd.lcd_display_string("Frequency: 1000Hz", 2)
+                lcd.lcd_display_string("Frequency: 10000Hz", 2)
 
                 #update wave values
                 updateFrequency(waveOutPin, 10000, pi1)
