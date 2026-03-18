@@ -89,7 +89,7 @@ while True:
         elif voltage == -3.75: 
             digipot.set_step(80, 1)
         elif voltage == -3.125: 
-            digipot.set_step(91, 1)
+            digipot.set_step(89, 1)
         elif voltage == -2.5: 
             digipot.set_step(98, 1)
         elif voltage == -1.875: 
