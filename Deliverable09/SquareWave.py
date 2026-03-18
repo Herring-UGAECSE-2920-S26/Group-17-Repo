@@ -22,7 +22,7 @@ if __name__ == "__main__":
     #setup
     pi1 = pigpio.pi()
     spi1 = spidev.SpiDev()
-    rotary = Rotary(18, 23, 24, pi1)
+    rotary = Rotary.Rotary(18, 23, 24, pi1)
     digipot = Dual_Digipot.MCP4131(spi1)
     lcd = I2C_LCD_driver.lcd()
     waveOutPin = 19
