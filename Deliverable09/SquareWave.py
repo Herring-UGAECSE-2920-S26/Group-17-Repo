@@ -57,31 +57,18 @@ if __name__ == "__main__":
                 lcd.lcd_display_string("Frequency: 100Hz", 2)
 
                 #update wave values
-                pi1.write(19, 0)
-                updateFrequency(waveOutPin, 100, pi1)
-                updateVoltage(5, digipot)
-
-            if count == 2: #+/-5V 100Hz
-                #update lcd
-                lcd.lcd_clear()
-                lcd.lcd_display_string("Voltage: +/-5V", 1)
-                lcd.lcd_display_string("Frequency: 100Hz", 2)
-
-                #update wave values
-                pi1.write(19, 1)
                 updateFrequency(waveOutPin, 100, pi1)
                 updateVoltage(5, digipot)
               
-            #elif count == 2: #+/-5V 5000Hz
+            elif count == 2: #+/-5V 5000Hz
                 #update lcd
-             #   lcd.lcd_clear()
-              #  lcd.lcd_display_string("Voltage: +/-5V", 1)
-               # lcd.lcd_display_string("Frequency: 5000Hz", 2)
+                lcd.lcd_clear()
+                lcd.lcd_display_string("Voltage: +/-5V", 1)
+                lcd.lcd_display_string("Frequency: 5000Hz", 2)
 
                 #update wave values
-               # pi1.write(19, 1)
-               # updateFrequency(waveOutPin, 5000, pi1)
-               # updateVoltage(5, digipot)
+                updateFrequency(waveOutPin, 5000, pi1)
+                updateVoltage(5, digipot)
               
             elif count == 3: #+/-5V 10Khz
                 #update lcd
