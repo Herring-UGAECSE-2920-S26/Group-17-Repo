@@ -27,6 +27,7 @@ if __name__ == "__main__":
     lcd = I2C_LCD_driver.lcd()
     waveOutPin = 19
     count = 0
+    first = True
 
     while True:
         #update values
@@ -34,8 +35,10 @@ if __name__ == "__main__":
         clicked, longClick = rotary.getButton() 
 
         #initial message
-        lcd.lcd_clear()
-        lcd.lcd_display_string("Click Please UWU", 1)
+        if first == True: 
+            lcd.lcd_clear()
+            lcd.lcd_display_string("Click Please UWU", 1)
+            first = False
 
         if clicked:
             count = count + 1
