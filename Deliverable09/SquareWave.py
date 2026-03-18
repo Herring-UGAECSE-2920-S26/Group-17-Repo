@@ -3,6 +3,7 @@ import pigpio #https://abyz.me.uk/rpi/pigpio/index.html
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Dual_Digipot
 import Rotary
+import Min_difference
 
 #function that updates the frequency of the square wave
 def updateFrequency(gpio, freq, pi):
@@ -14,7 +15,8 @@ def waveOff(gpio, pi):
 
 #function that updates the amplitude of the square wave
 def updateAmplitude(amplitude, digipot):
-    print("Not Implemented") 
+    step = Min_difference.min_difference_volts(amplitude)
+    digipot.set_step(step, 1)
 
 # --- For Testing ---
 if __name__ == "__main__":
