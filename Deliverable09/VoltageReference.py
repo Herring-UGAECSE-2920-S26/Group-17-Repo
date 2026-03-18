@@ -29,10 +29,10 @@ first = True
                 lcd.lcd_clear()
                 lcd.lcd_display_string("Voltage Reference", 1)
                 lcd.lcd_display_string(f"{voltage:.4f} V", 2)
-                if digi1R == minR:
-                    step = Min_difference.min_difference(float(digi1R/1000))
-                    digipot.set_step(step, 1)
-                print(digi1R)
+                if voltage == minV:
+                    #step = Min_difference.min_difference(float(digi1R/1000))
+                    #digipot.set_step(step, 1)
+                #print(digi1R)
                 first = False
               
         #updates values
