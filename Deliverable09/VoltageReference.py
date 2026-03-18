@@ -59,11 +59,44 @@ while True:
 
     if clicked: 
         #update voltage values
-        if voltage > 0:
+        if voltage >= 0:
             pi1.write(19, 0)
         else: 
             pi1.write(19, 1)
-        step = Min_difference.min_difference_volts(abs(voltage))
-        digipot.set_step(step, 1)
+        
+        if voltage == 5: 
+            digipot.set_step(59, 1)
+        elif voltage == 4.375: 
+            digipot.set_step(67, 1)
+        elif voltage == 3.75: 
+            digipot.set_step(76, 1)
+        elif voltage == 3.125: 
+            digipot.set_step(84, 1)
+        elif voltage == 2.5: 
+            digipot.set_step(92, 1)
+        elif voltage == 1.875: 
+            digipot.set_step(100, 1)
+        elif voltage == 1.25: 
+            digipot.set_step(108, 1)
+        elif voltage == 0.625: 
+            digipot.set_step(116, 1)
+        elif voltage == 0: 
+            digipot.set_step(128, 1)
+        elif voltage == -5: 
+            digipot.set_step(62, 1)
+        elif voltage == -4.375: 
+            digipot.set_step(71, 1)
+        elif voltage == -3.75: 
+            digipot.set_step(80, 1)
+        elif voltage == -3.125: 
+            digipot.set_step(91, 1)
+        elif voltage == -2.5: 
+            digipot.set_step(98, 1)
+        elif voltage == -1.875: 
+            digipot.set_step(107, 1)
+        elif voltage == -1.25: 
+            digipot.set_step(116, 1)
+        elif voltage == -0.625: 
+            digipot.set_step(125, 1)
 
           
