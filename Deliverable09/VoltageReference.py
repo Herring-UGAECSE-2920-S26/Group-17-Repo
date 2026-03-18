@@ -35,7 +35,7 @@ while True:
         lcd.lcd_display_string(f"{voltage:.4f} V", 2)
         if voltage == minV:
                 pi1.write(19, 1)
-                step = Min_difference.min_difference_volts(voltage)
+                step = Min_difference.min_difference_volts(abs(voltage))
                 digipot.set_step(step, 1)
                 #print(digi1R)
                 first = False
@@ -63,7 +63,7 @@ while True:
             pi1.write(19, 0)
         else: 
             pi1.write(19, 1)
-        step = Min_difference.min_difference_volts(voltage)
+        step = Min_difference.min_difference_volts(abs(voltage))
         digipot.set_step(step, 1)
 
           
