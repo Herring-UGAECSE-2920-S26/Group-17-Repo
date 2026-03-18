@@ -5,6 +5,7 @@ import Dual_Digipot
 import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
+import SquareWave
 
 #set up libraries
 pi1 = pigpio.pi()
@@ -16,6 +17,7 @@ digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 
 digipot.set_step(60, 0)
+SquareWave.waveOff(19, pi1)
 
 #declare vars
 minV = -5.0
