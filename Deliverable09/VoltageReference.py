@@ -34,6 +34,7 @@ while True:
         lcd.lcd_display_string("Voltage Reference", 1)
         lcd.lcd_display_string(f"{voltage:.4f} V", 2)
         if voltage == minV:
+                pi1.write(19, 0)
                 step = Min_difference.min_difference_volts(voltage)
                 digipot.set_step(step, 1)
                 #print(digi1R)
@@ -58,6 +59,10 @@ while True:
 
     if clicked: 
         #update voltage values
+        if voltage > 0:
+            pi1.write(19, 1)
+        else: 
+            pi1.write(19, 0)
         step = Min_difference.min_difference_volts(voltage)
         digipot.set_step(step, 1)
 
