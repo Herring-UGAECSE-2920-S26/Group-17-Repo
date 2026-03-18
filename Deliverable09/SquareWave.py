@@ -29,6 +29,9 @@ if __name__ == "__main__":
     count = 0
     first = True
 
+    #make sure square wave is centered
+    digipot.set_step(60, 0)
+
     while True:
         #update values
         clockwise, fast = rotary.getRotary()
