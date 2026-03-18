@@ -15,6 +15,8 @@ rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 
+digipot.set_step(60, 0)
+
 #declare vars
 minV = -5.0
 maxV = 5.0
