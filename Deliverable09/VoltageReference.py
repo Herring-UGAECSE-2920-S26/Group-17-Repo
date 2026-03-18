@@ -22,7 +22,7 @@ stepSize = 0.625
 voltage = -5.0
 first = True
 
- while True:
+while True:
 
         #updates lcd when something has changed
             if first == True:
