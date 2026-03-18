@@ -1,4 +1,4 @@
-def min_difference(digi1R):
+def min_difference_ohms(digi1R):
     select_resistance = digi1R
     min_difference = float(100000) #sets the value used to compare to differnce very high so that any mesured
     #print("start")
@@ -15,11 +15,28 @@ def min_difference(digi1R):
 
     return step
 
+def min_difference_volts(voltage):
+    select_voltage = voltage
+    min_difference = float(100000) #sets the value used to compare to differnce very high so that any mesured
+    #print("start")
+
+    for i in range(0, 128): # 1 - 128 steps of digipot
+        voltage = -0.0733*i + 9.45 # characteristic eqn of our dual digipot
+        difference = abs(select_voltage - voltage) # goes through difference between every voltage at each step and the voltage choosen by the user #
+
+        if difference < min_difference: # goes through range and sets min_diff to smallest difference and sets i at that step
+            min_difference = difference
+            step = i
+            #print("min difference:", min_difference)
+            #print("step:", step)
+
+    return step
+
 #print(f"set to step: {step}")
 if __name__ == "__main__":
     select_resistance = input("resistance in kOhms: ")
     selected_resistance = float(select_resistance)
     print(f"Selected {selected_resistance}")
-    step = min_difference(selected_resistance)
+    step = min_difference_ohms(selected_resistance)
     print(f"set to step: {step}")
     
