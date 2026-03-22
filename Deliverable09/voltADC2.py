@@ -35,7 +35,7 @@ class Voltmeter:
     def run_measurement(self):
         global t2_stop
         t2_stop = 0  # Reset for new run
-    
+        time.sleep(3)
         # --- PHASE 0: RESET ---
         self.pi.write(self.GPIO_CAP_RS, 1)
         time.sleep(0.5)           # 50ms is plenty for a dead short
@@ -70,7 +70,7 @@ class Voltmeter:
         t2_actual = float(pigpio.tickDiff(t2_start, t2_stop))
     
         return t1_actual, t2_actual
-
+        
     def get_voltage(self):    
         t1, t2 = self.run_measurement()
 
