@@ -7,7 +7,7 @@ def min_difference_ohms(digi1R):
 
     for i in range(0, 128): # 1 - 128 steps of digipot
         resistance = 0.0732*i + 0.124 # characteristic eqn of our dual digipot
-        # goes through difference between every resistance at each step and the resistance choosen by the user #
+        # goes through difference between every resistance at each step and the resistance choosen by the user
         difference = abs(select_resistance - resistance) 
 
         # goes through range and sets min_diff to smallest difference and sets i at that step
@@ -28,7 +28,7 @@ def min_difference_volts(voltage):
 
     for i in range(0, 128): # 1 - 128 steps of digipot
         voltage = -0.0733*i + 9.45 # characteristic eqn of our dual digipot
-        # goes through difference between every voltage at each step and the voltage choosen by the user #
+        # goes through difference between every voltage at each step and the voltage choosen by the user
         difference = abs(select_voltage - voltage) 
 
         # goes through range and sets min_diff to smallest difference and sets i at that step
