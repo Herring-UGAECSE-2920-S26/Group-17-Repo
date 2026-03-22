@@ -7,8 +7,10 @@ import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
 import SquareWave
 
+#class that allows the manipulation of the voltage reference
 class VoltageReference:
-    
+
+    #initialize VoltageReference object
     def __init__(self, digipot, pi):
         #declare vars
         self.digipot = digipot
@@ -17,7 +19,8 @@ class VoltageReference:
         self.maxV = 5.0
         self.stepSize = 0.625
         self.voltage = 0
-        
+
+    #function that will work with StateB to let user change voltage
     def setVoltage(self, clockwise):
     
         #updates the voltage value
@@ -30,7 +33,8 @@ class VoltageReference:
         #reads and returns the new voltage value
         readVoltage = self.voltage
         return readVoltage
-    
+
+    #function that changes the actual voltage
     def setDigiPot(self, readVoltage):
 
         #prepares the voltage reference
