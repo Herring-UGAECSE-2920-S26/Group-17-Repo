@@ -43,7 +43,7 @@ class Voltmeter:
     
         self.pi.write(self.GPIO_VIN_CTRL, 0)
         self.pi.write(self.GPIO_VREF_CTRL, 0)
-        time.sleep(0.01)           # Settling time
+        time.sleep(0.1)           # Settling time
 
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
