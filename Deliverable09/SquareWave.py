@@ -22,17 +22,18 @@ def updateVoltage(voltage, digipot):
 def changeFrequency(self, freq, clockwise, fast):
     maxFreq = 10000
     minFreq = 100
+    readFreq = freq
     #if rotating
     if clockwise != 0:
         #updates the frequency value
         stepSize = 100 if fast else 10 
-        freq += (clockwise * stepSize)
+        readFreq += (clockwise * stepSize)
 
         #makes sure frequency is in range
-        if freq > maxFreq: freq = maxFreq
-        if freq < minFreq: freq = minFreq
+        if readFreq > maxFreq: readFreq = maxFreq
+        if readFreq < minFreq: readFreq = minFreq
 
-        return freq
+        return readFreq
 
 #function that will work with StateB to let user change voltage
 def changeVoltage(self, voltage, clockwise, fast):
