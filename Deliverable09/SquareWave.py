@@ -41,7 +41,7 @@ def changeVoltage(self, voltage, clockwise, fast):
     #if rotating
     if clockwise != 0:
         #updates the voltage value
-        stepSize = 100 if fast else 10 
+        stepSize = 1
         voltage += (clockwise * stepSize)
 
         #makes sure voltage is in range
