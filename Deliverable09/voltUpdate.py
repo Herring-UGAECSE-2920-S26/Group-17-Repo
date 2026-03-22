@@ -77,7 +77,7 @@ class Voltmeter:
         if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
             # Derived from your latest data: Vin = (slope * t2) + intercept
-          vin = (0.000135 * t2) - 5.8
+          vin = (0.0000135 * t2) - 5.8
         else:
             vin = 0
 
