@@ -1,9 +1,11 @@
 import time
-import pigpio
-import I2C_LCD_driver
+import pigpio #https://abyz.me.uk/rpi/pigpio/index.html
+import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 
+#class that allows the measurement of both voltage and resistance
 class Voltmeter:
 
+    #initialize Voltmeter object
     def __init__(self, pi):
     # --- Configuration ---
         self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
@@ -26,10 +28,12 @@ class Voltmeter:
 
         cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
 
+    #callback function that keeps track of the stop time
     def comp_callback(self, gpio, level, tick):
         if level == 1:
             self.t2_stop = tick
-            
+
+    #helper function that finds and returns the ramp up and ramp down times
     def run_measurement(self):
         self.t2_stop = 0  # Reset for new run
     
@@ -68,6 +72,7 @@ class Voltmeter:
     
         return t1_actual, t2_actual
 
+    #function that finds and returns the measured voltage
     def get_voltage(self):    
         t1, t2 = self.run_measurement()
 
@@ -80,6 +85,7 @@ class Voltmeter:
 
         return vin
 
+#function that finds and returns the measured resistance
 def get_resistance(self):
     vin = self.get_voltage()
 
@@ -90,13 +96,6 @@ def get_resistance(self):
         rin = 0
         
     return rin
-
-  # We eventually plan to merge the Ohmmeter Code and Voltmeter code into one file, did not do that for this deliverable
-    # def get_resistance(self):
-
-       # rin = 0
-
-       # return rin
 
 # --- Main Execution ---
 if __name__ == "__main__":
