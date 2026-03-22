@@ -9,12 +9,14 @@ import SquareWave
 
 class VoltageReference:
     
-    def __init__(self):
-         #declare vars
-         self.minV = -5.0
-         self.maxV = 5.0
-         self.stepSize = 0.625
-         self.voltage = 0
+    def __init__(self, digipot, pi):
+        #declare vars
+        self.digipot = digipot
+        self.pi = pi
+        self.minV = -5.0
+        self.maxV = 5.0
+        self.stepSize = 0.625
+        self.voltage = 0
         
     def setVoltage(self, clockwise):
     
@@ -29,53 +31,53 @@ class VoltageReference:
         readVoltage = self.voltage
         return readVoltage
     
-    def setDigiPot(self, readVoltage, digipot, pi1):
+    def setDigiPot(self, readVoltage):
 
         #prepares the voltage reference
-        digipot.set_step(60, 0)
-        SquareWave.waveOff(19, pi1)
+        self.digipot.set_step(60, 0)
+        SquareWave.waveOff(19, self.pi)
         
         #makes sure both positive and negative work
         if readVoltage >= 0:
-            pi1.write(19, 0)
+            self.pi.write(19, 0)
         else: 
-            pi1.write(19, 1)
+            self.pi.write(19, 1)
 
         #updates voltage value
         if readVoltage == 5: 
-            digipot.set_step(59, 1)
+            self.digipot.set_step(59, 1)
         elif readVoltage == 4.375: 
-            digipot.set_step(67, 1)
+            self.digipot.set_step(67, 1)
         elif readVoltage == 3.75: 
-            digipot.set_step(76, 1)
+            self.digipot.set_step(76, 1)
         elif readVoltage == 3.125: 
-            digipot.set_step(84, 1)
+            self.digipot.set_step(84, 1)
         elif readVoltage == 2.5: 
-            digipot.set_step(92, 1)
+            self.digipot.set_step(92, 1)
         elif readVoltage == 1.875: 
-            digipot.set_step(100, 1)
+            self.digipot.set_step(100, 1)
         elif readVoltage == 1.25: 
-            digipot.set_step(108, 1)
+            self.digipot.set_step(108, 1)
         elif readVoltage == 0.625: 
-            digipot.set_step(116, 1)
+            self.digipot.set_step(116, 1)
         elif readVoltage == 0: 
-            digipot.set_step(128, 1)
+            self.digipot.set_step(128, 1)
         elif readVoltage == -5: 
-            digipot.set_step(62, 1)
+            self.digipot.set_step(62, 1)
         elif readVoltage == -4.375: 
-            digipot.set_step(71, 1)
+            self.digipot.set_step(71, 1)
         elif readVoltage == -3.75: 
-            digipot.set_step(80, 1)
+            self.digipot.set_step(80, 1)
         elif voltage == -3.125: 
-            digipot.set_step(89, 1)
+            self.digipot.set_step(89, 1)
         elif readVoltage == -2.5: 
-            digipot.set_step(98, 1)
+            self.digipot.set_step(98, 1)
         elif readVoltage == -1.875: 
-            digipot.set_step(107, 1)
+            self.digipot.set_step(107, 1)
         elif readVoltage == -1.25: 
-            digipot.set_step(116, 1)
+            self.digipot.set_step(116, 1)
         elif readVoltage == -0.625: 
-            digipot.set_step(125, 1)
+            self.digipot.set_step(125, 1)
 
 if __name__ == "__main__":
     #set up libraries
