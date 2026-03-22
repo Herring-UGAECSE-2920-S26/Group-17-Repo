@@ -6,6 +6,8 @@ import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
 import ADCvoltmeter
+import VoltageReference
+import SquareWave
 
 #set up libraries
 pi1 = pigpio.pi()
@@ -16,18 +18,21 @@ rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 voltmeter = ADCvoltmeter.Voltmeter(pi1)
+voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 
 #declare vars
 state = "FunGen"
-digi0R = 100
-digi1R = 100
-minR = 100
-maxR = 10000
+waveOutPin = 19
 menuFirst = True
 square = False
 clear = True
 voltage = 0
 resistance = 0
+refVoltage = 0
+waveFreq = 5050
+waveVoltage = 5
+refStatus = "Off"
+waveStatus = "Off"
 
 #function that checks and updates the state
 def checkState(thisState):
@@ -39,6 +44,11 @@ def checkState(thisState):
     global clear
     global voltage
     global resistance
+    global refVoltage
+    global waveFreq
+    global waveVoltage
+    global refStatus
+    global waveStatus
 
     #match case statement that handles the states changing
     match thisState:
@@ -454,9 +464,34 @@ def checkState(thisState):
                 state = "FreqB"
                 menuFirst = True
                 clear = False
-            #do action
+            #go change wave frequency
             elif clicked == True:
-                print("Implement later")
+                state = "FreqIn"
+                menuFirst = True
+                clear = False
+
+        #changes wave frequency
+        case "FreqIn":
+            #updates led when something has changed
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string(f"> {waveFreq} Hz", 1)
+                lcd.lcd_display_string("  Back", 2)
+                lcd.lcd_display_string("  Main", 3)
+                menuFirst = False
+
+            currentFreq = waveFreq #checks current frequency
+            #changes frequency
+            if clockwise != 0:
+                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
+            #updates lcd if necessary
+            if currentFreq != waveFreq:
+                lcd.lcd_display_string(f"> {waveFreq} Hz     ", 1)
+
+            #goes back to normal frequency menu if clicked
+            if clicked == True:
+                state = "FreqI"
+                menuFirst = True
                 clear = False
 
         #level 3 under FunGenF
@@ -521,11 +556,35 @@ def checkState(thisState):
                 state = "AmpB"
                 menuFirst = True
                 clear = False
-            #do action
+            #go change wave amplitude
             elif clicked == True:
-                print("Implement later")
+                state = "AmpIn"
+                menuFirst = True
                 clear = False
 
+        #changes wave amplitude
+        case "AmpIn":
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string(f"> +/-{waveVoltage} Vp          ", 1)
+                lcd.lcd_display_string("  Back", 2)
+                lcd.lcd_display_string("  Main", 3)
+                menuFirst = False
+
+            currentWaveVoltage = waveVoltage #checks current amplitude
+            #changes amplitude
+            if clockwise != 0:
+                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast)
+            #updates lcd if necessary
+            if currentWaveVoltage != waveVoltage:
+                lcd.lcd_display_string(f"> +/-{waveVoltage} Vp       ", 1)
+
+            #goes back to normal amplitude menu if clicked
+            if clicked == True:
+                state = "AmpI"
+                menuFirst = True
+                clear = False
+                
         #level 3 under FunGenA
         case "AmpB":
             #updates led when something has changed
@@ -578,10 +637,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("> On", 1)
-                lcd.lcd_display_string("  Off", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string("> On   ", 2)
+                lcd.lcd_display_string("  Off   ", 3)
+                lcd.lcd_display_string("  Back   ", 4)
+                #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
                                                 
             #switch to other menu option
@@ -589,9 +649,12 @@ def checkState(thisState):
                 state = "FunOutOff"
                 menuFirst = True
                 clear = False
-            #do action
+            #turn on wave generator
             elif clicked == True:
-                print("Implement later")
+                waveStatus = "On"
+                SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
+                SquareWave.updateVoltage(waveVoltage, digipot)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
         #level 3 under FunGenO
@@ -599,10 +662,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("> Off", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string("  On   ", 2)
+                lcd.lcd_display_string("> Off   ", 3)
+                lcd.lcd_display_string("  Back   ", 4)
+                #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
                                                 
             #switch to other menu option 
@@ -615,9 +679,12 @@ def checkState(thisState):
                 state = "FunOutB"
                 menuFirst = True
                 clear = False
-            #do action
+            #turn off wave generator
             elif clicked == True:
-                print("Implement later")
+                waveStatus = "Off"
+                SquareWave.waveOff(waveOutPin, pi1)
+                voltageReference.setDigiPot(0)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
         #level 3 under FunGenO
@@ -625,10 +692,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off", 2)
-                lcd.lcd_display_string("> Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
+                #lcd.lcd_display_string("  On", 1)
+                lcd.lcd_display_string("  Off   ", 2)
+                lcd.lcd_display_string("> Back   ", 3)
+                lcd.lcd_display_string("  Main   ", 4)
                 menuFirst = False
                                                 
             #switch to other menu option 
@@ -643,6 +711,11 @@ def checkState(thisState):
                 clear = False
             #switch to other menu option
             elif clicked == True:
+                #turn off wave generator
+                waveStatus = "Off"
+                SquareWave.waveOff(waveOutPin, pi1)
+                voltageReference.setDigiPot(0)
+                #change state
                 state = "FunGenO"
                 menuFirst = True
                 clear = True
@@ -652,10 +725,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("> Main", 4)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
+                #lcd.lcd_display_string("  On", 1)
+                lcd.lcd_display_string("  Off   ", 2)
+                lcd.lcd_display_string("  Back   ", 3)
+                lcd.lcd_display_string("> Main   ", 4)
                 menuFirst = False
                                                 
             #switch to other menu option 
@@ -665,6 +739,11 @@ def checkState(thisState):
                 clear = False
             #switch to other menu option
             elif clicked == True:
+                #turn off wave generator
+                waveStatus = "Off"
+                SquareWave.waveOff(waveOutPin, pi1)
+                voltageReference.setDigiPot(0)
+                #change state
                 state = "FunGen"
                 menuFirst = True
                 clear = True
@@ -681,9 +760,9 @@ def checkState(thisState):
                 menuFirst = False
             
             #update resistance measurement
-            #resistance = voltmeter.get_resistance()
+            resistance = voltmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
-            time.sleep(10) #sleepy
+            #time.sleep(10) #sleepy
                                                 
             #switch to other menu option
             if clockwise == 1:
@@ -708,7 +787,7 @@ def checkState(thisState):
                 menuFirst = False
             
             #update resistance measurement
-            #resistance = voltmeter.get_resistance()
+            resistance = voltmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms        ", 1)
                                                 
             #switch to other menu option 
@@ -736,7 +815,7 @@ def checkState(thisState):
             #update voltage measurement
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
-            time.sleep(.10) #sleepy
+            #time.sleep(.10) #sleepy
                                                 
             #switch to other menu option
             if clockwise == 1:
@@ -919,9 +998,35 @@ def checkState(thisState):
                 state = "DCRefOut"
                 menuFirst = True
                 clear = False
-            #do action
+            #go input reference voltage
             elif clicked == True:
-                print("Implement later")
+                state = "DCRefIn"
+                menuFirst = True
+                clear = False
+
+        #input reference voltage
+        case "DCRefIn":
+            #updates led when something has changed
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string(f"> {refVoltage} V               ", 1)
+                lcd.lcd_display_string("  Output", 2)
+                lcd.lcd_display_string("  Back", 3)
+                lcd.lcd_display_string("  Main", 4)
+                menuFirst = False
+
+            currentVoltage = refVoltage #checks current voltage
+            #changes voltage
+            if clockwise != 0:
+                refVoltage = voltageReference.setVoltage(clockwise)
+            #updates lcd if necessary
+            if currentVoltage != refVoltage:
+                lcd.lcd_display_string(f"> {refVoltage} V      ", 1)
+
+            #goes back to normal voltage reference menu if clicked
+            if clicked == True:
+                state = "DCRefVolt"
+                menuFirst = True
                 clear = False
 
         #level 2 under DCRef
@@ -1004,11 +1109,12 @@ def checkState(thisState):
         case "DCOutOn":
             #updates led when something has changed
             if menuFirst == True:
-                if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("> On", 1)
-                lcd.lcd_display_string("  Off", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                if clear: lcd.lcd_clear() 
+                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
+                lcd.lcd_display_string("> On    ", 2)
+                lcd.lcd_display_string("  Off    ", 3)
+                lcd.lcd_display_string("  Back    ", 4)
+                #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
 
             #switch to other menu option
@@ -1016,9 +1122,11 @@ def checkState(thisState):
                 state = "DCOutOff"
                 menuFirst = True
                 clear = False
-            #do action
+            #turn voltage reference on
             elif clicked == True:
-                print("Implement later")
+                refStatus = "On"
+                voltageReference.setDigiPot(refVoltage)
+                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
                 clear = False
 
         #level 3 under DCRefOut
@@ -1026,10 +1134,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("> Off", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
+                lcd.lcd_display_string("  On    ", 2)
+                lcd.lcd_display_string("> Off    ", 3)
+                lcd.lcd_display_string("  Back    ", 4)
+                #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
                                                 
             #switch to other menu option 
@@ -1042,9 +1151,11 @@ def checkState(thisState):
                 state = "DCOutB"
                 menuFirst = True
                 clear = False
-            #do action
+            #turn reference voltage off
             elif clicked == True:
-                print("Implement later")
+                refStatus = "Off"
+                voltageReference.setDigiPot(0)
+                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
                 clear = False
 
         #level 3 under DCRefOut
@@ -1052,10 +1163,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off", 2)
-                lcd.lcd_display_string("> Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
+                #lcd.lcd_display_string("  On", 1)
+                lcd.lcd_display_string("  Off    ", 2)
+                lcd.lcd_display_string("> Back    ", 3)
+                lcd.lcd_display_string("  Main    ", 4)
                 menuFirst = False
                                                 
             #switch to other menu option 
@@ -1070,6 +1182,10 @@ def checkState(thisState):
                 clear = False
             #switch to other menu option
             elif clicked == True:
+                #turn off reference voltage
+                refStatus = "Off"
+                voltageReference.setDigiPot(0) 
+                #change state
                 state = "DCRefOut"
                 menuFirst = True
                 clear = True
@@ -1079,10 +1195,11 @@ def checkState(thisState):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("> Main", 4)
+                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
+                #lcd.lcd_display_string("  On", 1)
+                lcd.lcd_display_string("  Off    ", 2)
+                lcd.lcd_display_string("  Back    ", 3)
+                lcd.lcd_display_string("> Main    ", 4)
                 menuFirst = False
                                                 
             #switch to other menu option 
@@ -1092,6 +1209,10 @@ def checkState(thisState):
                 clear = False
             #switch to other menu option
             elif clicked == True:
+                #turn off reference voltage
+                refStatus = "Off"
+                voltageReference.setDigiPot(0) 
+                #change state
                 state = "FunGen"
                 menuFirst = True
                 clear = True
