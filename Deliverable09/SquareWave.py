@@ -18,6 +18,38 @@ def updateVoltage(voltage, digipot):
     step = Min_difference.min_difference_volts(voltage)
     digipot.set_step(step, 1)
 
+#function that will work with StateB to let user change frequency
+def changeFrequency(self, freq, clockwise, fast):
+    maxFreq = 10000
+    minFreq = 100
+    #if rotating
+    if clockwise != 0:
+        #updates the frequency value
+        stepSize = 100 if fast else 10 
+        freq += (clockwise * stepSize)
+
+        #makes sure frequency is in range
+        if freq > maxFreq: freq = maxFreq
+        if freq < minFreq: freq = minFreq
+
+        return freq
+
+#function that will work with StateB to let user change voltage
+def changeVoltage(self, voltage, clockwise, fast):
+    maxV = 10
+    minV = 0
+    #if rotating
+    if clockwise != 0:
+        #updates the voltage value
+        stepSize = 100 if fast else 10 
+        voltage += (clockwise * stepSize)
+
+        #makes sure voltage is in range
+        if voltage > maxV: voltage = maxV
+        if voltage < minV: voltage = minV
+
+        return voltage
+
 # --- For Testing ---
 if __name__ == "__main__":
     
