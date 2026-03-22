@@ -1,6 +1,6 @@
 import time
 import pigpio
-
+import I2C_LCD_driver
 class Voltmeter:
 
     def __init__(self, pi):
