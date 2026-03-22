@@ -38,7 +38,7 @@ class Voltmeter:
     
         # --- PHASE 0: RESET ---
         self.pi.write(self.GPIO_CAP_RS, 1)
-        time.sleep(0.05)           # 50ms is plenty for a dead short
+        time.sleep(0.5)           # 50ms is plenty for a dead short
         self.pi.write(self.GPIO_CAP_RS, 0)
     
         self.pi.write(self.GPIO_VIN_CTRL, 0)
