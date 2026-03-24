@@ -87,9 +87,9 @@ def run_measurement():
 t1, t2 = run_measurement()
 
 if t1 is not None:
-    # Vin ( 0.000135* t2) - 5.8
+    # Vin ( 0.000226* t2) - 5.56
     # Ensure the sign of Vref matches your integrator's direction
-    vin = ( 0.000135* t2) - 5.8
+    vin = ( 0.000226* t2) - 5.56
     print(f"Actual T1: {t1} us | Actual T2: {t2} us")
     print(f"Measured Vin: {vin:.4f} V")
 else:
