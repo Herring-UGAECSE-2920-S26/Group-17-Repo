@@ -79,7 +79,7 @@ class Voltmeter:
         if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
             # Vin = (slope * t2) + intercept
-            vin = (0.000293 * t2) - 5.21
+            vin = -6.3 + 0.000305*t2 - 0.0000000015*(t2*t2)
         else:
             vin = 0
 
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         # --- Updated Empirical Calibration Curve ---
         # Derived from your latest data: Vin = (slope * t2) + intercept
         # 1. Calculate Vin from T2
-        vin = ( 0.000293* t2) - 5.21
+        vin = -6.3 + 0.000305*t2 - 0.0000000015*(t2*t2)
 
         # 2. Calculate Ohms from Vin (Using ** for power)
         ohms = 300 + (1042 * vin) + (236 * (vin**2))
