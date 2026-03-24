@@ -85,17 +85,17 @@ class Voltmeter:
 
         return vin
 
-#function that finds and returns the measured resistance
-def get_resistance(self):
-    vin = self.get_voltage()
+    #function that finds and returns the measured resistance
+    def get_resistance(self):
+        vin = self.get_voltage()
 
-    if vin != 0:
-        # 2. Calculate Ohms from Vin (Using ** for power)
-         rin = 300 + (1042 * vin) + (236 * (vin**2))
-    else: 
-        rin = 0
+        if vin != 0:
+            # 2. Calculate Ohms from Vin (Using ** for power)
+            rin = 300 + (1042 * vin) + (236 * (vin**2))
+        else: 
+            rin = 0
         
-    return rin
+        return rin
 
 # --- Main Execution ---
 if __name__ == "__main__":
