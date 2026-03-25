@@ -15,9 +15,9 @@ Deliverable06- https://docs.google.com/document/d/1OR8q6JVmUQl91yfNTtua-DgmhVLAO
 
 Deliverable07- https://docs.google.com/document/d/1zSDn742JS-D2WtFQbwPni7vy2MXRYBRD/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
-Deliverable08-
+Deliverable08- https://docs.google.com/document/d/1JbKFoqaq7U-JG37KPXWpJkza07G763Nv/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
-Deliverable09-
+Deliverable09- https://docs.google.com/document/d/1pwM9REz7CcVxF-zIhd31Ajm2fISoKhyQ/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
 Deliverable10-
 
