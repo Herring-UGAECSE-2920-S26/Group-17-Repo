@@ -5,8 +5,9 @@ import Dual_Digipot
 import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
-import ADCvoltmeter
+#import ADCvoltmeter
 import adcCodeTest
+import ohmmeterTest
 import VoltageReference
 import SquareWave
 
@@ -19,6 +20,7 @@ rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
+ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 
 #declare vars
@@ -763,7 +765,7 @@ def checkState(thisState, fast):
                 menuFirst = False
             
             #update resistance measurement
-            resistance = voltmeter.get_resistance()
+            resistance = ohmmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
             #time.sleep(10) #sleepy
                                                 
@@ -790,7 +792,7 @@ def checkState(thisState, fast):
                 menuFirst = False
             
             #update resistance measurement
-            resistance = voltmeter.get_resistance()
+            resistance = ohmmeter.get_resistance()
             lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
                                                 
             #switch to other menu option 
