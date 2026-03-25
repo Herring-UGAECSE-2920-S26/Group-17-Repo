@@ -66,7 +66,7 @@ class Voltmeter:
         self.t1_stop = self.pi.get_current_tick()    # Capture hardware stop tick
     
         # Calculate actual T1 duration in microseconds
-        t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
+        t1_actual = float(pigpio.tickDiff(self.t1_start, self.t1_stop))
 
         # --- DEAD TIME ---
         # Increased to 1ms to allow MOSFETs to settle with your supply issues
