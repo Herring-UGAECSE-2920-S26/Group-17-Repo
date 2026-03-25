@@ -91,7 +91,7 @@ if __name__ == "__main__":
 
         # --- LCD Output ---
         lcd.lcd_clear()
-        lcd.lcd_display_string(f"Vin: {vin:.2f}V", 1)
+        #lcd.lcd_display_string(f"Vin: {vin:.2f}V", 1)
         lcd.lcd_display_string(f"Res: {ohms:.1f} Ohm", 2)
     
         if vin > 1.5:
