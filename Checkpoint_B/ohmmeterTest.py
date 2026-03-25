@@ -76,7 +76,7 @@ class Ohmmeter:
         
             # 2. Calculate Ohms from Vin (Using ** for power)
             ohms = (-8093 + 1.85 * t2 - 4.37E-05 * t2**2) - 10000
-    
+            if ohms > 10000: ohms = ohms + 10000
             # --- Terminal Output ---
             print("-" * 30)
             print(f"T1: {t1:.0f} us | T2: {t2:.0f} us")
@@ -112,7 +112,7 @@ if __name__ == "__main__":
         
         # 2. Calculate Ohms from Vin (Using ** for power)
         ohms = (-8093 + 1.85 * t2 - 4.37E-05 * t2**2) - 10000
-    
+        if ohms > 10000: ohms = ohms + 10000
         # --- Terminal Output ---
         print("-" * 30)
         print(f"T1: {t1:.0f} us | T2: {t2:.0f} us")
