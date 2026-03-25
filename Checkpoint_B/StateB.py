@@ -1113,7 +1113,7 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear() 
                 if realRef == 0: realRef = refVoltage
-                lcd.lcd_display_string(f"Output: {realRef: .4f} V {refStatus}      ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus}   ", 1)
                 lcd.lcd_display_string("> On    ", 2)
                 lcd.lcd_display_string("  Off    ", 3)
                 lcd.lcd_display_string("  Back    ", 4)
@@ -1131,7 +1131,7 @@ def checkState(thisState, fast):
                 voltageReference.setDigiPot(refVoltage)
                 voltmeter.set_internal(1)
                 realRef = voltmeter.get_voltage()
-                lcd.lcd_display_string(f"Output: {realRef: .4f} V {refStatus}      ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus}   ", 1)
                 clear = False
 
         #level 3 under DCRefOut
@@ -1139,7 +1139,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"Output: {realRef: .4f} V {refStatus}      ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus}   ", 1)
                 lcd.lcd_display_string("  On    ", 2)
                 lcd.lcd_display_string("> Off    ", 3)
                 lcd.lcd_display_string("  Back    ", 4)
@@ -1161,7 +1161,7 @@ def checkState(thisState, fast):
                 refStatus = "Off"
                 voltageReference.setDigiPot(0)
                 realRef = voltmeter.get_voltage()
-                lcd.lcd_display_string(f"Output: {realRef: .4f} V {refStatus}      ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus}   ", 1)
                 clear = False
 
         #level 3 under DCRefOut
@@ -1169,7 +1169,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"Output: {realRef: .4f} V {refStatus}      ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus}   ", 1)
                 #lcd.lcd_display_string("  On", 1)
                 lcd.lcd_display_string("  Off    ", 2)
                 lcd.lcd_display_string("> Back    ", 3)
@@ -1202,7 +1202,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"Output: {refVoltage} V {refStatus}      ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus}      ", 1)
                 #lcd.lcd_display_string("  On", 1)
                 lcd.lcd_display_string("  Off    ", 2)
                 lcd.lcd_display_string("  Back    ", 3)
