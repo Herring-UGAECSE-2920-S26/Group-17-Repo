@@ -6,7 +6,7 @@ class Voltmeter:
 
     def __init__(self, pi):
         # --- Configuration ---
-        self.GPIO_VIN_CTRL = 13  # Controls Vin MOSFET 
+        self.GPIO_OHM_CTRL = 13  # Controls Ohmmeter MOSFET 
         self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
         self.GPIO_COMP_IN = 4   # Comparator Output
         self.GPIO_CAP_RS = 12   # Capacitor reset switch
@@ -14,7 +14,7 @@ class Voltmeter:
         self.pi = pi
 
         # Pin Setup
-        self.pi.set_mode(self.GPIO_VIN_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_OHM_CTRL, pigpio.OUTPUT)
         self.pi.set_mode(self.GPIO_VREF_CTRL, pigpio.OUTPUT)
         self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
         self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
@@ -36,15 +36,15 @@ class Voltmeter:
         time.sleep(0.05)           
         self.pi.write(self.GPIO_CAP_RS, 0)
     
-        self.pi.write(self.GPIO_VIN_CTRL, 0)
+        self.pi.write(self.GPIO_OHM_CTRL, 0)
         self.pi.write(self.GPIO_VREF_CTRL, 0)
         time.sleep(0.01)           
 
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_VIN_CTRL, 1) 
+        self.pi.write(self.GPIO_OHM_CTRL, 1) 
         time.sleep(.075)            
-        self.pi.write(self.GPIO_VIN_CTRL, 0) 
+        self.pi.write(self.GPIO_OHM_CTRL, 0) 
         t1_stop = self.pi.get_current_tick()
     
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
