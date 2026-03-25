@@ -35,7 +35,7 @@ class Voltmeter:
             self.t2_stop = tick
 
     #helper function that finds and returns the ramp up and ramp down times
-    def run_measurement(self):
+    def run_measurement(self, gpio):
         self.t2_stop = 0  # Reset for new run
     
         # --- PHASE 0: RESET ---
@@ -43,15 +43,15 @@ class Voltmeter:
         time.sleep(0.05)           # 50ms dead short
         self.pi.write(self.GPIO_CAP_RS, 0)
     
-        self.pi.write(self.GPIO_VIN_CTRL, 0)
+        self.pi.write(gpio, 0)
         self.pi.write(self.GPIO_VREF_CTRL, 0)
         time.sleep(0.01)           # Settling time
 
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_VIN_CTRL, 1) 
+        self.pi.write(gpio, 1) 
         time.sleep(.075)            # Fixed 75 ms run-up
-        self.pi.write(self.GPIO_VIN_CTRL, 0) 
+        self.pi.write(gpio, 0) 
         t1_stop = self.pi.get_current_tick()
     
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
@@ -75,7 +75,7 @@ class Voltmeter:
 
     #function that finds and returns the measured voltage
     def get_voltage(self):    
-        t1, t2 = self.run_measurement()
+        t1, t2 = self.run_measurement(self.GPIO_VIN_CTRL)
 
         if t2 is not None:
             # --- Updated Empirical Calibration Curve ---
@@ -88,7 +88,7 @@ class Voltmeter:
 
     #function that finds and returns the measured resistance
     def get_resistance(self):
-        t1, t2 = self.run_measurement()
+        t1, t2 = self.run_measurement(self.GPIO_OHM_ON)
 
         if t2 is not None:
             # 2. Calculate Ohms from Vin (Using ** for power)
@@ -110,7 +110,8 @@ if __name__ == "__main__":
 
     voltmeter = Voltmeter(pi)
     
-    t1, t2 = voltmeter.run_measurement()
+    t1v, t2v = voltmeter.run_measurement(self.GPIO_VIN_CTRL)
+    t1r, t2r = voltmeter.run_measurement(self.GPIO_OHM_ON)
     volt = voltmeter.get_voltage()
     ohm = voltmeter.get_resistance()
 
@@ -118,14 +119,14 @@ if __name__ == "__main__":
         # --- Updated Empirical Calibration Curve ---
         # Derived from your latest data: Vin = (slope * t2) + intercept
         # 1. Calculate Vin from T2
-        vin = -7.41 + 2.61E-04 * t2 + 1.5E-08 * t2**2 - 6.29E-13 * t2**3 + 7.32E-18 * t2**4
+        vin = -7.41 + 2.61E-04 * t2v + 1.5E-08 * t2v**2 - 6.29E-13 * t2v**3 + 7.32E-18 * t2v**4
 
         # 2. Calculate Ohms from Vin (Using ** for power)
-        ohms = -8093 + 1.85 * t2 - 4.37E-05 * t2**2
+        ohms = -8093 + 1.85 * t2r - 4.37E-05 * t2r**2
     
         # --- Terminal Output ---
         print("-" * 30)
-        print(f"T1: {t1:.0f} us | T2: {t2:.0f} us")
+        print(f"T1: {t1v:.0f} us | T2: {t2v:.0f} us")
         print(f"Voltage: {vin:.4f} V")
         print(f"Resistance: {ohms:.2f} Ohms") 
         print("-" * 30)
