@@ -94,7 +94,7 @@ if __name__ == "__main__":
         #lcd.lcd_display_string(f"Vin: {vin:.2f}V", 1)
         lcd.lcd_display_string(f"Res: {ohms:.1f} Ohm", 2)
     
-        if vin > 1.5:
-            print("Warning: Voltage is entering the nonlinear clipping region!")
+        #if vin > 1.5:
+            #print("Warning: Voltage is entering the nonlinear clipping region!")
     else:
         print("Measurement Timeout: Integrator did not ramp.")
