@@ -72,7 +72,7 @@ class VoltageReference:
             self.digipot.set_step(71, 1)
         elif readVoltage == -3.75: 
             self.digipot.set_step(80, 1)
-        elif voltage == -3.125: 
+        elif readVoltage == -3.125: 
             self.digipot.set_step(89, 1)
         elif readVoltage == -2.5: 
             self.digipot.set_step(98, 1)
