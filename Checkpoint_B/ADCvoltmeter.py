@@ -118,7 +118,7 @@ if __name__ == "__main__":
     volt = voltmeter.get_voltage()
     ohm = voltmeter.get_resistance()
 
-    if t2 is not None:
+    if t2v is not None:
         # --- Updated Empirical Calibration Curve ---
         # Derived from your latest data: Vin = (slope * t2) + intercept
         # 1. Calculate Vin from T2
