@@ -85,7 +85,7 @@ if __name__ == "__main__":
         # --- Terminal Output ---
         print("-" * 30)
         print(f"T1: {t1:.0f} us | T2: {t2:.0f} us")
-        print(f"Voltage: {vin:.4f} V")
+        #print(f"Voltage: {vin:.4f} V")
         print(f"Resistance: {ohms:.2f} Ohms") 
         print("-" * 30)
 
