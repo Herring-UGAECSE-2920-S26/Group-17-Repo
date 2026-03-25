@@ -36,7 +36,6 @@ class Ohmmeter:
         self.t2_stop = 0  # Reset for new run
     
         # --- PHASE 0: RESET ---
-        # Discharge capacitor
         self.pi.write(self.GPIO_CAP_RS, 1)
         time.sleep(0.05)           
         self.pi.write(self.GPIO_CAP_RS, 0)
@@ -48,9 +47,9 @@ class Ohmmeter:
 
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_OHM_CTRL, 1) # Start ramp using unknown resistor
+        self.pi.write(self.GPIO_OHM_CTRL, 1) 
         time.sleep(0.075)            
-        self.pi.write(self.GPIO_OHM_CTRL, 0) # Stop ramp
+        self.pi.write(self.GPIO_OHM_CTRL, 0) 
         t1_stop = self.pi.get_current_tick()
     
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
@@ -60,9 +59,9 @@ class Ohmmeter:
 
         # --- PHASE 2: T2 (De-integration) ---
         t2_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_VREF_CTRL, 1) # Start ramp-down using Vref
+        self.pi.write(self.GPIO_VREF_CTRL, 1)
     
-        # Wait for comparator to flip (callback sets t2_stop)
+        # Wait for comparator to flip
         timeout = time.time() + 1.0 
         while self.t2_stop == 0:
             if time.time() > timeout:
@@ -74,3 +73,35 @@ class Ohmmeter:
         t2_actual = float(pigpio.tickDiff(t2_start, self.t2_stop))
     
         return t1_actual, t2_actual
+
+    # --- THIS WAS THE MISSING METHOD ---
+    def get_resistance(self):
+        """Calculates and returns the resistance based on discharge time (t2)."""
+        t1, t2 = self.run_measurement()
+
+        if t2 is not None:
+            # Using your provided polynomial for resistance
+            # Ohms = -8093 + 1.85 * t2 - 4.37E-05 * t2^2
+            ohms = -8093 + (1.85 * t2) - (4.37e-05 * (t2**2))
+            
+            # Clamp to 0 if the polynomial yields a negative number at very low t2
+            return max(0, ohms)
+        else:
+            # If t2 is None, measurement timed out
+            return 0.0
+
+# --- Internal test block ---
+if __name__ == "__main__":
+    pi = pigpio.pi()
+    if not pi.connected:
+        print("Error: pigpiod not running!")
+    else:
+        ohm = Ohmmeter(pi)
+        print("Testing Ohmmeter... Press Ctrl+C to stop.")
+        try:
+            while True:
+                r = ohm.get_resistance()
+                print(f"Resistance: {r:.2f} Ohms")
+                time.sleep(0.5)
+        except KeyboardInterrupt:
+            pi.stop()
