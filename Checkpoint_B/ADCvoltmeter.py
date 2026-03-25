@@ -9,18 +9,18 @@ class Voltmeter:
     def __init__(self, pi):
     # --- Configuration ---
         self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
-        self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
+        self.self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
         self.GPIO_COMP_IN = 4   # Comparator Output
-        self.GPIO_CAP_RS = 12   # Capacitor reset switch
+        self.self.GPIO_CAP_RS = 12   # Capacitor reset switch
         self.GPIO_OHM_ON = 13   # Ohmmeter activated
         self.GPIO_INTERNAL = 16 # Selects internal/external measurements
         self.pi = pi
 
         # Pin Setup
         self.pi.set_mode(self.GPIO_VIN_CTRL, pigpio.OUTPUT)
-        self.pi.set_mode(self.GPIO_VREF_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.self.GPIO_VREF_CTRL, pigpio.OUTPUT)
         self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
-        self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
+        self.pi.set_mode(self.self.GPIO_CAP_RS, pigpio.OUTPUT)
         self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
         self.pi.set_mode(self.GPIO_INTERNAL, pigpio.OUTPUT)
 
@@ -41,13 +41,13 @@ class Voltmeter:
     
         # --- PHASE 0: RESET (Must be at the start) ---
         # Discharge capacitor to ensure we start at exactly 0V
-        pi.write(GPIO_CAP_RS, 1)
+        pi.write(self.self.GPIO_CAP_RS, 1)
         time.sleep(0.5)           # Give it 50ms to fully clear
-        pi.write(GPIO_CAP_RS, 0)
+        pi.write(self.GPIO_CAP_RS, 0)
     
         # Ensure all signal switches are OFF
         pi.write(gpio, 0)
-        pi.write(GPIO_VREF_CTRL, 0)
+        pi.write(self.GPIO_VREF_CTRL, 0)
         time.sleep(0.1)           # Stability pause for the power supply
 
         # --- PHASE 1: T1 (Integration) ---
@@ -66,17 +66,17 @@ class Voltmeter:
 
         # --- PHASE 2: T2 (De-integration) ---
         t2_start = pi.get_current_tick()
-        pi.write(GPIO_VREF_CTRL, 1)        # Start reference ramp-down
+        pi.write(self.GPIO_VREF_CTRL, 1)        # Start reference ramp-down
     
         # Wait for comparator to flip (RISING_EDGE sets t2_stop in callback)
         timeout = time.time() + 15.0        # Increased timeout
         while t2_stop == 0:
             if time.time() > timeout:
-                pi.write(GPIO_VREF_CTRL, 0)
+                pi.write(self.GPIO_VREF_CTRL, 0)
                 return None, None 
             time.sleep(0.0001)
 
-        pi.write(GPIO_VREF_CTRL, 0)        # Turn off Reference
+        pi.write(self.GPIO_VREF_CTRL, 0)        # Turn off Reference
 
         # Calculate T2 in microseconds
         t2_actual = float(pigpio.tickDiff(t2_start, t2_stop))
