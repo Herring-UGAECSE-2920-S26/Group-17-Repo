@@ -44,7 +44,7 @@ class Voltmeter:
         # Setup the callback to watch for the edge on GPIO 4
         cb = pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, comp_callback)
 
-    def run_measurement():
+    def run_measurement(self):
         self.t2_stop = 0  # Reset for new run
     
         # --- PHASE 0: RESET (Must be at the start) ---
