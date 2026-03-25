@@ -92,7 +92,7 @@ class Voltmeter:
 
         if t2 is not None:
             # 2. Calculate Ohms from Vin (Using ** for power)
-            ohms = -8093 + 1.85 * t2 - 4.37E-05 * t2**2
+            rin = -8093 + 1.85 * t2 - 4.37E-05 * t2**2
         else: 
             rin = 0
         
