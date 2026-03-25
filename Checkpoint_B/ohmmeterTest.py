@@ -68,7 +68,7 @@ class Ohmmeter:
 
     #function that finds and returns the measured resistance
     def get_resistance(self):
-        t1, t2 = voltmeter.run_measurement()
+        t1, t2 = self.run_measurement()
 
         if t2 is not None:
             # 1. Calculate Vin from T2
