@@ -108,3 +108,8 @@ class Voltmeter:
             vin = 0
           
         return vin
+          
+
+    #function that selects either internal or external voltage input
+    def set_internal(self, level): #1 = internal; 0 = external
+        self.pi.write(self.GPIO_INTERNAL, level)
