@@ -6,7 +6,7 @@ class Voltmeter:
 
     def __init__(self, pi):
         # --- Configuration ---
-        self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
+        self.GPIO_VIN_CTRL = 13  # Controls Vin MOSFET 
         self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
         self.GPIO_COMP_IN = 4   # Comparator Output
         self.GPIO_CAP_RS = 12   # Capacitor reset switch
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     if t2 is not None:
         # 1. Calculate Vin from T2
-        vin = (0.000122* t2) - 6.96
+        #vin = (0.000122* t2) - 6.96
         
         # 2. Calculate Ohms from Vin (Using ** for power)
         ohms = ((0.000122* t2) - 6.96)*(5000 / 6)
