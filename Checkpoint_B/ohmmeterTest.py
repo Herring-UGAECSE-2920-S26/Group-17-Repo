@@ -24,7 +24,7 @@ class Ohmmeter:
 
         # Callback variables
         self.t2_stop = 0
-        # Correctly setup the callback referencing the class method
+        # Setup the callback referencing the class method correctly
         self.cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
 
     def comp_callback(self, gpio, level, tick):
@@ -75,16 +75,19 @@ class Ohmmeter:
         return t1_actual, t2_actual
 
     def get_resistance(self):
-        """Diagnostic version: Prints raw T2 ticks for calibration."""
+        """Calculates resistance using the custom linear calibration points."""
         t1, t2 = self.run_measurement()
 
         if t2 is not None:
-            # We print the raw T2 value to the terminal
-            print(f"DEBUG: Raw T2 Tick Count = {t2}")
+            # Linear Equation derived from 1k @ 18900 ticks and 10k @ 29200 ticks
+            # Ohms = (0.8738 * T2) - 15514.8
+            ohms = (0.8738 * t2) - 15514.8
             
-            # Calibration math
-            ohms = -8093 + (1.85 * t2) - (4.37e-05 * (t2**2))
-            return ohms
+            # Print debug info to terminal
+            print(f"DEBUG: T2={t2:.0f} | Calc Resistance={ohms:.2f} Ohms")
+            
+            # Return ohms (clamped to 0 minimum)
+            return max(0, ohms)
         else:
             print("DEBUG: T2 Timeout - No ramp detected")
             return 0.0
@@ -96,11 +99,12 @@ if __name__ == "__main__":
         print("Error: pigpiod not running!")
     else:
         ohm = Ohmmeter(pi)
-        print("Testing Ohmmeter... Press Ctrl+C to stop.")
+        print("Starting Ohmmeter Calibration Test... Press Ctrl+C to stop.")
         try:
             while True:
                 r = ohm.get_resistance()
-                print(f"Resistance: {r:.2f} Ohms")
+                print(f"Current Reading: {r:.2f} Ohms")
                 time.sleep(0.5)
         except KeyboardInterrupt:
+            print("\nTest Stopped.")
             pi.stop()
