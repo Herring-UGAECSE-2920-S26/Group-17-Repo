@@ -6,6 +6,7 @@ import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
 import ADCvoltmeter
+import adcCodeTest
 import VoltageReference
 import SquareWave
 
@@ -17,7 +18,7 @@ spi1 = spidev.SpiDev()
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
-voltmeter = ADCvoltmeter.Voltmeter(pi1)
+voltmeter = adcCodeTest.Voltmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 
 #declare vars
