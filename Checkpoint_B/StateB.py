@@ -475,7 +475,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"> {waveFreq} Hz", 1)
+                lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
@@ -486,7 +486,7 @@ def checkState(thisState, fast):
                 waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
             #updates lcd if necessary
             if currentFreq != waveFreq:
-                lcd.lcd_display_string(f"> {waveFreq} Hz     ", 1)
+                lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
 
             #goes back to normal frequency menu if clicked
             if clicked == True:
