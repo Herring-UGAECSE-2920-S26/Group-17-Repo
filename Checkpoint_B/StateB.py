@@ -1120,6 +1120,9 @@ def checkState(thisState, fast):
                 #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
 
+            #update voltage
+            if refStatus == "On": realRef = voltmeter.get_voltage()
+            
             #switch to other menu option
             if clockwise == 1:
                 state = "DCOutOff"
@@ -1145,6 +1148,9 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Back    ", 4)
                 #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
+
+            #update voltage
+            if refStatus == "On": realRef = voltmeter.get_voltage()
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -1175,6 +1181,9 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("> Back    ", 3)
                 lcd.lcd_display_string("  Main    ", 4)
                 menuFirst = False
+
+            #update voltage
+            if refStatus == "On": realRef = voltmeter.get_voltage()
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -1208,6 +1217,9 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Back    ", 3)
                 lcd.lcd_display_string("> Main    ", 4)
                 menuFirst = False
+
+            #update voltage
+            if refStatus == "On": realRef = voltmeter.get_voltage()
                                                 
             #switch to other menu option 
             if clockwise == -1: 
