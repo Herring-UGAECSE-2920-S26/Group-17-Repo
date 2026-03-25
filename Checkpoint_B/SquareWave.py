@@ -19,7 +19,7 @@ def updateVoltage(voltage, digipot):
     digipot.set_step(step, 1)
 
 #function that will work with StateB to let user change frequency
-def changeFrequency(self, freq, clockwise, fast):
+def changeFrequency(freq, clockwise, fast):
     maxFreq = 10000
     minFreq = 100
     readFreq = freq
