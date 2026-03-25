@@ -96,7 +96,7 @@ class Voltmeter:
 
         if t2 is not None:
             # Empirical Calibration Curve
-            vin = -7.41 + 2.61E-04 * t2 + 1.5E-08 * t2**2 - 6.29E-13 * t2**3 + 7.32E-18 * t2**4
+            vin = -6.83 + 2.71E-04 * t2 + 1.03E-08 * t2**2 - 4.56E-13 * t2**3 + 5.59E-18 * t2**4
             print(f"Actual T1: {t1} us | Actual T2: {t2} us | Vin: {vin:.4f} V")
         else:
             print("Error: Measurement timed out.")
