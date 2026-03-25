@@ -94,7 +94,7 @@ class Voltmeter:
 # --- Example Usage ---
     #function that finds and returns the measured voltage
     def get_voltage(self):
-        t1, t2 = run_measurement()
+        t1, t2 = self.run_measurement()
 
         if t1 is not None:
             # Vin ( 0.000226* t2) - 5.56
