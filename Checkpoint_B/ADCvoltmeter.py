@@ -36,40 +36,50 @@ class Voltmeter:
 
     #helper function that finds and returns the ramp up and ramp down times
     def run_measurement(self, gpio):
-        self.t2_stop = 0  # Reset for new run
+        global t2_start, t2_stop
+        t2_stop = 0  # Reset for new run
     
-        # --- PHASE 0: RESET ---
-        self.pi.write(self.GPIO_CAP_RS, 1)
-        time.sleep(0.05)           # 50ms dead short
-        self.pi.write(self.GPIO_CAP_RS, 0)
+        # --- PHASE 0: RESET (Must be at the start) ---
+        # Discharge capacitor to ensure we start at exactly 0V
+        pi.write(GPIO_CAP_RS, 1)
+        time.sleep(0.5)           # Give it 50ms to fully clear
+        pi.write(GPIO_CAP_RS, 0)
     
-        self.pi.write(gpio, 0)
-        self.pi.write(self.GPIO_VREF_CTRL, 0)
-        time.sleep(0.01)           # Settling time
+        # Ensure all signal switches are OFF
+        pi.write(gpio, 0)
+        pi.write(GPIO_VREF_CTRL, 0)
+        time.sleep(0.1)           # Stability pause for the power supply
 
         # --- PHASE 1: T1 (Integration) ---
-        t1_start = self.pi.get_current_tick()
-        self.pi.write(gpio, 1) 
-        time.sleep(.075)            # Fixed 75 ms run-up
-        self.pi.write(gpio, 0) 
-        t1_stop = self.pi.get_current_tick()
+        t1_start = pi.get_current_tick()   # Capture hardware start tick
+        pi.write(gpio, 1)         # Start ramp
+        time.sleep(.075)                    # Target 200ms
+        pi.write(gpio, 0)         # Stop ramp
+        t1_stop = pi.get_current_tick()    # Capture hardware stop tick
     
+        # Calculate actual T1 duration in microseconds
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
-        time.sleep(0.001)          # Dead time
+
+        # --- DEAD TIME ---
+        # Increased to 1ms to allow MOSFETs to settle with your supply issues
+        time.sleep(0.001)
 
         # --- PHASE 2: T2 (De-integration) ---
-        t2_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_VREF_CTRL, 1)
+        t2_start = pi.get_current_tick()
+        pi.write(GPIO_VREF_CTRL, 1)        # Start reference ramp-down
     
-        timeout = time.time() + 0.5 # 500ms timeout 
-        while self.t2_stop == 0:
+        # Wait for comparator to flip (RISING_EDGE sets t2_stop in callback)
+        timeout = time.time() + 15.0        # Increased timeout
+        while t2_stop == 0:
             if time.time() > timeout:
-                self.pi.write(self.GPIO_VREF_CTRL, 0)
-                return t1_actual, None # Return None for t2 to indicate timeout
+                pi.write(GPIO_VREF_CTRL, 0)
+                return None, None 
             time.sleep(0.0001)
 
-        self.pi.write(self.GPIO_VREF_CTRL, 0)
-        t2_actual = float(pigpio.tickDiff(t2_start, self.t2_stop))
+        pi.write(GPIO_VREF_CTRL, 0)        # Turn off Reference
+
+        # Calculate T2 in microseconds
+        t2_actual = float(pigpio.tickDiff(t2_start, t2_stop))
     
         return t1_actual, t2_actual
 
