@@ -1127,8 +1127,9 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
+            if refStatus == "On": 
                 #realRef = voltmeter.get_voltage()
+                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
             
             #switch to other menu option
@@ -1159,8 +1160,9 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
+            if refStatus == "On": 
                 #realRef = voltmeter.get_voltage()
+                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                                                 
             #switch to other menu option 
@@ -1195,8 +1197,9 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
+            if refStatus == "On": 
                 #realRef = voltmeter.get_voltage()
+                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                                                 
             #switch to other menu option 
@@ -1234,8 +1237,9 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
+            if refStatus == "On": 
                 #realRef = voltmeter.get_voltage()
+                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                                                 
             #switch to other menu option 
