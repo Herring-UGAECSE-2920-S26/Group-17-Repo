@@ -13,12 +13,10 @@ import SquareWave
 # --- Hardware Setup ---
 pi1 = pigpio.pi()
 if not pi1.connected:
-    print("FATAL ERROR: pigpiod is not running. Run 'sudo pigpiod' in terminal.")
+    print("FATAL ERROR: pigpiod is not running.")
     exit()
 
 spi1 = spidev.SpiDev()
-
-# Setup devices
 rotary = Rotary.Rotary(18, 23, 24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
@@ -30,19 +28,14 @@ voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 state = "FunGen"
 waveOutPin = 19
 menuFirst = True
-square = False
 clear = True
-voltage = 0
-resistance = 0
-refVoltage = 0
-realRef = -1
-waveFreq = 5050
-waveVoltage = 5
-refStatus = "Off"
-waveStatus = "Off"
+voltage, resistance = 0, 0
+refVoltage, realRef = 0, -1
+waveFreq, waveVoltage = 5050, 5
+refStatus, waveStatus = "Off", "Off"
 
 def checkState(thisState, fast, clockwise, clicked):
-    global state, menuFirst, square, clear, voltage, resistance
+    global state, menuFirst, clear, voltage, resistance
     global refVoltage, realRef, waveFreq, waveVoltage, refStatus, waveStatus
 
     match thisState:
@@ -55,8 +48,10 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
                 menuFirst = False
-            if clockwise == 1: state = "Ohm"; menuFirst, clear = True, False
-            elif clicked: state = "FunGenT"; menuFirst, clear = True, True
+            if clockwise == 1: 
+                state = "Ohm"; menuFirst, clear = True, False
+            elif clicked: 
+                state = "FunGenT"; menuFirst, clear = True, True
 
         case "Ohm":
             if menuFirst:
@@ -93,7 +88,7 @@ def checkState(thisState, fast, clockwise, clicked):
             if clockwise == -1: state = "Volt"; menuFirst, clear = True, False
             elif clicked: state = "DCRefVolt"; menuFirst, clear = True, True
 
-        # --- Level 2: FunGen Settings ---
+        # --- Level 2: Function Generator Menu ---
         case "FunGenT":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -126,9 +121,41 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("  Back", 4)
                 menuFirst = False
             if clockwise == -1: state = "FunGenA"; menuFirst, clear = True, False
+            elif clockwise == 1: state = "FunGenB"; menuFirst, clear = True, False
             elif clicked: state = "FunOutOn"; menuFirst, clear = True, True
 
-        # --- Measurements ---
+        case "FunGenB": # The Back Button logic
+            if menuFirst:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("  Frequency", 1)
+                lcd.lcd_display_string("  Amplitude", 2)
+                lcd.lcd_display_string("  Output", 3)
+                lcd.lcd_display_string("> Back", 4)
+                menuFirst = False
+            if clockwise == -1: state = "FunGenO"; menuFirst, clear = True, False
+            elif clicked: state = "FunGen"; menuFirst, clear = True, True
+
+        # --- Measurements & Settings ---
+        case "FreqIn":
+            if menuFirst:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("Set Freq:", 1)
+                menuFirst = False
+            if clockwise != 0:
+                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
+            lcd.lcd_display_string(f"{waveFreq} Hz      ", 2)
+            if clicked: state = "FunGenT"; menuFirst, clear = True, True
+
+        case "AmpIn":
+            if menuFirst:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("Set Amplitude:", 1)
+                menuFirst = False
+            if clockwise != 0:
+                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast)
+            lcd.lcd_display_string(f"+/- {waveVoltage} Vp    ", 2)
+            if clicked: state = "FunGenA"; menuFirst, clear = True, True
+
         case "OhmB":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -136,7 +163,7 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("> Back", 3)
                 menuFirst = False
             resistance = ohmmeter.get_resistance()
-            lcd.lcd_display_string(f"{resistance:.2f} Ohms    ", 1)
+            lcd.lcd_display_string(f"{resistance:.2f} Ohms", 1)
             if clicked: state = "Ohm"; menuFirst, clear = True, True
 
         case "VoltS":
@@ -146,7 +173,7 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("> Source Select", 3)
                 menuFirst = False
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage:.3f} V        ", 1)
+            lcd.lcd_display_string(f"{voltage:.3f} V", 1)
             if clicked: state = "SourceEx"; menuFirst, clear = True, True
 
         case "SourceEx":
@@ -169,7 +196,6 @@ def checkState(thisState, fast, clockwise, clicked):
             elif clicked:
                 voltmeter.set_internal(1); state = "VoltS"; menuFirst, clear = True, True
 
-        # --- DC Reference ---
         case "DCRefVolt":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -194,20 +220,12 @@ def checkState(thisState, fast, clockwise, clicked):
 
 # --- Main Running Code ---
 try:
-    print("Main Loop Started. Rotate knob...")
     while True:
-        cw_input, is_fast = rotary.getRotary()
-        btn_clicked, is_long = rotary.getButton()
-
-        # Debug terminal heartbeat
-        if cw_input != 0 or btn_clicked:
-            print(f"Knob: {cw_input}, Click: {btn_clicked}, State: {state}")
-
-        checkState(state, is_fast, cw_input, btn_clicked)
-        time.sleep(0.01) # Faster loop for better response
-
+        cw, is_fast = rotary.getRotary()
+        btn, is_long = rotary.getButton()
+        checkState(state, is_fast, cw, btn)
+        time.sleep(0.01)
 except KeyboardInterrupt:
-    print("\nStopping...")
     rotary.cancel()
     lcd.lcd_clear()
     pi1.stop()
