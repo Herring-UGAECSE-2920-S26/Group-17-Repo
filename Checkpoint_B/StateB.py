@@ -905,6 +905,9 @@ def checkState(thisState, fast):
                 clear = False
             #do action
             elif clicked == True:
+                state = "VoltS"
+                menuFirst = True
+                clear = True
                 voltmeter.set_internal(0)
                 clear = False
 
