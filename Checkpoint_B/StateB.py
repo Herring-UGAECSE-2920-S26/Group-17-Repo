@@ -38,6 +38,8 @@ waveStatus = "Off"
 #function that checks and updates the state
 def checkState(thisState, fast):
 
+    speed = fast
+
     #declare global vars
     global state
     global menuFirst
@@ -485,7 +487,7 @@ def checkState(thisState, fast):
             currentFreq = waveFreq #checks current frequency
             #changes frequency
             if clockwise != 0:
-                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
+                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, speed)
             #updates lcd if necessary
             if currentFreq != waveFreq:
                 lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
@@ -576,7 +578,7 @@ def checkState(thisState, fast):
             currentWaveVoltage = waveVoltage #checks current amplitude
             #changes amplitude
             if clockwise != 0:
-                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast)
+                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, speed)
             #updates lcd if necessary
             if currentWaveVoltage != waveVoltage:
                 lcd.lcd_display_string(f"> +/-{waveVoltage} Vp       ", 1)
