@@ -35,7 +35,7 @@ refStatus = "Off"
 waveStatus = "Off"
 
 #function that checks and updates the state
-def checkState(thisState):
+def checkState(thisState, fast):
 
     #declare global vars
     global state
@@ -1229,7 +1229,7 @@ try:
         clicked, longClick = rotary.getButton()
 
         #checks and changes state
-        checkState(state)
+        checkState(state, fast)
 
         #saves cpu
         time.sleep(0.05)
