@@ -74,7 +74,7 @@ class Ohmmeter:
     
         return t1_actual, t2_actual
 
-   def get_resistance(self):
+    def get_resistance(self):
         """Diagnostic version: Prints raw T2 ticks for calibration."""
         t1, t2 = self.run_measurement()
 
@@ -82,7 +82,7 @@ class Ohmmeter:
             # We print the raw T2 value to the terminal
             print(f"DEBUG: Raw T2 Tick Count = {t2}")
             
-            # Keep your old math here for now just to see it
+            # Calibration math
             ohms = -8093 + (1.85 * t2) - (4.37e-05 * (t2**2))
             return ohms
         else:
