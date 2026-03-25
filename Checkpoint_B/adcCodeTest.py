@@ -93,21 +93,21 @@ class Voltmeter:
 
 # --- Example Usage ---
     #function that finds and returns the measured voltage
-    def get_voltage(self):
-        t1, t2 = run_measurement()
+        def get_voltage(self):
+            t1, t2 = run_measurement()
 
-        if t1 is not None:
-            # Vin ( 0.000226* t2) - 5.56
-            # Ensure the sign of Vref matches your integrator's direction
-            vin = -7.41 + 2.61E-04 * t2 + 1.5E-08 * t2**2 - 6.29E-13 * t2**3 + 7.32E-18 * t2**4
-            print(f"Actual T1: {t1} us | Actual T2: {t2} us")
-            print(f"Measured Vin: {vin:.4f} V")
-        else:
-            print("Error: Measurement timed out. The comparator never triggered.")
-            print("Check if GPIO 4 is connected and if the integrator is ramping.")
-            vin = 0
+            if t1 is not None:
+                # Vin ( 0.000226* t2) - 5.56
+                # Ensure the sign of Vref matches your integrator's direction
+                vin = -7.41 + 2.61E-04 * t2 + 1.5E-08 * t2**2 - 6.29E-13 * t2**3 + 7.32E-18 * t2**4
+                print(f"Actual T1: {t1} us | Actual T2: {t2} us")
+                print(f"Measured Vin: {vin:.4f} V")
+            else:
+                print("Error: Measurement timed out. The comparator never triggered.")
+                print("Check if GPIO 4 is connected and if the integrator is ramping.")
+                vin = 0
           
-        return vin
+            return vin
           
 
     #function that selects either internal or external voltage input
