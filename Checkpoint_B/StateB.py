@@ -909,7 +909,6 @@ def checkState(thisState, fast):
                 menuFirst = True
                 clear = True
                 voltmeter.set_internal(0)
-                clear = False
 
         #level 3 under VoltS
         case "SourceIn":
