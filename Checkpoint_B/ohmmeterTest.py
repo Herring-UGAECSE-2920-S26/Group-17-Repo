@@ -2,7 +2,7 @@ import time
 import pigpio
 import I2C_LCD_driver 
 
-class Voltmeter:
+class Ohmmeter:
 
     def __init__(self, pi):
         # --- Configuration ---
@@ -66,12 +66,43 @@ class Voltmeter:
     
         return t1_actual, t2_actual
 
+    #function that finds and returns the measured resistance
+    def get_resistance(self):
+        t1, t2 = voltmeter.run_measurement()
+
+        if t2 is not None:
+            # 1. Calculate Vin from T2
+            #vin = (0.000122* t2) - 6.96
+        
+            # 2. Calculate Ohms from Vin (Using ** for power)
+            ohms = -8093 + 1.85 * t2 - 4.37E-05 * t2**2
+    
+            # --- Terminal Output ---
+            print("-" * 30)
+            print(f"T1: {t1:.0f} us | T2: {t2:.0f} us")
+            #print(f"Voltage: {vin:.4f} V")
+            print(f"Resistance: {ohms:.2f} Ohms") 
+            print("-" * 30)
+
+        # --- LCD Output ---
+        #lcd.lcd_clear()
+        #lcd.lcd_display_string(f"Vin: {vin:.2f}V", 1)
+        #lcd.lcd_display_string(f"Res: {ohms:.1f} Ohm", 2)
+    
+        #if vin > 1.5:
+            #print("Warning: Voltage is entering the nonlinear clipping region!")
+        else:
+            print("Measurement Timeout: Integrator did not ramp.")
+            ohms = 0
+        return ohms
+
+
 # --- Main Execution ---
 if __name__ == "__main__":
 
     pi = pigpio.pi()
     lcd = I2C_LCD_driver.lcd()
-    voltmeter = Voltmeter(pi)
+    voltmeter = Ohmmeter(pi)
     
     t1, t2 = voltmeter.run_measurement()
 
