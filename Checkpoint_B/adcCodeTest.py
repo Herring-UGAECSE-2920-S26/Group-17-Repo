@@ -113,3 +113,12 @@ class Voltmeter:
     #function that selects either internal or external voltage input
     def set_internal(self, level): #1 = internal; 0 = external
         self.pi.write(self.GPIO_INTERNAL, level)
+
+# --- Main Execution ---
+if __name__ == "__main__":
+
+    pi = pigpio.pi()
+    lcd = I2C_LCD_driver.lcd()
+
+    voltmeter = Voltmeter(pi)
+	voltmeter.get_voltage()
