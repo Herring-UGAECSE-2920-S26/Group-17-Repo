@@ -108,10 +108,13 @@ if __name__ == "__main__":
     pi = pigpio.pi()
     lcd = I2C_LCD_driver.lcd()
 
+    GPIO_VIN_CTRL = 5
+    GPIO_OHM_ON = 13
+
     voltmeter = Voltmeter(pi)
     
-    t1v, t2v = voltmeter.run_measurement(self.GPIO_VIN_CTRL)
-    t1r, t2r = voltmeter.run_measurement(self.GPIO_OHM_ON)
+    t1v, t2v = voltmeter.run_measurement(GPIO_VIN_CTRL)
+    t1r, t2r = voltmeter.run_measurement(GPIO_OHM_ON)
     volt = voltmeter.get_voltage()
     ohm = voltmeter.get_resistance()
 
