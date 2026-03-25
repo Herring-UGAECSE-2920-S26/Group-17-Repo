@@ -1130,7 +1130,7 @@ def checkState(thisState, fast):
                 refStatus = "On"
                 voltageReference.setDigiPot(refVoltage)
                 voltmeter.set_internal(1)
-                realRef = voltmeter.get_volage()
+                realRef = voltmeter.get_voltage()
                 lcd.lcd_display_string(f"Output: {realRef} V {refStatus}      ", 1)
                 clear = False
 
@@ -1160,7 +1160,7 @@ def checkState(thisState, fast):
             elif clicked == True:
                 refStatus = "Off"
                 voltageReference.setDigiPot(0)
-                realRef = voltmeter.get_volage()
+                realRef = voltmeter.get_voltage()
                 lcd.lcd_display_string(f"Output: {realRef} V {refStatus}      ", 1)
                 clear = False
 
