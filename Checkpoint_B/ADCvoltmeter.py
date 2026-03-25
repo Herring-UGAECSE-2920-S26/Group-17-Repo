@@ -9,9 +9,9 @@ class Voltmeter:
     def __init__(self, pi):
     # --- Configuration ---
         self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
-        self.self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
+        self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
         self.GPIO_COMP_IN = 4   # Comparator Output
-        self.self.GPIO_CAP_RS = 12   # Capacitor reset switch
+        self.GPIO_CAP_RS = 12   # Capacitor reset switch
         self.GPIO_OHM_ON = 13   # Ohmmeter activated
         self.GPIO_INTERNAL = 16 # Selects internal/external measurements
         self.pi = pi
