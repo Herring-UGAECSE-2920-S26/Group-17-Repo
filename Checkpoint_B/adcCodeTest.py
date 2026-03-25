@@ -108,11 +108,24 @@ class Voltmeter:
             vin = 0
           
         return vin
+
+	#function that finds and returns the measured resistance
+    def get_resistance(self):
+        vin = self.get_voltage()
+
+        if vin != 0:
+            # 2. Calculate Ohms from Vin (Using ** for power)
+            rin = vin*1
+			print(f"Measured Rin: {rin: .4f} Ohms")
+        else: 
+            rin = 0
+        
+        return rin
           
 
     #function that selects either internal or external voltage input
-    def set_internal(self, level): #1 = internal; 0 = external
-        self.pi.write(self.GPIO_INTERNAL, level)
+    #def set_internal(self, level): #1 = internal; 0 = external
+        #self.pi.write(self.GPIO_INTERNAL, level)
 
 # --- Main Execution ---
 if __name__ == "__main__":
@@ -122,3 +135,6 @@ if __name__ == "__main__":
 
     voltmeter = Voltmeter(pi)
 	voltmeter.get_voltage()
+    print("------------")
+    voltmeter.get_resistance()
+
