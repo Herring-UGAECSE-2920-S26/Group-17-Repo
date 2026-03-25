@@ -36,7 +36,7 @@ def changeFrequency(freq, clockwise, fast):
         return readFreq
 
 #function that will work with StateB to let user change voltage
-def changeVoltage(self, voltage, clockwise, fast):
+def changeVoltage(voltage, clockwise, fast):
     maxV = 10
     minV = 0
     #if rotating
