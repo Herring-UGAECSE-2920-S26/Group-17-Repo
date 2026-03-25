@@ -17,10 +17,10 @@ Deliverable07- https://docs.google.com/document/d/1zSDn742JS-D2WtFQbwPni7vy2MXRY
 
 Deliverable08- https://docs.google.com/document/d/1JbKFoqaq7U-JG37KPXWpJkza07G763Nv/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
-Deliverable09- https://docs.google.com/document/d/1pwM9REz7CcVxF-zIhd31Ajm2fISoKhyQ/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
+Deliverable09/Checkpoint B- https://docs.google.com/document/d/1pwM9REz7CcVxF-zIhd31Ajm2fISoKhyQ/edit?usp=sharing&ouid=111897706933431178867&rtpof=true&sd=true
 
 Deliverable10-
 
 Deliverable11-
 
-Deliverable12-
+Deliverable12/Checkpoint A-
