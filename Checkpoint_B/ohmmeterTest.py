@@ -55,7 +55,7 @@ class Ohmmeter:
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
         
         # --- DEAD TIME ---
-        time.sleep(0.001)          
+        time.sleep(0.5)          
 
         # --- PHASE 2: T2 (De-integration) ---
         t2_start = self.pi.get_current_tick()
