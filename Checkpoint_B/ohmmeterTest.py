@@ -74,20 +74,19 @@ class Ohmmeter:
     
         return t1_actual, t2_actual
 
-    # --- THIS WAS THE MISSING METHOD ---
-    def get_resistance(self):
-        """Calculates and returns the resistance based on discharge time (t2)."""
+   def get_resistance(self):
+        """Diagnostic version: Prints raw T2 ticks for calibration."""
         t1, t2 = self.run_measurement()
 
         if t2 is not None:
-            # Using your provided polynomial for resistance
-            # Ohms = -8093 + 1.85 * t2 - 4.37E-05 * t2^2
-            ohms = -8093 + (1.85 * t2) - (4.37e-05 * (t2**2))
+            # We print the raw T2 value to the terminal
+            print(f"DEBUG: Raw T2 Tick Count = {t2}")
             
-            # Clamp to 0 if the polynomial yields a negative number at very low t2
-            return max(0, ohms)
+            # Keep your old math here for now just to see it
+            ohms = -8093 + (1.85 * t2) - (4.37e-05 * (t2**2))
+            return ohms
         else:
-            # If t2 is None, measurement timed out
+            print("DEBUG: T2 Timeout - No ramp detected")
             return 0.0
 
 # --- Internal test block ---
