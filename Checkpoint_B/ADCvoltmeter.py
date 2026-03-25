@@ -18,9 +18,9 @@ class Voltmeter:
 
         # Pin Setup
         self.pi.set_mode(self.GPIO_VIN_CTRL, pigpio.OUTPUT)
-        self.pi.set_mode(self.self.GPIO_VREF_CTRL, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_VREF_CTRL, pigpio.OUTPUT)
         self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
-        self.pi.set_mode(self.self.GPIO_CAP_RS, pigpio.OUTPUT)
+        self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
         self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
         self.pi.set_mode(self.GPIO_INTERNAL, pigpio.OUTPUT)
 
@@ -41,7 +41,7 @@ class Voltmeter:
     
         # --- PHASE 0: RESET (Must be at the start) ---
         # Discharge capacitor to ensure we start at exactly 0V
-        pi.write(self.self.GPIO_CAP_RS, 1)
+        pi.write(self.GPIO_CAP_RS, 1)
         time.sleep(0.5)           # Give it 50ms to fully clear
         pi.write(self.GPIO_CAP_RS, 0)
     
