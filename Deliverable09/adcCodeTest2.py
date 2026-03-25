@@ -7,6 +7,7 @@ GPIO_VIN_CTRL = 5  # Controls Vin MOSFET
 GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
 GPIO_COMP_IN = 4   # Comparator Output
 GPIO_CAP_RS = 12   # Capacitor reset switch
+GPIO_OHM_CTRL = 13 # Ohmmeter switch
 
 pi = pigpio.pi()
 
@@ -16,6 +17,10 @@ pi.set_mode(GPIO_VIN_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_VREF_CTRL, pigpio.OUTPUT)
 pi.set_mode(GPIO_COMP_IN, pigpio.INPUT)
 pi.set_mode(GPIO_CAP_RS, pigpio.OUTPUT)
+pi.set_mode(GPIO_OHM_CTRL, pigpio.OUTPUT)
+
+# Turn off Ohmmeter GPIO
+pi.write(GPIO_OHM_CTRL, 0)
 
 # LM339 needs pull-up to 3.3V
 pi.set_pull_up_down(GPIO_COMP_IN, pigpio.PUD_UP)
