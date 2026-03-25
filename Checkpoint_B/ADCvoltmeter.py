@@ -13,7 +13,7 @@ class Voltmeter:
         self.GPIO_COMP_IN = 4   # Comparator Output
         self.GPIO_CAP_RS = 12   # Capacitor reset switch
         self.GPIO_OHM_ON = 13   # Ohmmeter activated
-
+        self.GPIO_INTERNAL = 16 # Selects internal/external measurements
         self.pi = pi
 
         # Pin Setup
@@ -22,6 +22,7 @@ class Voltmeter:
         self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
         self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
         self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
+        self.pi.set_mode(self.GPIO_INTERNAL, pigpio.OUTPUT)
 
         # Callback variables
         self.t2_stop = 0
@@ -96,6 +97,10 @@ class Voltmeter:
             rin = 0
         
         return rin
+
+    #function that selects either internal or external voltage input
+    def set_internal(self, level): #1 = internal; 0 = external
+        self.pi.write(self.GPIO_INTERNAL, level)
 
 # --- Main Execution ---
 if __name__ == "__main__":
