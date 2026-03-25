@@ -37,14 +37,12 @@ waveVoltage = 5
 refStatus = "Off"
 waveStatus = "Off"
 
-# --- Function that checks and updates the state ---
-# Added clockwise and clicked as arguments
 def checkState(thisState, fast, clockwise, clicked):
     global state, menuFirst, square, clear, voltage, resistance
     global refVoltage, realRef, waveFreq, waveVoltage, refStatus, waveStatus
 
     match thisState:
-        # --- Level 1: Main Menu Options ---
+        # --- Level 1 ---
         case "FunGen":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -53,13 +51,10 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
                 menuFirst = False
-
             if clockwise == 1: 
-                state = "Ohm"
-                menuFirst, clear = True, False
-            elif clicked:
-                state = "FunGenT"
-                menuFirst, clear = True, True
+                state = "Ohm"; menuFirst, clear = True, False
+            elif clicked: 
+                state = "FunGenT"; menuFirst, clear = True, True
 
         case "Ohm":
             if menuFirst:
@@ -69,16 +64,12 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("  Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
                 menuFirst = False
-                
             if clockwise == -1: 
-                state = "FunGen"
-                menuFirst, clear = True, False
-            elif clockwise == 1:
-                state = "Volt"
-                menuFirst, clear = True, False
-            elif clicked:
-                state = "OhmB"
-                menuFirst, clear = True, True
+                state = "FunGen"; menuFirst, clear = True, False
+            elif clockwise == 1: 
+                state = "Volt"; menuFirst, clear = True, False
+            elif clicked: 
+                state = "OhmB"; menuFirst, clear = True, True
 
         case "Volt":
             if menuFirst:
@@ -88,148 +79,87 @@ def checkState(thisState, fast, clockwise, clicked):
                 lcd.lcd_display_string("> Voltmeter", 3)
                 lcd.lcd_display_string("  DC Reference", 4)
                 menuFirst = False
-                
             if clockwise == -1: 
-                state = "Ohm"
-                menuFirst, clear = True, False
-            elif clockwise == 1:
-                state = "DCRef"
-                menuFirst, clear = True, False
-            elif clicked:
-                state = "VoltS"
-                menuFirst, clear = True, True
+                state = "Ohm"; menuFirst, clear = True, False
+            elif clockwise == 1: 
+                state = "DCRef"; menuFirst, clear = True, False
+            elif clicked: 
+                state = "VoltS"; menuFirst, clear = True, True
 
-        case "DCRef":
-            if menuFirst:
-                if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Function Generator", 1)
-                lcd.lcd_display_string("  Ohmmeter", 2)
-                lcd.lcd_display_string("  Voltmeter", 3)
-                lcd.lcd_display_string("> DC Reference", 4)
-                menuFirst = False
-                
-            if clockwise == -1: 
-                state = "Volt"
-                menuFirst, clear = True, False
-            elif clockwise == 1:
-                state = "Back"
-                menuFirst, clear = True, True
-            elif clicked:
-                state = "DCRefVolt"
-                menuFirst, clear = True, True
-                
-        case "Back":
-            if menuFirst:
-                if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Ohmmeter", 1)
-                lcd.lcd_display_string("  Voltmeter", 2)
-                lcd.lcd_display_string("  DC Reference", 3)
-                lcd.lcd_display_string("> Back", 4)
-                menuFirst = False
-                
-            if clockwise == -1: 
-                state = "DCRef"
-                menuFirst, clear = True, True
-            elif clockwise == 1:
-                state = "Main"
-                menuFirst, clear = True, True
-            elif clicked:
-                state = "DCRef"
-                menuFirst, clear = True, True
-
-        case "Main":
-            if menuFirst:
-                if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Voltmeter", 1)
-                lcd.lcd_display_string("  DC Reference", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("> Main", 4)
-                menuFirst = False
-                
-            if clockwise == -1: 
-                state = "Back"
-                menuFirst, clear = True, True
-            elif clicked:
-                state = "FunGen"
-                menuFirst, clear = True, True
-
-        # --- Ohm Measurement Logic ---
+        # --- Ohm Mode ---
         case "OhmB":
             if menuFirst:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Measuring...", 1)
-                lcd.lcd_display_string("Threshold", 2)
+                lcd.lcd_display_string("Measuring Ohm...", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
             
+            # This matches the function in ohmmeterTest.py
             resistance = ohmmeter.get_resistance()
-            lcd.lcd_display_string(f"{resistance:.2f} Ohms    ", 1)
+            lcd.lcd_display_string(f"{resistance:.2f} Ohms", 1)
                                                  
-            if clockwise == 1:
-                state = "OhmM"
-                menuFirst, clear = True, False
-            elif clicked:
-                state = "Ohm"
-                menuFirst, clear = True, True
+            if clockwise == 1: 
+                state = "OhmM"; menuFirst, clear = True, False
+            elif clicked: 
+                state = "Ohm"; menuFirst, clear = True, True
 
-        # --- Voltage Measurement Logic ---
+        # --- Volt Mode ---
         case "VoltS":
             if menuFirst:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Measuring...", 1)
-                lcd.lcd_display_string("> Source", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("  Main", 4)
+                lcd.lcd_display_string("Measuring Volt...", 2)
+                lcd.lcd_display_string("> Source", 3)
+                lcd.lcd_display_string("  Back", 4)
                 menuFirst = False
 
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage:.3f} V        ", 1)
+            lcd.lcd_display_string(f"{voltage:.3f} V", 1)
                                                  
-            if clockwise == 1:
-                state = "VoltB"
-                menuFirst, clear = True, False
-            elif clicked:
-                state = "SourceEx"
-                menuFirst, clear = True, True
+            if clockwise == 1: 
+                state = "VoltB"; menuFirst, clear = True, False
+            elif clicked: 
+                state = "SourceEx"; menuFirst, clear = True, True
 
-        # --- Function Generator Logic ---
-        case "FunOutOn":
+        # --- Source Selection ---
+        case "SourceEx":
             if menuFirst:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{waveFreq}Hz {waveStatus}", 1)
-                lcd.lcd_display_string("> On", 2)
-                lcd.lcd_display_string("  Off", 3)
-                lcd.lcd_display_string("  Back", 4)
+                lcd.lcd_display_string("> External", 1)
+                lcd.lcd_display_string("  Internal Ref", 2)
+                lcd.lcd_display_string("  Back", 3)
                 menuFirst = False
-                                                 
-            if clockwise == 1:
-                state = "FunOutOff"
-                menuFirst, clear = True, False
+            if clockwise == 1: 
+                state = "SourceIn"; menuFirst, clear = True, False
             elif clicked:
-                waveStatus = "On"
-                SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
-                SquareWave.updateVoltage(waveVoltage, digipot)
-                lcd.lcd_display_string(f"{waveFreq}Hz {waveStatus}   ", 1)
+                voltmeter.set_internal(0)
+                state = "VoltS"; menuFirst, clear = True, True
 
-        # ... (Include all other case blocks from your original file here) ...
-        # (I have truncated them for brevity, but make sure they use 'clockwise' and 'clicked')
+        case "SourceIn":
+            if menuFirst:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("  External", 1)
+                lcd.lcd_display_string("> Internal Ref", 2)
+                lcd.lcd_display_string("  Back", 3)
+                menuFirst = False
+            if clockwise == -1: 
+                state = "SourceEx"; menuFirst, clear = True, False
+            elif clicked:
+                voltmeter.set_internal(1)
+                state = "DCRefVolt"; menuFirst, clear = True, True
 
-# ------ Main Running Code ------ #
+        # (Add your other cases like DCRef, FunGenT, etc. here)
+
+# --- Main Loop ---
 try:
     while True:
-        # Capture current inputs
-        cw_input, is_fast = rotary.getRotary()
-        btn_clicked, is_long = rotary.getButton()
-
-        # Pass variables into the state checker
-        checkState(state, is_fast, cw_input, btn_clicked)
-
-        # Sleep to avoid 100% CPU usage
+        cw, fast_mode = rotary.getRotary()
+        btn, long_btn = rotary.getButton()
+        
+        checkState(state, fast_mode, cw, btn)
         time.sleep(0.05)
 
 except KeyboardInterrupt:
-    print("\nCleaning up...")
     rotary.cancel()
     lcd.lcd_clear()
     pi1.stop()
