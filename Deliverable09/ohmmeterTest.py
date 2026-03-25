@@ -77,10 +77,10 @@ if __name__ == "__main__":
 
     if t2 is not None:
         # 1. Calculate Vin from T2
-         vin = (0.000122* t2) - 6.96
+        vin = (0.000122* t2) - 6.96
         
         # 2. Calculate Ohms from Vin (Using ** for power)
-         ohms = ((0.000122* t2) - 6.96)*(5000 / 6)
+        ohms = ((0.000122* t2) - 6.96)*(5000 / 6)
     
         # --- Terminal Output ---
         print("-" * 30)
