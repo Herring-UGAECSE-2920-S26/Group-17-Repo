@@ -12,6 +12,10 @@ import SquareWave
 
 # --- Hardware Setup ---
 pi1 = pigpio.pi()
+if not pi1.connected:
+    print("FATAL ERROR: pigpiod is not running. Run 'sudo pigpiod' in terminal.")
+    exit()
+
 spi1 = spidev.SpiDev()
 
 # Setup devices
@@ -89,7 +93,7 @@ def checkState(thisState, fast, clockwise, clicked):
             if clockwise == -1: state = "Volt"; menuFirst, clear = True, False
             elif clicked: state = "DCRefVolt"; menuFirst, clear = True, True
 
-        # --- Level 2: Function Generator Settings ---
+        # --- Level 2: FunGen Settings ---
         case "FunGenT":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -124,28 +128,7 @@ def checkState(thisState, fast, clockwise, clicked):
             if clockwise == -1: state = "FunGenA"; menuFirst, clear = True, False
             elif clicked: state = "FunOutOn"; menuFirst, clear = True, True
 
-        # --- Level 3: Changing Values ---
-        case "FreqIn":
-            if menuFirst:
-                if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Set Freq:", 1)
-                menuFirst = False
-            if clockwise != 0:
-                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
-            lcd.lcd_display_string(f"{waveFreq} Hz      ", 2)
-            if clicked: state = "FunGenT"; menuFirst, clear = True, True
-
-        case "AmpIn":
-            if menuFirst:
-                if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Set Amplitude:", 1)
-                menuFirst = False
-            if clockwise != 0:
-                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast)
-            lcd.lcd_display_string(f"+/- {waveVoltage} Vp    ", 2)
-            if clicked: state = "FunGenA"; menuFirst, clear = True, True
-
-        # --- Sub-level Logic: Ohm Measurement ---
+        # --- Measurements ---
         case "OhmB":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -156,13 +139,11 @@ def checkState(thisState, fast, clockwise, clicked):
             lcd.lcd_display_string(f"{resistance:.2f} Ohms    ", 1)
             if clicked: state = "Ohm"; menuFirst, clear = True, True
 
-        # --- Sub-level Logic: Volt Measurement ---
         case "VoltS":
             if menuFirst:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("Measuring Volt...", 2)
                 lcd.lcd_display_string("> Source Select", 3)
-                lcd.lcd_display_string("  Back", 4)
                 menuFirst = False
             voltage = voltmeter.get_voltage()
             lcd.lcd_display_string(f"{voltage:.3f} V        ", 1)
@@ -176,8 +157,7 @@ def checkState(thisState, fast, clockwise, clicked):
                 menuFirst = False
             if clockwise == 1: state = "SourceIn"; menuFirst, clear = True, False
             elif clicked: 
-                voltmeter.set_internal(0)
-                state = "VoltS"; menuFirst, clear = True, True
+                voltmeter.set_internal(0); state = "VoltS"; menuFirst, clear = True, True
 
         case "SourceIn":
             if menuFirst:
@@ -187,10 +167,9 @@ def checkState(thisState, fast, clockwise, clicked):
                 menuFirst = False
             if clockwise == -1: state = "SourceEx"; menuFirst, clear = True, False
             elif clicked:
-                voltmeter.set_internal(1)
-                state = "VoltS"; menuFirst, clear = True, True
+                voltmeter.set_internal(1); state = "VoltS"; menuFirst, clear = True, True
 
-        # --- Sub-level Logic: DC Reference ---
+        # --- DC Reference ---
         case "DCRefVolt":
             if menuFirst:
                 if clear: lcd.lcd_clear()
@@ -198,4 +177,37 @@ def checkState(thisState, fast, clockwise, clicked):
                 menuFirst = False
             if clockwise != 0:
                 refVoltage = voltageReference.setVoltage(clockwise)
-            lcd
+            lcd.lcd_display_string(f"{refVoltage:.3f} V      ", 2)
+            if clicked: state = "DCOutOn"; menuFirst, clear = True, True
+
+        case "DCOutOn":
+            if menuFirst:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string(f"Ref: {refVoltage}V", 1)
+                lcd.lcd_display_string("> Turn ON", 2)
+                lcd.lcd_display_string("  Back", 3)
+                menuFirst = False
+            if clicked:
+                voltageReference.setDigiPot(refVoltage)
+                lcd.lcd_display_string("STATUS: ON      ", 4)
+            if clockwise == 1: state = "DCRef"; menuFirst, clear = True, True
+
+# --- Main Running Code ---
+try:
+    print("Main Loop Started. Rotate knob...")
+    while True:
+        cw_input, is_fast = rotary.getRotary()
+        btn_clicked, is_long = rotary.getButton()
+
+        # Debug terminal heartbeat
+        if cw_input != 0 or btn_clicked:
+            print(f"Knob: {cw_input}, Click: {btn_clicked}, State: {state}")
+
+        checkState(state, is_fast, cw_input, btn_clicked)
+        time.sleep(0.01) # Faster loop for better response
+
+except KeyboardInterrupt:
+    print("\nStopping...")
+    rotary.cancel()
+    lcd.lcd_clear()
+    pi1.stop()
