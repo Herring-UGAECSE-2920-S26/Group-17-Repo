@@ -87,7 +87,7 @@ class Voltmeter:
         self.pi.write(self.GPIO_VREF_CTRL, 0)        # Turn off Reference
 
         # Calculate T2 in microseconds
-        self.t2_actual = float(pigpio.tickDiff(self.t2_start, self.t2_stop))
+        t2_actual = float(pigpio.tickDiff(self.t2_start, self.t2_stop))
     
         return t1_actual, t2_actual
 
