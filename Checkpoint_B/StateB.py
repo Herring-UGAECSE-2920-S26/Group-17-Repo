@@ -29,7 +29,7 @@ clear = True
 voltage = 0
 resistance = 0
 refVoltage = 0
-realRef = 0
+realRef = -1
 waveFreq = 5050
 waveVoltage = 5
 refStatus = "Off"
@@ -1114,7 +1114,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear() 
-                if realRef == 0: realRef = refVoltage
+                if realRef == -1: realRef = refVoltage
                 lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string("> On    ", 2)
                 lcd.lcd_display_string("  Off    ", 3)
