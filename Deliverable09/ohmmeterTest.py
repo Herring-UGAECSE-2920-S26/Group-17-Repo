@@ -80,7 +80,7 @@ if __name__ == "__main__":
          vin = (0.000122* t2) - 6.96
         
         # 2. Calculate Ohms from Vin (Using ** for power)
-         ohms = 300 + (1042 * vin) + (236 * (vin**2))
+         ohms = ((0.000122* t2) - 6.96)*(5000 / 6)
     
         # --- Terminal Output ---
         print("-" * 30)
