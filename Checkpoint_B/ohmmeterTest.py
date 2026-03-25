@@ -19,49 +19,50 @@ class Ohmmeter:
         self.pi.set_mode(self.GPIO_COMP_IN, pigpio.INPUT)
         self.pi.set_mode(self.GPIO_CAP_RS, pigpio.OUTPUT)
         
-        # LM339 needs pull-up to 3.3V
+        # LM339 comparator needs pull-up to 3.3V logic levels
         self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
 
         # Callback variables
         self.t2_stop = 0
-        # Setup the callback referencing the class method correctly
+        # Correctly setup the hardware callback referencing the class method
         self.cb = self.pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, self.comp_callback)
 
     def comp_callback(self, gpio, level, tick):
-        # When the comparator crosses zero, record the 'tick'
+        # When the comparator crosses zero (RISING_EDGE), record the hardware tick
         if level == 1:
             self.t2_stop = tick
 
     def run_measurement(self):
-        self.t2_stop = 0  # Reset for new run
+        self.t2_stop = 0  # Reset tick tracker for new run
     
         # --- PHASE 0: RESET ---
+        # Fully discharge capacitor to start at 0V
         self.pi.write(self.GPIO_CAP_RS, 1)
         time.sleep(0.05)           
         self.pi.write(self.GPIO_CAP_RS, 0)
     
-        # Ensure signal switches are OFF
+        # Ensure signal switches are OFF before starting integration
         self.pi.write(self.GPIO_OHM_CTRL, 0)
         self.pi.write(self.GPIO_VREF_CTRL, 0)
         time.sleep(0.01)           
 
         # --- PHASE 1: T1 (Integration) ---
         t1_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_OHM_CTRL, 1) 
-        time.sleep(0.075)            
-        self.pi.write(self.GPIO_OHM_CTRL, 0) 
+        self.pi.write(self.GPIO_OHM_CTRL, 1)  # Apply unknown resistor
+        time.sleep(0.075)                     # Integration time constant
+        self.pi.write(self.GPIO_OHM_CTRL, 0)  # Stop charging
         t1_stop = self.pi.get_current_tick()
     
         t1_actual = float(pigpio.tickDiff(t1_start, t1_stop))
         
-        # --- DEAD TIME ---
-        time.sleep(0.5)          
+        # Dead time to allow MOSFETs to fully settle
+        time.sleep(0.001)          
 
         # --- PHASE 2: T2 (De-integration) ---
         t2_start = self.pi.get_current_tick()
-        self.pi.write(self.GPIO_VREF_CTRL, 1)
+        self.pi.write(self.GPIO_VREF_CTRL, 1) # Start ramp-down with Vref
     
-        # Wait for comparator to flip
+        # Wait for the hardware callback to trigger the comparator flip
         timeout = time.time() + 1.0 
         while self.t2_stop == 0:
             if time.time() > timeout:
@@ -75,36 +76,39 @@ class Ohmmeter:
         return t1_actual, t2_actual
 
     def get_resistance(self):
-        """Calculates resistance using the custom linear calibration points."""
+        """Calculates and returns resistance using your characterized equation."""
         t1, t2 = self.run_measurement()
 
         if t2 is not None:
-            # Linear Equation derived from 1k @ 18900 ticks and 10k @ 29200 ticks
-            # Ohms = (0.8738 * T2) - 15514.8
-            ohms = (0.8738 * t2) - 15514.8
+            # Using the exact equation from your provided image:
+            # ohms = -8093 + 1.85 * t2 - 4.37E-05 * t2^2
+            ohms = -8093 + (1.85 * t2) - (4.37e-05 * (t2**2))
             
-            # Print debug info to terminal
-            print(f"DEBUG: T2={t2:.0f} | Calc Resistance={ohms:.2f} Ohms")
+            # --- Terminal Output ---
+            print("-" * 30)
+            print(f"T1 (Charging): {t1:.0f} us")
+            print(f"T2 (Discharge): {t2:.0f} us")
+            print(f"Calculated Resistance: {ohms:.2f} Ohms") 
+            print("-" * 30)
             
-            # Return ohms (clamped to 0 minimum)
+            # Keep reading realistic; if T2 is too low, don't return negative ohms
             return max(0, ohms)
         else:
-            print("DEBUG: T2 Timeout - No ramp detected")
+            print("Ohmmeter Error: Measurement Timeout (Integrator did not ramp).")
             return 0.0
 
-# --- Internal test block ---
+# --- Standalone Test Execution ---
 if __name__ == "__main__":
     pi = pigpio.pi()
     if not pi.connected:
-        print("Error: pigpiod not running!")
+        print("CRITICAL ERROR: Could not connect to pigpiod. Run 'sudo pigpiod' first.")
     else:
-        ohm = Ohmmeter(pi)
-        print("Starting Ohmmeter Calibration Test... Press Ctrl+C to stop.")
+        ohm_meter = Ohmmeter(pi)
+        print("Standalone Ohmmeter Mode Active. Press Ctrl+C to exit.")
         try:
             while True:
-                r = ohm.get_resistance()
-                print(f"Current Reading: {r:.2f} Ohms")
+                res_value = ohm_meter.get_resistance()
                 time.sleep(0.5)
         except KeyboardInterrupt:
-            print("\nTest Stopped.")
+            print("\nShutting down ohmmeter.")
             pi.stop()
