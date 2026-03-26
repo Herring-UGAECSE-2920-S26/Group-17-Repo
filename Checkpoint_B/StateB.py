@@ -758,7 +758,10 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+                if resistance > 500000:
+                    lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+                else: 
+                    lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
                 lcd.lcd_display_string("Threshold", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -766,7 +769,10 @@ def checkState(thisState, fast):
             
             #update resistance measurement
             resistance = voltmeter.get_resistance()
-            lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+            if resistance > 500000:
+                lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+            else: 
+                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
             #time.sleep(10) #sleepy
                                                 
             #switch to other menu option
@@ -785,7 +791,10 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+                if resistance > 500000:
+                    lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+                else: 
+                    lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
                 lcd.lcd_display_string("Threshold", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
@@ -793,7 +802,10 @@ def checkState(thisState, fast):
             
             #update resistance measurement
             resistance = voltmeter.get_resistance()
-            lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+            if resistance > 500000:
+                lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+            else: 
+                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
