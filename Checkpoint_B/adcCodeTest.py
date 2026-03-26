@@ -4,9 +4,8 @@ import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 
 #class that allows the measurement of both voltage and resistance
 class Voltmeter:
-
-    #initialize Voltmeter object
-    def __init__(self, pi):
+	#initialize Voltmeter object
+	def __init__(self, pi):
         # --- Configuration ---
         self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
         self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
@@ -39,7 +38,7 @@ class Voltmeter:
         def comp_callback(GPIO, level, tick):
 	        # When the comparator crosses zero, record the 'tick'
 	        if level == 1:
-		          self.t2_stop = tick
+				self.t2_stop = tick
 
         # Setup the callback to watch for the edge on GPIO 4
         cb = pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, comp_callback)
@@ -97,7 +96,7 @@ class Voltmeter:
         t1, t2 = self.run_measurement()
 
         if t1 is not None:
-            # Vin ( 0.000226* t2) - 5.56
+			# Vin ( 0.000226* t2) - 5.56
             # Ensure the sign of Vref matches your integrator's direction
             vin = -6.83 + 2.71E-04 * t2 + 1.03E-08 * t2**2 - 4.56E-13 * t2**3 + 5.59E-18 * t2**4
             print(f"Actual T1: {t1} us | Actual T2: {t2} us")
@@ -110,12 +109,12 @@ class Voltmeter:
         return vin
 
 	#function that finds and returns the measured resistance
-    def get_resistance(self):
+	def get_resistance(self):
         vin = self.get_voltage()
-
-        if vin != 0:
-            # 2. Calculate Ohms from Vin (Using ** for power)
-            rin = vin*1
+		
+		if vin != 0:
+			# 2. Calculate Ohms from Vin (Using ** for power)
+			rin = vin*1
 			print(f"Measured Rin: {rin: .4f} Ohms")
         else: 
             rin = 0
