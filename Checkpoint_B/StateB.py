@@ -811,7 +811,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+                lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15", 1)
                 lcd.lcd_display_string("> Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -819,7 +819,7 @@ def checkState(thisState, fast):
 
             #update voltage measurement
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15", 1)
             #time.sleep(.10) #sleepy
                                                 
             #switch to other menu option
@@ -838,7 +838,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+                lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -846,7 +846,7 @@ def checkState(thisState, fast):
 
             #update voltage measurement
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -869,7 +869,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+                lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
@@ -877,7 +877,7 @@ def checkState(thisState, fast):
 
             #update voltage measurement
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15", 1)
             
             #switch to other menu option 
             if clockwise == -1: 
