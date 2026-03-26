@@ -65,7 +65,7 @@ if __name__ == "__main__":
     first = True
 
     #make sure square wave is centered
-    digipot.set_step(60, 0)
+    digipot.set_step(56, 0)
 
     while True:
         #update values
