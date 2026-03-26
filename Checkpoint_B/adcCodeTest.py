@@ -98,6 +98,7 @@ class Voltmeter:
             vin = -6.83 + 2.71E-04 * t2 + 1.03E-08 * t2**2 - 4.56E-13 * t2**3 + 5.59E-18 * t2**4
             print(f"Actual T1: {t1} us | Actual T2: {t2} us")
             print(f"Measured Vin: {vin:.4f} V")
+            if abs(vin) > 10: vin = 0
         else:
             print("Error: Measurement timed out. The comparator never triggered.")
             print("Check if GPIO 4 is connected and if the integrator is ramping.")
