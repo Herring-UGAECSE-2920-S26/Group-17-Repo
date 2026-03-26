@@ -7,7 +7,7 @@ import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
 #import ADCvoltmeter
 import adcCodeTest
-import ohmmeterTest
+#import ohmmeterTest
 import VoltageReference
 import SquareWave
 
@@ -20,7 +20,7 @@ rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
-ohmmeter = ohmmeterTest.Ohmmeter(pi1)
+#ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 
 #declare vars
@@ -758,15 +758,21 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
-                lcd.lcd_display_string("Threshold", 2)
+                if resistance > 500000:
+                    lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+                else: 
+                    lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+                lcd.lcd_display_string("+/-160 Ohms", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
             
             #update resistance measurement
-            resistance = ohmmeter.get_resistance()
-            lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+            resistance = voltmeter.get_resistance()
+            if resistance > 500000:
+                lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+            else: 
+                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
             #time.sleep(10) #sleepy
                                                 
             #switch to other menu option
@@ -785,15 +791,21 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
-                lcd.lcd_display_string("Threshold", 2)
+                if resistance > 500000:
+                    lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+                else: 
+                    lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+                lcd.lcd_display_string("+/- 160 Ohms", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
                 menuFirst = False
             
             #update resistance measurement
-            resistance = ohmmeter.get_resistance()
-            lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
+            resistance = voltmeter.get_resistance()
+            if resistance > 500000:
+                lcd.lcd_display_string(f"Infinite Ohms    ", 1)
+            else: 
+                lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -811,7 +823,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+                lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15 V", 1)
                 lcd.lcd_display_string("> Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -819,7 +831,7 @@ def checkState(thisState, fast):
 
             #update voltage measurement
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15 V", 1)
             #time.sleep(.10) #sleepy
                                                 
             #switch to other menu option
@@ -838,7 +850,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+                lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15 V", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("> Back", 3)
                 lcd.lcd_display_string("  Main", 4)
@@ -846,7 +858,7 @@ def checkState(thisState, fast):
 
             #update voltage measurement
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15 V", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -869,7 +881,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+                lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15 V", 1)
                 lcd.lcd_display_string("  Source", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
@@ -877,7 +889,7 @@ def checkState(thisState, fast):
 
             #update voltage measurement
             voltage = voltmeter.get_voltage()
-            lcd.lcd_display_string(f"{voltage: .4f} V Threshold", 1)
+            lcd.lcd_display_string(f"{voltage: .4f} V +/- 0.15 V", 1)
             
             #switch to other menu option 
             if clockwise == -1: 
@@ -1118,8 +1130,8 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear() 
                 if realRef == -1: realRef = refVoltage
-                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string("> On    ", 2)
                 lcd.lcd_display_string("  Off    ", 3)
                 lcd.lcd_display_string("  Back    ", 4)
@@ -1127,10 +1139,10 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
-                #realRef = voltmeter.get_voltage()
+            if refStatus == "On": 
+                realRef = voltmeter.get_voltage()
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
             
             #switch to other menu option
             if clockwise == 1:
@@ -1141,10 +1153,10 @@ def checkState(thisState, fast):
             elif clicked == True:
                 refStatus = "On"
                 voltageReference.setDigiPot(refVoltage)
-                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
+                #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #voltmeter.set_internal(1)
-                #realRef = voltmeter.get_voltage()
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                realRef = voltmeter.get_voltage()
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 clear = False
 
         #level 3 under DCRefOut
@@ -1152,8 +1164,8 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string("  On    ", 2)
                 lcd.lcd_display_string("> Off    ", 3)
                 lcd.lcd_display_string("  Back    ", 4)
@@ -1161,10 +1173,10 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
-                #realRef = voltmeter.get_voltage()
+            if refStatus == "On": 
+                realRef = voltmeter.get_voltage()
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -1180,9 +1192,9 @@ def checkState(thisState, fast):
             elif clicked == True:
                 refStatus = "Off"
                 voltageReference.setDigiPot(0)
-                lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #realRef = voltmeter.get_voltage()
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
+                realRef = voltmeter.get_voltage()
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 clear = False
 
         #level 3 under DCRefOut
@@ -1199,10 +1211,10 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
-                #realRef = voltmeter.get_voltage()
+            if refStatus == "On": 
+                realRef = voltmeter.get_voltage()
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 
@@ -1239,10 +1251,10 @@ def checkState(thisState, fast):
                 menuFirst = False
 
             #update voltage
-            #if refStatus == "On": 
-                #realRef = voltmeter.get_voltage()
+            if refStatus == "On": 
+                realRef = voltmeter.get_voltage()
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
-                #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
+                lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                                                 
             #switch to other menu option 
             if clockwise == -1: 

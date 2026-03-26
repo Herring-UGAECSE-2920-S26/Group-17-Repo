@@ -15,6 +15,7 @@ def waveOff(gpio, pi):
 
 #function that updates the voltage of the square wave
 def updateVoltage(voltage, digipot):
+    digipot.set_step(59, 0)
     step = Min_difference.min_difference_volts(voltage)
     digipot.set_step(step, 1)
 
@@ -65,7 +66,7 @@ if __name__ == "__main__":
     first = True
 
     #make sure square wave is centered
-    digipot.set_step(60, 0)
+    digipot.set_step(59, 0)
 
     while True:
         #update values

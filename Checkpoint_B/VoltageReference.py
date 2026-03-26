@@ -38,7 +38,7 @@ class VoltageReference:
     def setDigiPot(self, readVoltage):
 
         #prepares the voltage reference
-        self.digipot.set_step(60, 0)
+        self.digipot.set_step(59, 0)
         SquareWave.waveOff(19, self.pi)
         
         #makes sure both positive and negative work
