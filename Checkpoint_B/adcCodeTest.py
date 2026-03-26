@@ -94,13 +94,13 @@ class Voltmeter:
 
         if t1 is not None:
             if t2 < 19552: #negative voltage
-                vin = vin
+                vin = -6.34 + 2.99E-4 *t2 + 1.36E-9 *t2*t2
                 print(f"Actual T1: {t1} us | Actual T2: {t2} us")
                 print(f"Measured Vin: {vin:.4f} V")
             else: #positive voltage
                 # Vin ( 0.000226* t2) - 5.56
                 # Ensure the sign of Vref matches your integrator's direction
-                vin = -6.83 + 2.71E-04 * t2 + 1.03E-08 * t2**2 - 4.56E-13 * t2**3 + 5.59E-18 * t2**4
+                vin = -6.45 +3.61E-4 *t2 + -1.58E-9 *t2*t2
                 print(f"Actual T1: {t1} us | Actual T2: {t2} us")
                 print(f"Measured Vin: {vin:.4f} V")
             if abs(vin) > 10: vin = 0
