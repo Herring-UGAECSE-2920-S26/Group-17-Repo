@@ -1,11 +1,11 @@
-import time        # Manages T1 and T2
-import pigpio	   # Controls GPIO pins
-import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
+import time         # Manages T1 and T2
+import pigpio       # Controls GPIO pins
+import I2C_LCD_driver # https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 
-#class that allows the measurement of both voltage and resistance
+# class that allows the measurement of both voltage and resistance
 class Voltmeter:
-	#initialize Voltmeter object
-	def __init__(self, pi):
+    # initialize Voltmeter object
+    def __init__(self, pi):
         # --- Configuration ---
         self.GPIO_VIN_CTRL = 5  # Controls Vin MOSFET 
         self.GPIO_VREF_CTRL = 6 # Controls Vref MOSFET
@@ -14,7 +14,6 @@ class Voltmeter:
         self.GPIO_OHM_CTRL = 13 # Ohmmeter switch
 
         self.pi = pi
-
 
         # pin Setup
         self.pi.set_mode(self.GPIO_VIN_CTRL, pigpio.OUTPUT)
@@ -29,19 +28,18 @@ class Voltmeter:
         # LM339 needs pull-up to 3.3V
         self.pi.set_pull_up_down(self.GPIO_COMP_IN, pigpio.PUD_UP)
 
-
         # Callback variables
         self.t2_start = 0
         self.t2_stop = 0
         self.vref = 6.0
 
         def comp_callback(GPIO, level, tick):
-	        # When the comparator crosses zero, record the 'tick'
-	        if level == 1:
-				self.t2_stop = tick
+            # When the comparator crosses zero, record the 'tick'
+            if level == 1:
+                self.t2_stop = tick
 
         # Setup the callback to watch for the edge on GPIO 4
-        cb = pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, comp_callback)
+        self.cb = pi.callback(self.GPIO_COMP_IN, pigpio.RISING_EDGE, comp_callback)
 
     def run_measurement(self):
         self.t2_stop = 0  # Reset for new run
@@ -60,7 +58,7 @@ class Voltmeter:
         # --- PHASE 1: T1 (Integration) ---
         self.t1_start = self.pi.get_current_tick()   # Capture hardware start tick
         self.pi.write(self.GPIO_VIN_CTRL, 1)         # Start ramp
-        time.sleep(.075)                    # Target 200ms
+        time.sleep(.075)                             # Target 200ms
         self.pi.write(self.GPIO_VIN_CTRL, 0)         # Stop ramp
         self.t1_stop = self.pi.get_current_tick()    # Capture hardware stop tick
     
@@ -90,13 +88,12 @@ class Voltmeter:
     
         return t1_actual, t2_actual
 
-# --- Example Usage ---
-    #function that finds and returns the measured voltage
+    # function that finds and returns the measured voltage
     def get_voltage(self):
         t1, t2 = self.run_measurement()
 
         if t1 is not None:
-			# Vin ( 0.000226* t2) - 5.56
+            # Vin ( 0.000226* t2) - 5.56
             # Ensure the sign of Vref matches your integrator's direction
             vin = -6.83 + 2.71E-04 * t2 + 1.03E-08 * t2**2 - 4.56E-13 * t2**3 + 5.59E-18 * t2**4
             print(f"Actual T1: {t1} us | Actual T2: {t2} us")
@@ -108,32 +105,25 @@ class Voltmeter:
           
         return vin
 
-	#function that finds and returns the measured resistance
-	def get_resistance(self):
+    # function that finds and returns the measured resistance
+    def get_resistance(self):
         vin = self.get_voltage()
-		
-		if vin != 0:
-			# 2. Calculate Ohms from Vin (Using ** for power)
-			rin = vin*1
-			print(f"Measured Rin: {rin: .4f} Ohms")
+        
+        if vin != 0:
+            # 2. Calculate Ohms from Vin (Using ** for power)
+            rin = vin * 1
+            print(f"Measured Rin: {rin:.4f} Ohms")
         else: 
             rin = 0
         
         return rin
-          
-
-    #function that selects either internal or external voltage input
-    #def set_internal(self, level): #1 = internal; 0 = external
-        #self.pi.write(self.GPIO_INTERNAL, level)
 
 # --- Main Execution ---
 if __name__ == "__main__":
-
     pi = pigpio.pi()
     lcd = I2C_LCD_driver.lcd()
 
     voltmeter = Voltmeter(pi)
-	voltmeter.get_voltage()
+    voltmeter.get_voltage()
     print("------------")
     voltmeter.get_resistance()
-
