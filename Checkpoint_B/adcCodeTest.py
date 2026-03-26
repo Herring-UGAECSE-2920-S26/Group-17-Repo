@@ -112,7 +112,7 @@ class Voltmeter:
         
         if vin != 0:
             # 2. Calculate Ohms from Vin (Using ** for power)
-            rin = vin * 1
+            rin = vin * (10000/4)
             print(f"Measured Rin: {rin:.4f} Ohms")
         else: 
             rin = 0
