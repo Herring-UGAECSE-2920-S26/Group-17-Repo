@@ -92,7 +92,7 @@ class Voltmeter:
     def get_voltage(self):
         t1, t2 = self.run_measurement()
 
-        if t1 is not None:
+        if t2 is not None:
             # Vin ( 0.000226* t2) - 5.56
             # Ensure the sign of Vref matches your integrator's direction
             vin = -6.83 + 2.71E-04 * t2 + 1.03E-08 * t2**2 - 4.56E-13 * t2**3 + 5.59E-18 * t2**4
