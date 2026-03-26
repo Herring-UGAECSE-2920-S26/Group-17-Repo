@@ -113,11 +113,11 @@ class Voltmeter:
 
     # function that finds and returns the measured resistance
     def get_resistance(self):
-        vin = self.get_voltage()
+        t1, t2 = self.run_measurement()
         
-        if vin != 0:
+        if t1 is not None:
             # 2. Calculate Ohms from Vin (Using ** for power)
-            rin = vin * (10000/4)
+            rin = -4406 + -0.0406*t2 + 1.35E-5 *t2*t2
             print(f"Measured Rin: {rin:.4f} Ohms")
         else: 
             rin = 0
