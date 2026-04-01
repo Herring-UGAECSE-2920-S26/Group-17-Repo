@@ -152,12 +152,39 @@ def checkState(thisState, fast):
                 clear = False
             #switch to other menu option
             elif clockwise == 1:
-                state = "Back"
+                state = "FreqMes"
                 menuFirst = True
                 clear = True
             #switch to other menu option
             elif clicked == True:
                 state = "DCRefVolt"
+                menuFirst = True
+                clear = True
+
+            #level 1
+        case "FreqMes":
+            #updates led when something has changed
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("  Ohmmeter", 1)
+                lcd.lcd_display_string("  Voltmeter", 2)
+                lcd.lcd_display_string("  DC Reference", 3)
+                lcd.lcd_display_string("> Freq. Measurement", 4)
+                menuFirst = False
+                
+            #switch to other menu option 
+            if clockwise == -1: 
+                state = "Volt"
+                menuFirst = True
+                clear = False
+            #switch to other menu option
+            elif clockwise == 1:
+                state = "Back"
+                menuFirst = True
+                clear = True
+            #switch to other menu option
+            elif clicked == True:
+                state = "FreqMesB"
                 menuFirst = True
                 clear = True
                 
@@ -166,15 +193,15 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Ohmmeter", 1)
-                lcd.lcd_display_string("  Voltmeter", 2)
-                lcd.lcd_display_string("  DC Reference", 3)
+                lcd.lcd_display_string("  Voltmeter", 1)
+                lcd.lcd_display_string("  DC Reference", 2)
+                lcd.lcd_display_string("  Freq. Measurement", 3)
                 lcd.lcd_display_string("> Back", 4)
                 menuFirst = False
                 
             #switch to other menu option 
             if clockwise == -1: 
-                state = "DCRef"
+                state = "FreqMes"
                 menuFirst = True
                 clear = True
             #switch to other menu option
@@ -184,7 +211,7 @@ def checkState(thisState, fast):
                 clear = True
             #switch to other menu option
             elif clicked == True:
-                state = "DCRef"
+                state = "FreqMes"
                 menuFirst = True
                 clear = True
 
@@ -193,8 +220,8 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Voltmeter", 1)
-                lcd.lcd_display_string("  DC Reference", 2)
+                lcd.lcd_display_string("  DC Reference", 1)
+                lcd.lcd_display_string("  Freq. Measurement", 2)
                 lcd.lcd_display_string("  Back", 3)
                 lcd.lcd_display_string("> Main", 4)
                 menuFirst = False
@@ -363,23 +390,62 @@ def checkState(thisState, fast):
                 clear = True
 
         #level 3 under FunGenT
+        case "TypeSin":
+            #updates led when something has changed
+            if menuFirst == True:
+                if square: 
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("Square Selected", 1)
+                    lcd.lcd_display_string("> Sine", 2)
+                    lcd.lcd_display_string("  Square", 3)
+                    lcd.lcd_display_string("  Back", 4)
+                    #lcd.lcd_display_string("  Main", 4)
+                    menuFirst = False
+                else:
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("> Sine", 1)
+                    lcd.lcd_display_string("  Square", 2)
+                    lcd.lcd_display_string("  Back", 3)
+                    lcd.lcd_display_string("  Main", 4)
+                    menuFirst = False
+                                
+            #switch to other menu option
+            if clockwise == 1:
+                state = "TypeS"
+                menuFirst = True
+                clear = False
+            #do action
+            elif clicked == True:
+                square = False
+                sine = True
+                menuFirst = True
+                clear = True
+
+        #level 3 under FunGenT
         case "TypeS":
             #updates led when something has changed
             if menuFirst == True:
                 if square: 
                     if clear: lcd.lcd_clear()
                     lcd.lcd_display_string("Square Selected", 1)
+                    lcd.lcd_display_string("  Sine", 2)
+                    lcd.lcd_display_string("> Square", 3)
+                    lcd.lcd_display_string("  Back", 4)
+                    #lcd.lcd_display_string("  Main", 4)
+                    menuFirst = False
+                else:
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("  Sine", 1)
                     lcd.lcd_display_string("> Square", 2)
                     lcd.lcd_display_string("  Back", 3)
                     lcd.lcd_display_string("  Main", 4)
                     menuFirst = False
-                else:
-                    if clear: lcd.lcd_clear()
-                    lcd.lcd_display_string("> Square", 1)
-                    lcd.lcd_display_string("  Back", 2)
-                    lcd.lcd_display_string("  Main", 3)
-                    menuFirst = False
-                                
+
+             #switch to other menu option 
+            if clockwise == -1: 
+                state = "TypeSin"
+                menuFirst = True
+                clear = False
             #switch to other menu option
             if clockwise == 1:
                 state = "TypeB"
@@ -388,6 +454,7 @@ def checkState(thisState, fast):
             #do action
             elif clicked == True:
                 square = True
+                sine = False
                 menuFirst = True
                 clear = True
 
