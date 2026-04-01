@@ -28,6 +28,7 @@ state = "FunGen"
 waveOutPin = 19
 menuFirst = True
 square = False
+sine = False
 clear = True
 voltage = 0
 resistance = 0
@@ -45,6 +46,7 @@ def checkState(thisState, fast):
     global state
     global menuFirst
     global square
+    global sine
     global clear
     global voltage
     global resistance
@@ -396,17 +398,25 @@ def checkState(thisState, fast):
                 if square: 
                     if clear: lcd.lcd_clear()
                     lcd.lcd_display_string("Square Selected", 1)
-                    lcd.lcd_display_string("> Sine", 2)
-                    lcd.lcd_display_string("  Square", 3)
-                    lcd.lcd_display_string("  Back", 4)
+                    lcd.lcd_display_string("> Sine  ", 2)
+                    lcd.lcd_display_string("  Square  ", 3)
+                    lcd.lcd_display_string("  Back  ", 4)
+                    #lcd.lcd_display_string("  Main", 4)
+                    menuFirst = False
+                elif sine: 
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("Sine Selected", 1)
+                    lcd.lcd_display_string("> Sine  ", 2)
+                    lcd.lcd_display_string("  Square  ", 3)
+                    lcd.lcd_display_string("  Back  ", 4)
                     #lcd.lcd_display_string("  Main", 4)
                     menuFirst = False
                 else:
                     if clear: lcd.lcd_clear()
-                    lcd.lcd_display_string("> Sine", 1)
-                    lcd.lcd_display_string("  Square", 2)
-                    lcd.lcd_display_string("  Back", 3)
-                    lcd.lcd_display_string("  Main", 4)
+                    lcd.lcd_display_string("> Sine  ", 1)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("  Back  ", 3)
+                    lcd.lcd_display_string("  Main  ", 4)
                     menuFirst = False
                                 
             #switch to other menu option
@@ -428,17 +438,25 @@ def checkState(thisState, fast):
                 if square: 
                     if clear: lcd.lcd_clear()
                     lcd.lcd_display_string("Square Selected", 1)
-                    lcd.lcd_display_string("  Sine", 2)
-                    lcd.lcd_display_string("> Square", 3)
-                    lcd.lcd_display_string("  Back", 4)
+                    lcd.lcd_display_string("  Sine  ", 2)
+                    lcd.lcd_display_string("> Square  ", 3)
+                    lcd.lcd_display_string("  Back  ", 4)
+                    #lcd.lcd_display_string("  Main", 4)
+                    menuFirst = False
+                elif sine: 
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("Sine Selected", 1)
+                    lcd.lcd_display_string("  Sine  ", 2)
+                    lcd.lcd_display_string("> Square  ", 3)
+                    lcd.lcd_display_string("  Back  ", 4)
                     #lcd.lcd_display_string("  Main", 4)
                     menuFirst = False
                 else:
                     if clear: lcd.lcd_clear()
-                    lcd.lcd_display_string("  Sine", 1)
-                    lcd.lcd_display_string("> Square", 2)
-                    lcd.lcd_display_string("  Back", 3)
-                    lcd.lcd_display_string("  Main", 4)
+                    lcd.lcd_display_string("  Sine  ", 1)
+                    lcd.lcd_display_string("> Square  ", 2)
+                    lcd.lcd_display_string("  Back  ", 3)
+                    lcd.lcd_display_string("  Main  ", 4)
                     menuFirst = False
 
              #switch to other menu option 
@@ -465,15 +483,23 @@ def checkState(thisState, fast):
                 if square: 
                     if clear: lcd.lcd_clear()
                     lcd.lcd_display_string("Square Selected", 1)
-                    lcd.lcd_display_string("  Square", 2)
-                    lcd.lcd_display_string("> Back", 3)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("> Back  ", 3)
+                    lcd.lcd_display_string("  Main  ", 4)
+                    menuFirst = False
+                elif sine: 
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("Sine Selected", 1)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("> Back  ", 3)
                     lcd.lcd_display_string("  Main", 4)
                     menuFirst = False
                 else:
                     if clear: lcd.lcd_clear()
-                    lcd.lcd_display_string("  Square", 1)
-                    lcd.lcd_display_string("> Back", 2)
-                    lcd.lcd_display_string("  Main", 3)
+                    lcd.lcd_display_string("  Sine  ", 1)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("> Back  ", 3)
+                    lcd.lcd_display_string("  Main  ", 4)
                     menuFirst = False
                                     
             #switch to other menu option 
@@ -499,15 +525,23 @@ def checkState(thisState, fast):
                 if square: 
                     if clear: lcd.lcd_clear()
                     lcd.lcd_display_string("Square Selected", 1)
-                    lcd.lcd_display_string("  Square", 2)
-                    lcd.lcd_display_string("  Back", 3)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("  Back  ", 3)
+                    lcd.lcd_display_string("> Main  ", 4)
+                    menuFirst = False
+                elif sine: 
+                    if clear: lcd.lcd_clear()
+                    lcd.lcd_display_string("Sine Selected", 1)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("  Back  ", 3)
                     lcd.lcd_display_string("> Main", 4)
                     menuFirst = False
                 else:
                     if clear: lcd.lcd_clear()
-                    lcd.lcd_display_string("  Square", 1)
-                    lcd.lcd_display_string("  Back", 2)
-                    lcd.lcd_display_string("> Main", 3)
+                    lcd.lcd_display_string("  Sine  ", 1)
+                    lcd.lcd_display_string("  Square  ", 2)
+                    lcd.lcd_display_string("  Back  ", 3)
+                    lcd.lcd_display_string("> Main  ", 4)
                     menuFirst = False
                                     
             #switch to other menu option 
@@ -1335,6 +1369,48 @@ def checkState(thisState, fast):
                 voltageReference.setDigiPot(0) 
                 #voltmeter.set_internal(0)
                 #change state
+                state = "FunGen"
+                menuFirst = True
+                clear = True
+            
+        #level 2 under FreqMes
+        case "FreqMesB":
+            #updates led when something has changed
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string("> Back", 2)
+                lcd.lcd_display_string("  Main", 3)
+                menuFirst = False
+                                                
+            #switch to other menu option
+            if clockwise == 1:
+                state = "FreqMesM"
+                menuFirst = True
+                clear = False
+            #switch to other menu option
+            elif clicked == True:
+                state = "FreqMes"
+                menuFirst = True
+                clear = True
+            
+        #level 2 under FreqMes
+        case "FreqMesM":
+            #updates led when something has changed
+            if menuFirst == True:
+                if clear: lcd.lcd_clear()
+                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string("  Back", 2)
+                lcd.lcd_display_string("> Main", 3)
+                menuFirst = False
+            
+            #switch to other menu option 
+            if clockwise == -1: 
+                state = "FreqMesB"
+                menuFirst = True
+                clear = False
+            #switch to other menu option
+            elif clicked == True:
                 state = "FunGen"
                 menuFirst = True
                 clear = True
