@@ -10,11 +10,11 @@ DAC5 = 26
 pi = pigpio.pi()
 
 # Pin Set-up
-pi.set_mode(self.DAC1, pigpio.OUTPUT)
-pi.set_mode(self.DAC2, pigpio.OUTPUT)
-pi.set_mode(self.DAC3, pigpio.OUTPUT)
-pi.set_mode(self.DAC4, pigpio.OUTPUT)
-pi.set_mode(self.DAC5, pigpio.OUTPUT)
+pi.set_mode(DAC1, pigpio.OUTPUT)
+pi.set_mode(DAC2, pigpio.OUTPUT)
+pi.set_mode(DAC3, pigpio.OUTPUT)
+pi.set_mode(DAC4, pigpio.OUTPUT)
+pi.set_mode(DAC5, pigpio.OUTPUT)
 
 print("Manual DAC Tester")
 print("-------------------------")
