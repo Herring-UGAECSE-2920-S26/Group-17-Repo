@@ -52,7 +52,7 @@ while True:
     elif user_input == 0:
         print("Select to turn OFF")
         try:
-            char user_in = (input("\nEnter Q (DAC1), W (DAC2), E (DAC3), R (DAC4), T (DAC5), Y (Exit): "))
+            user_in = (input("\nEnter Q (DAC1), W (DAC2), E (DAC3), R (DAC4), T (DAC5), Y (Exit): "))
         except ValueError:
             print("Please enter a valid letter.")
         continue
