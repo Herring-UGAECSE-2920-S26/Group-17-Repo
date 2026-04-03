@@ -1,20 +1,20 @@
 import pigpio
 
 # Configure GPIO pins for DAC
-self.DAC1 = 16
-self.DAC2 = 20
-self.DAC3 = 21
-self.DAC4 = 25
-self.DAC5 = 26
+DAC1 = 16
+DAC2 = 20
+DAC3 = 21
+DAC4 = 25
+DAC5 = 26
 
 pi = pigpio.pi()
 
 # Pin Set-up
-self.pi.set_mode(self.DAC1, pigpio.OUTPUT)
-self.pi.set_mode(self.DAC2, pigpio.OUTPUT)
-self.pi.set_mode(self.DAC3, pigpio.OUTPUT)
-self.pi.set_mode(self.DAC4, pigpio.OUTPUT)
-self.pi.set_mode(self.DAC5, pigpio.OUTPUT)
+pi.set_mode(self.DAC1, pigpio.OUTPUT)
+pi.set_mode(self.DAC2, pigpio.OUTPUT)
+pi.set_mode(self.DAC3, pigpio.OUTPUT)
+pi.set_mode(self.DAC4, pigpio.OUTPUT)
+pi.set_mode(self.DAC5, pigpio.OUTPUT)
 
 print("Manual DAC Tester")
 print("-------------------------")
