@@ -21,7 +21,7 @@ print("-------------------------")
 
 while True:
     try:
-        user_input = int(input("\nEnter 1 (DAC1), 2 (DAC2), 3 (DAC3), 4 (DAC4), 5 (DAC5), 6 (Exit): "))
+        user_input = int(input("\nEnter 0 (Turn Off Menu), 1 (DAC1), 2 (DAC2), 3 (DAC3), 4 (DAC4), 5 (DAC5), 6 (Exit): "))
     except ValueError:
         print("Please enter a valid number.")
         continue
@@ -29,43 +29,52 @@ while True:
     if user_input == 1:
         print("Activating DAC1")
         pi.write(DAC1, 1)
-        pi.write(DAC2, 0)
-        pi.write(DAC3, 0)
-        pi.write(DAC4, 0)
-        pi.write(DAC5, 0)
+        
 
     elif user_input == 2:
         print("Activating DAC2")
         pi.write(DAC2, 1)
-        pi.write(DAC1, 0)
-        pi.write(DAC3, 0)
-        pi.write(DAC4, 0)
-        pi.write(DAC5, 0)
-
+       
     elif user_input == 3:
         print("Activating DAC3")
         pi.write(DAC3, 1)
-        pi.write(DAC2, 0)
-        pi.write(DAC1, 0)
-        pi.write(DAC4, 0)
-        pi.write(DAC5, 0)
+        
     
     elif user_input == 4:
         print("Activating DAC4")
         pi.write(DAC4, 1)
-        pi.write(DAC3, 0)
-        pi.write(DAC2, 0)
-        pi.write(DAC1, 0)
-        pi.write(DAC5, 0)
+        
     
     elif user_input == 5:
         print("Activating DAC5")
         pi.write(DAC5, 1)
-        pi.write(DAC4, 0)
-        pi.write(DAC3, 0)
-        pi.write(DAC2, 0)
-        pi.write(DAC1, 0)
-    
+        
+    elif user_input == 0:
+        print("Select to turn OFF")
+        try:
+            char user_in = (input("\nEnter Q (DAC1), W (DAC2), E (DAC3), R (DAC4), T (DAC5), Y (Exit): "))
+        except ValueError:
+            print("Please enter a valid letter.")
+        continue
+        if user_in == 'q':
+            print("Turning off DAC1")
+            pi.write(DAC1, 0)
+        elif user_in == 'w':
+            print("Turning off DAC2")
+            pi.write(DAC2, 0)
+        elif user_in == 'e':
+            print("Turning off DAC3")
+            pi.write(DAC3, 0)   
+        elif user_in == 'r':
+            print("Turning off DAC4")
+            pi.write(DAC4, 0)
+        elif user_in == 't':
+            print("Turning off DAC5")
+            pi.write(DAC5, 0)
+        elif user_in == 'y':
+            print("Exiting turn-off menu")
+            break
+    if user_input == 1:
     elif user_input == 6:
         print("Exiting and clearing pins.")
         pi.write(DAC5, 0)
