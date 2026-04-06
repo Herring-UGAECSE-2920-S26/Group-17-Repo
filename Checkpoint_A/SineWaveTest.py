@@ -6,10 +6,9 @@ class SineWave:
     def __init__(self, pi):
         self.pi = pi
         
-        # Based on your original code's binary string indexing, 
-        # pin 16 is the Least Significant Bit (LSB) and 26 is the Most Significant Bit (MSB).
-        # We order them LSB to MSB for easy bitwise math.
-        self.pins = [16, 20, 21, 25, 26] 
+        # 6-bit resolution: GPIO 22 is the new LSB, 26 is still the MSB.
+        # Ordered LSB to MSB for bitwise math.
+        self.pins = [22, 16, 20, 21, 25, 26] 
 
         # Set up voltage pins
         for pin in self.pins:
@@ -22,7 +21,7 @@ class SineWave:
 
     def start_wave(self, freq):
         """
-        Precomputes the 5-bit sine wave and offloads it to the DMA hardware.
+        Precomputes the 6-bit sine wave and offloads it to the DMA hardware.
         """
         # Calculate how many steps fit into one full wave cycle
         steps = int(1000000 / (self.sample_rate_us * freq))
@@ -35,15 +34,16 @@ class SineWave:
             # 1. Calculate sine wave from 0.0 to 1.0
             sine_val = (math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
             
-            # 2. Scale to 5-bit integer (0 to 31) for your 5-pin resistor ladder
-            dac_value = int(sine_val * 31)
-            dac_value = max(0, min(31, dac_value)) # Clamp to prevent overflow
+            # 2. Scale to 6-bit integer (0 to 63) for your 6-pin resistor ladder
+            dac_value = int(sine_val * 63)
+            dac_value = max(0, min(63, dac_value)) # Clamp to prevent overflow
 
-            # 3. Create Bitmasks (replaces the string comparison logic)
+            # 3. Create Bitmasks
             gpio_on = 0
             gpio_off = 0
             
-            for bit in range(5):
+            # Iterate through all 6 bits
+            for bit in range(6):
                 if dac_value & (1 << bit):
                     # Bit is 1, turn pin ON
                     gpio_on |= (1 << self.pins[bit])
@@ -80,17 +80,18 @@ if __name__ == "__main__":
     # setup
     pi1 = pigpio.pi()
     if not pi1.connected:
-        print("Failed to connect to pigpio. Did you run 'sudo pigpiod'?")
+        print("Failed to connect to pigpio. Did you run 'sudo pigpiod -s 1'?")
         exit()
         
     sineWave = SineWave(pi1)
 
     try: 
-        print("Generating 500Hz sine wave...")
+        test_freq = 1000
+        print(f"Generating {test_freq}Hz sine wave with 6-bit resolution...")
         
         # You only need to call this ONCE. 
         # The DMA hardware takes over and loops it forever.
-        sineWave.start_wave(freq=1000)
+        sineWave.start_wave(freq=test_freq)
         
         # Look at your CPU usage now! Your main loop doesn't have to do any math.
         while True:
