@@ -8,11 +8,16 @@ class SineWave:
     #initialize SineWave object
     def __init__(self, pi):
         #set vars
-        self.pin0 = 16
-        self.pin1 = 20
+        self.pin0 = 26
+        self.pin1 = 25
         self.pin2 = 21
-        self.pin3 = 25
-        self.pin4 = 26
+        self.pin3 = 20
+        self.pin4 = 16
+        #self.pin0 = 16
+        #self.pin1 = 20
+        #self.pin2 = 21
+        #self.pin3 = 25
+        #self.pin4 = 26
         self.pi = pi
 
         #set up voltage pins
