@@ -91,7 +91,7 @@ if __name__ == "__main__":
         
         # You only need to call this ONCE. 
         # The DMA hardware takes over and loops it forever.
-        sineWave.start_wave(freq=10000)
+        sineWave.start_wave(freq=500)
         
         # Look at your CPU usage now! Your main loop doesn't have to do any math.
         while True:
