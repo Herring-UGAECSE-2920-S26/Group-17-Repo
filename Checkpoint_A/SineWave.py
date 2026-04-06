@@ -85,7 +85,7 @@ if __name__ == "__main__":
         #generates 500Hz 10V sine wave
         while True:
             currentTime = time.time()
-            sineWave.runner(currentTime, 700, 10)
+            sineWave.runner(currentTime, 1000, 10)
 
     except KeyboardInterrupt:
         print("\nProgram interrupted.")
