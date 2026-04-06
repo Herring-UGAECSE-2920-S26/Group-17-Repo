@@ -18,7 +18,6 @@ class SineWave:
         self.current_wave_id = None
         
         # The time delay between each hardware sample. 
-        # 50 microseconds = 20,000 samples per second.
         self.sample_rate_us = 1
 
     def start_wave(self, freq):
@@ -91,7 +90,7 @@ if __name__ == "__main__":
         
         # You only need to call this ONCE. 
         # The DMA hardware takes over and loops it forever.
-        sineWave.start_wave(freq=10000)
+        sineWave.start_wave(freq=500)
         
         # Look at your CPU usage now! Your main loop doesn't have to do any math.
         while True:
