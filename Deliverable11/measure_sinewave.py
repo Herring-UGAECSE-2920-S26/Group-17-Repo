@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+
 GPIO_PIN = 27 
 
 # Global variable to hold our pulse count
@@ -44,6 +45,25 @@ def main():
     finally:
         # Always clean up GPIO states on exit to prevent errors on the next run
         GPIO.cleanup()
+
+#returns the measured frequency
+def takeSineMeasurement():
+    global pulse_count
+    setup()
+    print(f"Measuring frequency on GPIO {GPIO_PIN}...")
+
+    # Reset count and capture start time with high precision
+    pulse_count = 0 
+    start_time = time.perf_counter()
+    time.sleep(1.0)
+    elapsed_time = time.perf_counter() - start_time
+            
+    # Calculate frequency 
+    frequency = pulse_count / elapsed_time
+    # 2 decimal places
+    print(f"Detected Frequency: {frequency:.2f} Hz")
+
+    return frequency   
 
 if __name__ == '__main__':
     main()
