@@ -86,7 +86,7 @@ if __name__ == "__main__":
     sineWave = SineWave(pi1)
 
     try: 
-        test_freq = 1000
+        test_freq = 10000
         print(f"Generating {test_freq}Hz sine wave with 6-bit resolution...")
         
         # You only need to call this ONCE. 
