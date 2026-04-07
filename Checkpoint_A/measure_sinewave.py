@@ -22,7 +22,7 @@ def setup():
 
 def main():
     global pulse_count
-    setup()
+    #setup()
     print(f"Measuring frequency on GPIO {GPIO_PIN}...")
     print("Press CTRL+C to stop.\n")
     
@@ -49,7 +49,7 @@ def main():
 #returns the measured frequency
 def takeSineMeasurement():
     global pulse_count
-    setup()
+    #setup()
     print(f"Measuring frequency on GPIO {GPIO_PIN}...")
 
     # Reset count and capture start time with high precision
@@ -59,7 +59,7 @@ def takeSineMeasurement():
     elapsed_time = time.perf_counter() - start_time
             
     # Calculate frequency 
-    frequency = 0
+    #frequency = 0
     frequency = pulse_count / elapsed_time
     # 2 decimal places
     print(f"Detected Frequency: {frequency:.2f} Hz")
@@ -68,6 +68,7 @@ def takeSineMeasurement():
 
 if __name__ == '__main__':
     #main()
+    setup()
     try:
         while True:
             #main()
