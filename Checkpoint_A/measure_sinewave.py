@@ -26,25 +26,25 @@ def main():
     print(f"Measuring frequency on GPIO {GPIO_PIN}...")
     print("Press CTRL+C to stop.\n")
     
-    try:
-        while True:
+    #try:
+        #while True:
             # Reset count and capture start time with high precision
-            pulse_count = 0 
-            start_time = time.perf_counter()
-            time.sleep(0.10)
-            elapsed_time = time.perf_counter() - start_time
+    pulse_count = 0 
+    start_time = time.perf_counter()
+    time.sleep(0.10)
+    elapsed_time = time.perf_counter() - start_time
             
             # Calculate frequency 
-            frequency = pulse_count / elapsed_time
+    frequency = pulse_count / elapsed_time
             # 2 decimal places
-            print(f"Detected Frequency: {frequency:.2f} Hz")
+    print(f"Detected Frequency: {frequency:.2f} Hz")
             
-    except KeyboardInterrupt:
-        print("\nTest stopped by user.")
+    #except KeyboardInterrupt:
+    print("\nTest stopped by user.")
         
-    finally:
+    #finally:
         # Always clean up GPIO states on exit to prevent errors on the next run
-        GPIO.cleanup()
+        #GPIO.cleanup()
 
 #returns the measured frequency
 def takeSineMeasurement():
@@ -68,8 +68,9 @@ def takeSineMeasurement():
 if __name__ == '__main__':
     #main()
     try:
-        while True: 
-            frequency = takeSineMeasurement()
+        while True:
+            main()
+            #frequency = takeSineMeasurement()
 
     except KeyboardInterrupt:
         print("\nTest stopped by user.")
