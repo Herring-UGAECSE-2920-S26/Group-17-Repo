@@ -66,5 +66,14 @@ def takeSineMeasurement():
     return frequency   
 
 if __name__ == '__main__':
-    main()
-    frequency = takeSineMeasurement()
+    #main()
+    try:
+        while True: 
+            frequency = takeSineMeasurement()
+
+    except KeyboardInterrupt:
+        print("\nTest stopped by user.")
+        
+    finally:
+        # Always clean up GPIO states on exit to prevent errors on the next run
+        GPIO.cleanup()
