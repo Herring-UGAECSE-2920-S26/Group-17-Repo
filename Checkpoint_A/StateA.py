@@ -60,6 +60,7 @@ def checkState(thisState, fast):
     global waveVoltage
     global refStatus
     global waveStatus
+    global frequency
 
     #match case statement that handles the states changing
     match thisState:
