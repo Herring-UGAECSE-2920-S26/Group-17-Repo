@@ -25,6 +25,7 @@ voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 sineWave = SineWaveTest.SineWave(pi1)
+measure_sinewave.setup()
 
 #declare vars
 state = "FunGen"
@@ -1394,7 +1395,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
                                                 
-            frequency = 0
+            #frequency = 0
             frequency = measure_sinewave.takeSineMeasurement()
             lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
             
@@ -1419,7 +1420,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("> Main", 3)
                 menuFirst = False
 
-            frequency = 0
+            #frequency = 0
             frequency = measure_sinewave.takeSineMeasurement()
             lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
             
