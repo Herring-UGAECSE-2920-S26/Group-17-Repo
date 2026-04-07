@@ -59,6 +59,7 @@ def takeSineMeasurement():
     elapsed_time = time.perf_counter() - start_time
             
     # Calculate frequency 
+    frequency = 0
     frequency = pulse_count / elapsed_time
     # 2 decimal places
     print(f"Detected Frequency: {frequency:.2f} Hz")
@@ -69,8 +70,8 @@ if __name__ == '__main__':
     #main()
     try:
         while True:
-            main()
-            #frequency = takeSineMeasurement()
+            #main()
+            frequency = takeSineMeasurement()
 
     except KeyboardInterrupt:
         print("\nTest stopped by user.")
