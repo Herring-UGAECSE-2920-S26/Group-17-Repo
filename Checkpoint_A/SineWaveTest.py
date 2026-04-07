@@ -87,11 +87,12 @@ if __name__ == "__main__":
 
     try: 
         test_freq = 10000
+        test_max = 10
         print(f"Generating {test_freq}Hz sine wave with 6-bit resolution...")
         
         # You only need to call this ONCE. 
         # The DMA hardware takes over and loops it forever.
-        sineWave.start_wave(freq=test_freq, 10)
+        sineWave.start_wave(freq=test_freq, max=test_max)
         
         # Look at your CPU usage now! Your main loop doesn't have to do any math.
         while True:
