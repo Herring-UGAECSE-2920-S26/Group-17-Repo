@@ -19,7 +19,7 @@ class SineWave:
         # The time delay between each hardware sample. 
         self.sample_rate_us = 1
 
-    def start_wave(self, freq):
+    def start_wave(self, freq, max):
         """
         Precomputes the 6-bit sine wave and offloads it to the DMA hardware.
         """
@@ -32,7 +32,7 @@ class SineWave:
         
         for i in range(steps):
             # 1. Calculate sine wave from 0.0 to 1.0
-            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
+            sine_val = (max/2) + (max/2) * math.sin(2 * math.pi * i / steps) + 1.0)
             
             # 2. Scale to 6-bit integer (0 to 63) for your 6-pin resistor ladder
             dac_value = int(sine_val * 63)
@@ -91,7 +91,7 @@ if __name__ == "__main__":
         
         # You only need to call this ONCE. 
         # The DMA hardware takes over and loops it forever.
-        sineWave.start_wave(freq=test_freq)
+        sineWave.start_wave(freq=test_freq, 10)
         
         # Look at your CPU usage now! Your main loop doesn't have to do any math.
         while True:
