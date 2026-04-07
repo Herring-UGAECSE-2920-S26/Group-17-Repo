@@ -31,7 +31,7 @@ def main():
             # Reset count and capture start time with high precision
             pulse_count = 0 
             start_time = time.perf_counter()
-            time.sleep(0.05)
+            time.sleep(0.10)
             elapsed_time = time.perf_counter() - start_time
             
             # Calculate frequency 
@@ -55,7 +55,7 @@ def takeSineMeasurement():
     # Reset count and capture start time with high precision
     pulse_count = 0 
     start_time = time.perf_counter()
-    time.sleep(0.05)
+    time.sleep(0.10)
     elapsed_time = time.perf_counter() - start_time
             
     # Calculate frequency 
