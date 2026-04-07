@@ -10,6 +10,8 @@ import adcCodeTest
 #import ohmmeterTest
 import VoltageReference
 import SquareWave
+import SineWaveTest
+import measure_sinewave
 
 #set up libraries
 pi1 = pigpio.pi()
@@ -22,12 +24,13 @@ lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
+sineWave = SineWaveTest.SineWave(pi1)
 
 #declare vars
 state = "FunGen"
 waveOutPin = 19
 menuFirst = True
-square = False
+square = True
 sine = False
 clear = True
 voltage = 0
@@ -38,6 +41,7 @@ waveFreq = 5050
 waveVoltage = 5
 refStatus = "Off"
 waveStatus = "Off"
+frequency = 0
 
 #function that checks and updates the state
 def checkState(thisState, fast):
@@ -758,8 +762,11 @@ def checkState(thisState, fast):
             #turn on wave generator
             elif clicked == True:
                 waveStatus = "On"
-                SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
-                SquareWave.updateVoltage(waveVoltage, digipot)
+                if square:
+                    SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
+                    SquareWave.updateVoltage(waveVoltage, digipot)
+                if sine: 
+                    sineWave.start_wave(waveFreq, waveVoltage)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
@@ -788,7 +795,8 @@ def checkState(thisState, fast):
             #turn off wave generator
             elif clicked == True:
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
@@ -819,7 +827,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 #turn off wave generator
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 #change state
                 state = "FunGenO"
@@ -847,7 +856,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 #turn off wave generator
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 #change state
                 state = "FunGen"
@@ -1378,11 +1388,14 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
                                                 
+            frequency = measure_sinewave.takeSineMeasurement()
+            lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
+            
             #switch to other menu option
             if clockwise == 1:
                 state = "FreqMesM"
@@ -1399,10 +1412,13 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("> Main", 3)
                 menuFirst = False
+
+            frequency = measure_sinewave.takeSineMeasurement()
+            lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
             
             #switch to other menu option 
             if clockwise == -1: 
