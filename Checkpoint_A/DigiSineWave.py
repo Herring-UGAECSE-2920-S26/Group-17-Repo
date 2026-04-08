@@ -7,7 +7,7 @@ import sys
 class MCP4131:
     def __init__(self, spi, bus=0, device=1):
         self.spi = spi
-        # bus=0, device=0 automatically uses GPIO 8 (SPI0 CE0) for Chip Select
+        # bus=0, device=1 automatically uses GPIO 7 (SPI0 CE1) for Chip Select
         self.spi.open(bus, device)
         self.spi.max_speed_hz = 1000000 
 
@@ -37,9 +37,11 @@ class SineWave:
         self.current_wave_id = None
         self.sample_rate_us = 1
 
-    def start_wave(self, freq):
+    # ---> ADDED 's' AS AN ARGUMENT HERE WITH A DEFAULT OF 64
+    def start_wave(self, freq, s=64):
         """
         Precomputes the 6-bit sine wave at FULL amplitude and offloads it to DMA.
+        Now includes dynamic DC offset compensation based on digipot step 's'.
         """
         steps = int(1000000 / (self.sample_rate_us * freq))
         if steps < 4:
@@ -48,11 +50,12 @@ class SineWave:
         pulses = []
         
         for i in range(steps):
-            # 1. Calculate sine wave from 0.0 to 1.0
-            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
+            # 1. Calculate sine wave from 0.0 to 1.0, subtracting your custom offset
+            # By subtracting the offset here, we artificially pull the wave down in software 
+            # so the capacitor pulls it back up to a perfect 0V in hardware.
+            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0 - (5.76E-3 * s + 0.0232)) / 2.0
             
             # 2. Scale to full 6-bit integer (0 to 63) ALWAYS. 
-            # Amplitude is now handled by the hardware Digipot.
             dac_value = int(sine_val * 63)
             dac_value = max(0, min(63, dac_value)) 
 
@@ -106,11 +109,12 @@ if __name__ == "__main__":
         test_freq = 10000
         print(f"Generating {test_freq}Hz sine wave at full hardware resolution...")
         
-        # Start the wave at 100% volume
-        sineWave.start_wave(freq=test_freq)
-        
         # Default pot to roughly 50% volume (step 64)
-        pot.set_step(64, pot_num=0)
+        initial_s = 64
+        pot.set_step(initial_s, pot_num=0)
+        
+        # Start the wave, passing the initial 's' value so the math is right
+        sineWave.start_wave(freq=test_freq, s=initial_s)
         
         print("\n--- Manual Amplitude Control ---")
         print("Type a step value (0-128) to change the wave amplitude.")
@@ -124,8 +128,13 @@ if __name__ == "__main__":
 
             try:
                 s = int(step_input)
-                # Assuming you are using Pot 0 on the MCP4131
+                
+                # 1. Update the physical hardware voltage divider
                 pot.set_step(s, pot_num=0) 
+                
+                # 2. Update the software wave math to compensate for the new capacitor behavior!
+                sineWave.start_wave(freq=test_freq, s=s)
+                
             except ValueError:
                 print("Invalid input. Please enter a whole number between 0 and 128.")
 
