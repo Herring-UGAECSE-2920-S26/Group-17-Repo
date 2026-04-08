@@ -1390,14 +1390,14 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
+                lcd.lcd_display_string(f"{frequency: .3f} Hz +50 Hz ", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
                                                 
             #frequency = 0
             frequency = measure_sinewave.takeSineMeasurement()
-            lcd.lcd_display_string(f"{frequency: .3f} Hz Tol.    ", 1)
+            lcd.lcd_display_string(f"{frequency: .3f} Hz +50 Hz ", 1)
             
             #switch to other menu option
             if clockwise == 1:
