@@ -91,7 +91,7 @@ class SineWave:
 if __name__ == "__main__":
     # 1. Setup SPI Digipot
     spi = spidev.SpiDev()
-    pot = MCP4131(spi, bus=0, device=0)
+    pot = MCP4131(spi, bus=0, device=1)
 
     # 2. Setup DMA Sine Wave
     pi1 = pigpio.pi()
