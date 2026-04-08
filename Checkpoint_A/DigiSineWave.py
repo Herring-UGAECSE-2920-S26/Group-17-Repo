@@ -5,7 +5,7 @@ import time
 import sys
 
 class MCP4131:
-    def __init__(self, spi, bus=0, device=0):
+    def __init__(self, spi, bus=0, device=1):
         self.spi = spi
         # bus=0, device=0 automatically uses GPIO 8 (SPI0 CE0) for Chip Select
         self.spi.open(bus, device)
