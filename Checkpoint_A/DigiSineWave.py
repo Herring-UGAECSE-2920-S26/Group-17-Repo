@@ -76,7 +76,7 @@ class SineWave:
         new_wave_id = self.pi.wave_create()
         
         if self.current_wave_id is not None:
-            self.pi.wave_send_using_mode(new_wave_id, pigpio.PI_WAVE_MODE_REPEAT_SYNC)
+            self.pi.wave_send_using_mode(new_wave_id, pigpio.WAVE_MODE_REPEAT_SYNC) # <--- FIXED
             time.sleep(0.1) 
             self.pi.wave_delete(self.current_wave_id)
         else:
