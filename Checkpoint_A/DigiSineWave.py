@@ -53,7 +53,7 @@ class SineWave:
             # 1. Calculate sine wave from 0.0 to 1.0, subtracting your custom offset
             # By subtracting the offset here, we artificially pull the wave down in software 
             # so the capacitor pulls it back up to a perfect 0V in hardware.
-            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0 - 2*(5.76E-4 * s + 0.00232)) / 2.0
+            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0 - (2*5.76E-4 * s + 0.00232)) / 2.0
             
             # 2. Scale to full 6-bit integer (0 to 63) ALWAYS. 
             dac_value = int(sine_val * 63)
