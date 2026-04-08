@@ -19,7 +19,7 @@ class SineWave:
         # The time delay between each hardware sample. 
         self.sample_rate_us = 1
 
-    def start_wave(self, freq):
+    def start_wave(self, freq, maxV):
         """
         Precomputes the 6-bit sine wave and offloads it to the DMA hardware.
         """
@@ -29,10 +29,9 @@ class SineWave:
             steps = 4 # Safety bound for frequencies that are too high
 
         pulses = []
-        
+        maxV = maxV/10
         for i in range(steps):
             # 1. Calculate sine wave from 0.0 to 1.0
-            maxV = 0.5
             sine_val = (maxV * math.sin(2 * math.pi * i / steps) + maxV) / 2.0
             
             # 2. Scale to 6-bit integer (0 to 63) for your 6-pin resistor ladder
@@ -87,12 +86,13 @@ if __name__ == "__main__":
     sineWave = SineWave(pi1)
 
     try: 
-        test_freq = 10000
+        test_freq = 1000
+        test_max = 10
         print(f"Generating {test_freq}Hz sine wave with 6-bit resolution...")
         
         # You only need to call this ONCE. 
         # The DMA hardware takes over and loops it forever.
-        sineWave.start_wave(freq=test_freq)
+        sineWave.start_wave(freq=test_freq, maxV=test_max)
         
         # Look at your CPU usage now! Your main loop doesn't have to do any math.
         while True:
