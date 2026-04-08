@@ -1245,9 +1245,10 @@ def checkState(thisState, fast):
                 if realRef == -1: realRef = refVoltage
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
-                lcd.lcd_display_string("> On    ", 2)
-                lcd.lcd_display_string("  Off    ", 3)
-                lcd.lcd_display_string("  Back    ", 4)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                lcd.lcd_display_string("> On    ", 3)
+                lcd.lcd_display_string("  Off    ", 4)
+                #lcd.lcd_display_string("  Back    ", 4)
                 #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
 
@@ -1279,7 +1280,8 @@ def checkState(thisState, fast):
                 if clear: lcd.lcd_clear()
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
-                lcd.lcd_display_string("  On    ", 2)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                #lcd.lcd_display_string("  On    ", 2)
                 lcd.lcd_display_string("> Off    ", 3)
                 lcd.lcd_display_string("  Back    ", 4)
                 #lcd.lcd_display_string("  Main", 4)
@@ -1318,7 +1320,8 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off    ", 2)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                #lcd.lcd_display_string("  Off    ", 2)
                 lcd.lcd_display_string("> Back    ", 3)
                 lcd.lcd_display_string("  Main    ", 4)
                 menuFirst = False
@@ -1358,7 +1361,8 @@ def checkState(thisState, fast):
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off    ", 2)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                #lcd.lcd_display_string("  Off    ", 2)
                 lcd.lcd_display_string("  Back    ", 3)
                 lcd.lcd_display_string("> Main    ", 4)
                 menuFirst = False
@@ -1390,14 +1394,14 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{frequency: .3f} Hz +50Hz ", 1)
+                lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
                                                 
             #frequency = 0
             frequency = measure_sinewave.takeSineMeasurement()
-            lcd.lcd_display_string(f"{frequency: .3f} Hz +50Hz ", 1)
+            lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
             
             #switch to other menu option
             if clockwise == 1:
@@ -1415,14 +1419,14 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string(f"{frequency: .3f} Hz +50Hz ", 1)
+                lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("> Main", 3)
                 menuFirst = False
 
             #frequency = 0
             frequency = measure_sinewave.takeSineMeasurement()
-            lcd.lcd_display_string(f"{frequency: .3f} Hz +50Hz ", 1)
+            lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
             
             #switch to other menu option 
             if clockwise == -1: 
