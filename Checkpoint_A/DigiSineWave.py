@@ -214,7 +214,7 @@ if __name__ == "__main__":
 
     try: 
 
-        test_freq = 1000
+        test_freq = 10000
 
         print(f"Generating {test_freq}Hz sine wave at full hardware resolution...")
 
