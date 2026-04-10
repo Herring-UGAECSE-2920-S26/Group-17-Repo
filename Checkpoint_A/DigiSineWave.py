@@ -37,7 +37,6 @@ class SineWave:
         self.current_wave_id = None
         self.sample_rate_us = 1
 
-    # ---> ADDED 's' AS AN ARGUMENT HERE WITH A DEFAULT OF 64
     def start_wave(self, freq, s=64):
         """
         Precomputes the 6-bit sine wave at FULL amplitude and offloads it to DMA.
@@ -51,8 +50,6 @@ class SineWave:
         
         for i in range(steps):
             # 1. Calculate sine wave from 0.0 to 1.0, subtracting your custom offset
-            # By subtracting the offset here, we artificially pull the wave down in software 
-            # so the capacitor pulls it back up to a perfect 0V in hardware.
             sine_val = (math.sin(2 * math.pi * i / steps) + 1.0 - (4*5.76E-4 * s + 0.00232)) / 2.0
             
             # 2. Scale to full 6-bit integer (0 to 63) ALWAYS. 
@@ -76,7 +73,7 @@ class SineWave:
         new_wave_id = self.pi.wave_create()
         
         if self.current_wave_id is not None:
-            self.pi.wave_send_using_mode(new_wave_id, pigpio.WAVE_MODE_REPEAT_SYNC) # <--- FIXED
+            self.pi.wave_send_using_mode(new_wave_id, pigpio.WAVE_MODE_REPEAT_SYNC) 
             time.sleep(0.1) 
             self.pi.wave_delete(self.current_wave_id)
         else:
@@ -106,37 +103,65 @@ if __name__ == "__main__":
     sineWave = SineWave(pi1)
 
     try: 
-        test_freq = 10000
-        print(f"Generating {test_freq}Hz sine wave at full hardware resolution...")
+        # State tracking variables so we don't lose one when we change the other!
+        current_freq = 10000
+        current_s = 64
         
-        # Default pot to roughly 50% volume (step 64)
-        initial_s = 64
-        pot.set_step(initial_s, pot_num=0)
+        print(f"Generating {current_freq}Hz sine wave at full hardware resolution...")
         
-        # Start the wave, passing the initial 's' value so the math is right
-        sineWave.start_wave(freq=test_freq, s=initial_s)
+        # Initialize hardware state
+        pot.set_step(current_s, pot_num=0)
+        sineWave.start_wave(freq=current_freq, s=current_s)
         
-        print("\n--- Manual Amplitude Control ---")
-        print("Type a step value (0-128) to change the wave amplitude.")
-        print("Type 'exit' to quit.\n")
+        print("\n--- Live Waveform Control ---")
+        print("Commands:")
+        print("  a <step> : Change Amplitude Step (0-128) -> e.g., 'a 100'")
+        print("  f <freq> : Change Frequency (Hz)       -> e.g., 'f 5000'")
+        print("  exit     : Quit program\n")
 
-        # 3. Interactive loop for amplitude control
+        # 3. Interactive loop for live dual-control
         while True:
-            step_input = input("Enter Amplitude Step (0-128): ").strip().lower()
-            if step_input == 'exit':
+            user_input = input("Enter command: ").strip().lower()
+            
+            if user_input == 'exit':
                 break
 
+            # Split the input into command and value
+            parts = user_input.split()
+            if len(parts) != 2:
+                print("Invalid format. Please use 'a [step]' or 'f [freq]'.")
+                continue
+
+            command = parts[0]
+            value_str = parts[1]
+
             try:
-                s = int(step_input)
+                val = int(value_str)
                 
-                # 1. Update the physical hardware voltage divider
-                pot.set_step(s, pot_num=0) 
-                
-                # 2. Update the software wave math to compensate for the new capacitor behavior!
-                sineWave.start_wave(freq=test_freq, s=s)
-                
+                if command == 'a':
+                    if 0 <= val <= 128:
+                        current_s = val
+                        # 1. Update the physical hardware voltage divider
+                        pot.set_step(current_s, pot_num=0) 
+                        # 2. Update the software wave math
+                        sineWave.start_wave(freq=current_freq, s=current_s)
+                    else:
+                        print("Invalid amplitude. Must be between 0 and 128.")
+                        
+                elif command == 'f':
+                    if val > 0: # Add an upper limit if you want to cap it!
+                        current_freq = val
+                        print(f"Frequency changed to {current_freq} Hz")
+                        # Recalculate DMA wave for new frequency, keeping the current amplitude math
+                        sineWave.start_wave(freq=current_freq, s=current_s)
+                    else:
+                        print("Frequency must be greater than 0.")
+                        
+                else:
+                    print("Unknown command. Use 'a' for amplitude or 'f' for frequency.")
+                    
             except ValueError:
-                print("Invalid input. Please enter a whole number between 0 and 128.")
+                print("Invalid input. Please enter a whole number for the value.")
 
     except KeyboardInterrupt:
         print("\nProgram interrupted by user.")
