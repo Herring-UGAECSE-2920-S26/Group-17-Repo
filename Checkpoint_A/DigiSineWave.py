@@ -108,7 +108,7 @@ class SineWave:
 
             # so the capacitor pulls it back up to a perfect 0V in hardware.
 
-            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0 - (4*5.76E-4 * s + 0.00232)) / 2.0
+            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
 
             
 
