@@ -50,7 +50,7 @@ class SineWave:
         
         for i in range(steps):
             # 1. Calculate sine wave from 0.0 to 1.0, subtracting your custom offset
-            sine_val = ((math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
+            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
             
             # 2. Scale to full 6-bit integer (0 to 63) ALWAYS. 
             dac_value = int(sine_val * 63)
