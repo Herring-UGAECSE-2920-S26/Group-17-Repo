@@ -40,7 +40,7 @@ class SineWave:
     def start_wave(self, freq, s=64):
         """
         Precomputes the 6-bit sine wave at FULL amplitude and offloads it to DMA.
-        Now includes 3D dynamic DC offset compensation based on freq and step 's'.
+        Now includes dynamic DC offset compensation based on digipot step 's'.
         """
         steps = int(1000000 / (self.sample_rate_us * freq))
         if steps < 4:
@@ -48,25 +48,15 @@ class SineWave:
 
         pulses = []
         
-        # 1. Convert Hz to kHz for the math
-        f_kHz = freq / 1000.0
-
-        # 2. Calculate the physical voltage error based on your data table
-        #    V_error = (Slope_based_on_freq) * current_step
-        v_error = (0.00092 * f_kHz - 0.00147) * s
-        
-        # 3. Divide by 10 to normalize it to your 10V hardware scale 
-        offset = v_error
-        
         for i in range(steps):
-            # 4. Apply the dynamic offset to the sine wave math
-            sine_val = (math.sin(2 * math.pi * i / steps) + 1.0 - offset) / 2.0
+            # 1. Calculate sine wave from 0.0 to 1.0, subtracting your custom offset
+            sine_val = ((math.sin(2 * math.pi * i / steps) + 1.0) / 2.0
             
-            # 5. Scale to full 6-bit integer (0 to 63) ALWAYS. 
+            # 2. Scale to full 6-bit integer (0 to 63) ALWAYS. 
             dac_value = int(sine_val * 63)
             dac_value = max(0, min(63, dac_value)) 
 
-            # 6. Create Bitmasks
+            # 3. Create Bitmasks
             gpio_on = 0
             gpio_off = 0
             
@@ -76,7 +66,7 @@ class SineWave:
                 else:
                     gpio_off |= (1 << self.pins[bit])
 
-            # 7. Add pulse instruction to array
+            # 4. Add pulse instruction to array
             pulses.append(pigpio.pulse(gpio_on, gpio_off, self.sample_rate_us))
 
         self.pi.wave_add_generic(pulses)
@@ -108,7 +98,7 @@ if __name__ == "__main__":
     if not pi1.connected:
         print("Failed to connect to pigpio. Did you run 'sudo pigpiod -s 1'?")
         pot.close()
-        sys.exit()
+        exit()
         
     sineWave = SineWave(pi1)
 
@@ -159,7 +149,7 @@ if __name__ == "__main__":
                         print("Invalid amplitude. Must be between 0 and 128.")
                         
                 elif command == 'f':
-                    if val > 0: 
+                    if val > 0: # Add an upper limit if you want to cap it!
                         current_freq = val
                         print(f"Frequency changed to {current_freq} Hz")
                         # Recalculate DMA wave for new frequency, keeping the current amplitude math
