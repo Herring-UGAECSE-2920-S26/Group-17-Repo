@@ -53,7 +53,7 @@ class SineWave:
 
         # 2. Calculate the physical voltage error based on your data table
         #    V_error = (Slope_based_on_freq) * current_step
-        v_error = (0.00092 * f_kHz - 0.00147) * s
+        v_error = 2*(0.00092 * f_kHz - 0.00147) * s
         
         # 3. Divide by 10 to normalize it to your 10V hardware scale 
         offset = v_error / 10.0
