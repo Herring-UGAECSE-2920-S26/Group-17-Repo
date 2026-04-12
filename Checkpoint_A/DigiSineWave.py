@@ -3,6 +3,7 @@ import spidev # https://pypi.org/project/spidev/
 import math
 import time
 import sys
+import DigipotCode
 
 class MCP4131:
     def __init__(self, spi, bus=0, device=1):
@@ -86,6 +87,47 @@ class SineWave:
         self.pi.wave_clear()
         for pin in self.pins:
             self.pi.write(pin, 0)
+            
+    #sets the amplitude of the sine wave
+    def setAmplitude(self, volt, digipot):
+        #finds the correct step
+        if volt == 0:
+            step = 0
+        elif volt == 0.625:
+            step = 7
+        elif volt == 1.25:
+            step = 16
+        elif volt == 1.875:
+            step = 23
+        elif volt == 2.5:
+            step = 32
+        elif volt == 3.125:
+            step = 39
+        elif volt == 3.75:
+            step = 48
+        elif volt == 4.375:
+            step = 56
+        elif volt == 5:
+            step = 64
+        elif volt == 5.625:
+            step = 72
+        elif volt == 6.25: 
+            step = 80
+        elif volt == 6.875:
+            step = 88
+        elif volt == 7.5:
+            step = 96
+        elif volt == 8.125:
+            step = 104
+        elif volt == 8.75:
+            step = 112
+        elif volt == 9.375:
+            step = 120
+        elif volt == 10:
+            step = 128
+
+        #sets the digipot
+        digipot.set_step(step) 
 
 # --- Main Execution ---
 if __name__ == "__main__":
