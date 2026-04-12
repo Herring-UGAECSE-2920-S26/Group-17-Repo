@@ -89,7 +89,7 @@ class SineWave:
             self.pi.write(pin, 0)
             
     #sets the amplitude of the sine wave
-    def setAmplitude(self, volt, digipot):
+    def set_amplitude(self, volt, digipot):
         #finds the correct step
         if volt == 0:
             step = 0
