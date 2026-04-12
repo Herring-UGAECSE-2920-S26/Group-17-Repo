@@ -21,7 +21,7 @@ spi1 = spidev.SpiDev()
 #set up devices
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
-digipot2 = DigipotCode.MCP4131(spi1)
+digipot2 = DigipotCode.MCP4131(spi1, 0, 1)
 lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
