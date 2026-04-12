@@ -2,6 +2,7 @@ import spidev #https://pypi.org/project/spidev/
 import pigpio #https://abyz.me.uk/rpi/pigpio/index.html
 import time
 import Dual_Digipot
+import DigipotCode
 import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
@@ -10,7 +11,7 @@ import adcCodeTest
 #import ohmmeterTest
 import VoltageReference
 import SquareWave
-import SineWaveTest
+import DigiSineWave
 import measure_sinewave
 
 #set up libraries
@@ -20,11 +21,12 @@ spi1 = spidev.SpiDev()
 #set up devices
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
+digipot2 = DigipotCode.MCP4131(spi1)
 lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
-sineWave = SineWaveTest.SineWave(pi1)
+sineWave = DigiSineWave.SineWave(pi1)
 measure_sinewave.setup()
 
 #declare vars
@@ -768,7 +770,8 @@ def checkState(thisState, fast):
                     SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
                     SquareWave.updateVoltage(waveVoltage, digipot)
                 if sine: 
-                    sineWave.start_wave(waveFreq, waveVoltage)
+                    sineWave.set_amplitude(waveVoltage, digipot2)
+                    sineWave.start_wave(waveFreq)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
