@@ -10,6 +10,8 @@ import adcCodeTest
 #import ohmmeterTest
 import VoltageReference
 import SquareWave
+import SineWaveTest
+import measure_sinewave
 
 #set up libraries
 pi1 = pigpio.pi()
@@ -22,12 +24,14 @@ lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
+sineWave = SineWaveTest.SineWave(pi1)
+measure_sinewave.setup()
 
 #declare vars
 state = "FunGen"
 waveOutPin = 19
 menuFirst = True
-square = False
+square = True
 sine = False
 clear = True
 voltage = 0
@@ -38,6 +42,7 @@ waveFreq = 5050
 waveVoltage = 5
 refStatus = "Off"
 waveStatus = "Off"
+frequency = 0
 
 #function that checks and updates the state
 def checkState(thisState, fast):
@@ -56,6 +61,7 @@ def checkState(thisState, fast):
     global waveVoltage
     global refStatus
     global waveStatus
+    global frequency
 
     #match case statement that handles the states changing
     match thisState:
@@ -589,7 +595,7 @@ def checkState(thisState, fast):
             currentFreq = waveFreq #checks current frequency
             #changes frequency
             if clockwise != 0:
-                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
+                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast, sine)
             #updates lcd if necessary
             if currentFreq != waveFreq:
                 lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
@@ -680,7 +686,7 @@ def checkState(thisState, fast):
             currentWaveVoltage = waveVoltage #checks current amplitude
             #changes amplitude
             if clockwise != 0:
-                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast)
+                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast, sine)
             #updates lcd if necessary
             if currentWaveVoltage != waveVoltage:
                 lcd.lcd_display_string(f"> +/-{waveVoltage} Vp       ", 1)
@@ -758,8 +764,11 @@ def checkState(thisState, fast):
             #turn on wave generator
             elif clicked == True:
                 waveStatus = "On"
-                SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
-                SquareWave.updateVoltage(waveVoltage, digipot)
+                if square:
+                    SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
+                    SquareWave.updateVoltage(waveVoltage, digipot)
+                if sine: 
+                    sineWave.start_wave(waveFreq, waveVoltage)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
@@ -788,7 +797,8 @@ def checkState(thisState, fast):
             #turn off wave generator
             elif clicked == True:
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
@@ -819,7 +829,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 #turn off wave generator
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 #change state
                 state = "FunGenO"
@@ -847,7 +858,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 #turn off wave generator
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 #change state
                 state = "FunGen"
@@ -1233,9 +1245,10 @@ def checkState(thisState, fast):
                 if realRef == -1: realRef = refVoltage
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
-                lcd.lcd_display_string("> On    ", 2)
-                lcd.lcd_display_string("  Off    ", 3)
-                lcd.lcd_display_string("  Back    ", 4)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                lcd.lcd_display_string("> On    ", 3)
+                lcd.lcd_display_string("  Off    ", 4)
+                #lcd.lcd_display_string("  Back    ", 4)
                 #lcd.lcd_display_string("  Main", 4)
                 menuFirst = False
 
@@ -1267,7 +1280,8 @@ def checkState(thisState, fast):
                 if clear: lcd.lcd_clear()
                 #lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
-                lcd.lcd_display_string("  On    ", 2)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                #lcd.lcd_display_string("  On    ", 2)
                 lcd.lcd_display_string("> Off    ", 3)
                 lcd.lcd_display_string("  Back    ", 4)
                 #lcd.lcd_display_string("  Main", 4)
@@ -1306,7 +1320,8 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off    ", 2)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                #lcd.lcd_display_string("  Off    ", 2)
                 lcd.lcd_display_string("> Back    ", 3)
                 lcd.lcd_display_string("  Main    ", 4)
                 menuFirst = False
@@ -1346,7 +1361,8 @@ def checkState(thisState, fast):
                 #lcd.lcd_display_string(f"Output: {realRef: .3f} V {refStatus} ", 1)
                 lcd.lcd_display_string(f"Output: {refVoltage: .3f} V {refStatus} ", 1)
                 #lcd.lcd_display_string("  On", 1)
-                lcd.lcd_display_string("  Off    ", 2)
+                lcd.lcd_display_string("+/- 0.15 V  ", 2)
+                #lcd.lcd_display_string("  Off    ", 2)
                 lcd.lcd_display_string("  Back    ", 3)
                 lcd.lcd_display_string("> Main    ", 4)
                 menuFirst = False
@@ -1378,11 +1394,15 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
                                                 
+            #frequency = 0
+            frequency = measure_sinewave.takeSineMeasurement()
+            lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
+            
             #switch to other menu option
             if clockwise == 1:
                 state = "FreqMesM"
@@ -1399,10 +1419,14 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("> Main", 3)
                 menuFirst = False
+
+            #frequency = 0
+            frequency = measure_sinewave.takeSineMeasurement()
+            lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
             
             #switch to other menu option 
             if clockwise == -1: 
