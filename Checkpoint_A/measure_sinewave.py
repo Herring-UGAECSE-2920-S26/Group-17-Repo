@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO #https://pypi.org/project/RPi.GPIO/
 import time
 
 GPIO_PIN = 27 
