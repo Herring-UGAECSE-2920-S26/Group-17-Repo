@@ -800,10 +800,14 @@ def checkState(thisState, fast):
             elif clicked == True:
                 waveStatus = "On"
                 if square:
+                    print(f"Voltage: {waveVoltageSq}")
+                    print(f"Frequency: {waveFreqSq}")
                     SquareWave.updateFrequency(waveOutPin, waveFreqSq, pi1)
                     SquareWave.updateVoltage(waveVoltageSq, digipot)
                     lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
                 if sine: 
+                    print(f"Voltage: {waveVoltageSin}")
+                    print(f"Frequency: {waveFreqSin}")
                     sineWave.set_amplitude(waveVoltageSin, digipot2)
                     sineWave.start_wave(waveFreqSin)
                     lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
