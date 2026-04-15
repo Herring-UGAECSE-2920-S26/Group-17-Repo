@@ -601,18 +601,20 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
 
-            currentFreq = waveFreqSq if square else waveFreqSin #checks current frequency
-            #changes frequency
-            if clockwise != 0:
-                if square: 
-                    waveFreqSq = SquareWave.changeFrequency(waveFreqSq, clockwise, fast, sine)
-                else: 
-                    waveFreqSin = SquareWave.changeFrequency(waveFreqSin, clockwise, fast, sine)
-            #updates lcd if necessary
             if square: 
+                currentFreq = waveFreqSq #checks current frequency
+                #changes frequency
+                if clockwise != 0:
+                    waveFreqSq = SquareWave.changeFrequency(waveFreqSq, clockwise, fast, sine)
+                #updates lcd if necessary
                 if currentFreq != waveFreqSq:
                     lcd.lcd_display_string(f"> {waveFreqSq} Hz        ", 1)
             else: 
+                currentFreq = waveFreqSin #checks current frequency
+                #changes frequency
+                if clockwise != 0:
+                    waveFreqSin = SquareWave.changeFrequency(waveFreqSin, clockwise, fast, sine)
+                #updates lcd if necessary
                 if currentFreq != waveFreqSin:
                     lcd.lcd_display_string(f"> {waveFreqSin} Hz        ", 1)
 
@@ -702,19 +704,22 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
 
-            #checks current amplitude
-            currentWaveVoltage = waveVoltageSq if square else waveVoltageSin 
-            #changes amplitude
-            if clockwise != 0:
-                if square: 
-                    waveVoltage = SquareWave.changeVoltage(waveVoltageSq, clockwise, fast, sine)
-                else: 
-                    waveVoltage = SquareWave.changeVoltage(waveVoltageSin, clockwise, fast, sine)
-            #updates lcd if necessary
             if square: 
+                #checks current amplitude
+                currentWaveVoltage = waveVoltageSq 
+                #changes amplitude
+                if clockwise != 0:
+                    waveVoltageSq = SquareWave.changeVoltage(waveVoltageSq, clockwise, fast, sine)
+                #updates lcd if necessary
                 if currentWaveVoltage != waveVoltageSq:
                     lcd.lcd_display_string(f"> +/-{waveVoltageSq} Vp       ", 1)
             else: 
+                #checks current amplitude
+                currentWaveVoltage = waveVoltageSin 
+                #changes amplitude
+                if clockwise != 0:
+                    waveVoltageSin = SquareWave.changeVoltage(waveVoltageSin, clockwise, fast, sine)
+                #updates lcd if necessary
                 if currentWaveVoltage != waveVoltageSin:
                     lcd.lcd_display_string(f"> +/-{waveVoltageSin} Vp       ", 1)
 
