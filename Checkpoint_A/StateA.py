@@ -601,7 +601,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
 
-            currentFreq = waveFreqSq if square else waveFreqsin #checks current frequency
+            currentFreq = waveFreqSq if square else waveFreqSin #checks current frequency
             #changes frequency
             if clockwise != 0:
                 if square: 
