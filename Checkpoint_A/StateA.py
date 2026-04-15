@@ -80,7 +80,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("> Function Generator", 1)
                 lcd.lcd_display_string("  Ohmmeter", 2)
                 lcd.lcd_display_string("  Voltmeter    ", 3)
-                lcd.lcd_display_string("  DC Reference    ", 4)
+                lcd.lcd_display_string("  DC Reference     ", 4)
                 menuFirst = False
 
             #switch to other menu option 
@@ -102,7 +102,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Function Generator", 1)
                 lcd.lcd_display_string("> Ohmmeter    ", 2)
                 lcd.lcd_display_string("  Voltmeter    ", 3)
-                lcd.lcd_display_string("  DC Reference    ", 4)
+                lcd.lcd_display_string("  DC Reference     ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -129,7 +129,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Function Generator", 1)
                 lcd.lcd_display_string("  Ohmmeter    ", 2)
                 lcd.lcd_display_string("> Voltmeter    ", 3)
-                lcd.lcd_display_string("  DC Reference    ", 4)
+                lcd.lcd_display_string("  DC Reference     ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -156,7 +156,7 @@ def checkState(thisState, fast):
                 lcd.lcd_display_string("  Function Generator", 1)
                 lcd.lcd_display_string("  Ohmmeter    ", 2)
                 lcd.lcd_display_string("  Voltmeter    ", 3)
-                lcd.lcd_display_string("> DC Reference  ", 4)
+                lcd.lcd_display_string("> DC Reference     ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -182,7 +182,7 @@ def checkState(thisState, fast):
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("  Ohmmeter    ", 1)
                 lcd.lcd_display_string("  Voltmeter    ", 2)
-                lcd.lcd_display_string("  DC Reference    ", 3)
+                lcd.lcd_display_string("  DC Reference     ", 3)
                 lcd.lcd_display_string("> Freq. Measurement ", 4)
                 menuFirst = False
                 
@@ -208,7 +208,7 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("  Voltmeter    ", 1)
-                lcd.lcd_display_string("  DC Reference    ", 2)
+                lcd.lcd_display_string("  DC Reference     ", 2)
                 lcd.lcd_display_string("  Freq. Measurement ", 3)
                 lcd.lcd_display_string("> Back    ", 4)
                 menuFirst = False
@@ -234,7 +234,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  DC Reference    ", 1)
+                lcd.lcd_display_string("  DC Reference     ", 1)
                 lcd.lcd_display_string("  Freq. Measurement ", 2)
                 lcd.lcd_display_string("  Back    ", 3)
                 lcd.lcd_display_string("> Main    ", 4)
