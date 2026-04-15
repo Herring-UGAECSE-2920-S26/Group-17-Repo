@@ -931,7 +931,7 @@ def checkState(thisState, fast):
             
             #update resistance measurement
             resistance = voltmeter.get_resistance()
-            if resistance > 500000:
+            if resistance > abs(500000):
                 lcd.lcd_display_string(f"Infinite Ohms    ", 1)
             else: 
                 lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
@@ -964,7 +964,7 @@ def checkState(thisState, fast):
             
             #update resistance measurement
             resistance = voltmeter.get_resistance()
-            if resistance > 500000:
+            if resistance > abs(500000):
                 lcd.lcd_display_string(f"Infinite Ohms    ", 1)
             else: 
                 lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
