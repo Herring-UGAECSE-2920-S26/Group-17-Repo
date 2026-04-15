@@ -920,7 +920,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if resistance > 500000:
+                if resistance > abs(500000):
                     lcd.lcd_display_string(f"Infinite Ohms    ", 1)
                 else: 
                     lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
@@ -953,7 +953,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if resistance > 500000:
+                if resistance > abs(500000):
                     lcd.lcd_display_string(f"Infinite Ohms    ", 1)
                 else: 
                     lcd.lcd_display_string(f"{resistance: .4f} Ohms    ", 1)
