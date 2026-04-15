@@ -17,11 +17,12 @@ import measure_sinewave
 #set up libraries
 pi1 = pigpio.pi()
 spi1 = spidev.SpiDev()
+spi2 = spidev.SpiDev() # <--- FIX: Dedicated SPI object for the second digipot
 
 #set up devices
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
-digipot2 = DigipotCode.MCP4131(spi1, 0, 1)
+digipot2 = DigipotCode.MCP4131(spi2, 0, 1) # <--- FIX: Assigned to spi2
 lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
