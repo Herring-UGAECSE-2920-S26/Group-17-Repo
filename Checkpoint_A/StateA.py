@@ -710,6 +710,9 @@ def checkState(thisState, fast):
                 #changes amplitude
                 if clockwise != 0:
                     waveVoltageSq = SquareWave.changeVoltage(waveVoltageSq, clockwise, fast, sine)
+                    # ---> ADDED FIX: Update hardware immediately if already running <---
+                    if waveStatus == "On":
+                        SquareWave.updateVoltage(waveVoltageSq, digipot)
                 #updates lcd if necessary
                 if currentWaveVoltage != waveVoltageSq:
                     lcd.lcd_display_string(f"> +/-{waveVoltageSq} Vp       ", 1)
