@@ -117,7 +117,7 @@ class Voltmeter:
         
         if t1 is not None:
             # 2. Calculate Ohms from Vin (Using ** for power)
-            rin = -1576 + -0.264*t2 + 1.67E-5 *t2*t2
+            rin = -22103 + 2.01*t2 + -6.62E-5 *t2*t2 + 9.89E-10 *t2*t2*t2
             if rin < 0: rin = 0
             print(f"Measured Rin: {rin:.4f} Ohms")
         else: 
