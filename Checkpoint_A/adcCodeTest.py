@@ -94,7 +94,7 @@ class Voltmeter:
 
         if t1 is not None:
             if t2 < 19552: #negative voltage
-                vin = -6.34 + 2.99E-4 *t2 + 1.36E-9 *t2*t2
+                vin = -6.34 + 2.99E-4 *t2 + 1.36E-9 *t2*t2 + 500
                 print(f"Actual T1: {t1} us | Actual T2: {t2} us")
                 print(f"Measured Vin: {vin:.4f} V")
             else: #positive voltage
