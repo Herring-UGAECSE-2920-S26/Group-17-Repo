@@ -40,10 +40,8 @@ voltage = 0
 resistance = 0
 refVoltage = 0
 realRef = -1
-waveFreqSq = 5050
-waveFreqSin = 4500
-waveVoltageSq = 5
-waveVoltageSin = 5
+waveFreq = 5050
+waveVoltage = 5
 refStatus = "Off"
 waveStatus = "Off"
 frequency = 0
@@ -61,10 +59,8 @@ def checkState(thisState, fast):
     global resistance
     global refVoltage
     global realRef
-    global waveFreqSq
-    global waveFreqSin
-    global waveVoltageSq
-    global waveVoltageSin
+    global waveFreq
+    global waveVoltage
     global refStatus
     global waveStatus
     global frequency
@@ -440,6 +436,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 square = False
                 sine = True
+                waveFreq = 4500
+                waveVoltage = 5
                 menuFirst = True
                 clear = True
 
@@ -475,6 +473,8 @@ def checkState(thisState, fast):
             if clockwise == -1: 
                 state = "TypeSin"
                 menuFirst = True
+                waveFreq = 5050
+                waveVoltage = 5
                 clear = False
             #switch to other menu option
             if clockwise == 1:
@@ -593,30 +593,18 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if square: 
-                    lcd.lcd_display_string(f"> {waveFreqSq} Hz        ", 1)
-                else: 
-                    lcd.lcd_display_string(f"> {waveFreqSin} Hz        ", 1)
+                lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
 
-            if square: 
-                currentFreq = waveFreqSq #checks current frequency
-                #changes frequency
-                if clockwise != 0:
-                    waveFreqSq = SquareWave.changeFrequency(waveFreqSq, clockwise, fast, sine)
-                #updates lcd if necessary
-                if currentFreq != waveFreqSq:
-                    lcd.lcd_display_string(f"> {waveFreqSq} Hz        ", 1)
-            else: 
-                currentFreq = waveFreqSin #checks current frequency
-                #changes frequency
-                if clockwise != 0:
-                    waveFreqSin = SquareWave.changeFrequency(waveFreqSin, clockwise, fast, sine)
-                #updates lcd if necessary
-                if currentFreq != waveFreqSin:
-                    lcd.lcd_display_string(f"> {waveFreqSin} Hz        ", 1)
+            currentFreq = waveFreq #checks current frequency
+            #changes frequency
+            if clockwise != 0:
+                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast, sine)
+            #updates lcd if necessary
+            if currentFreq != waveFreq:
+                lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
 
             #goes back to normal frequency menu if clicked
             if clicked == True:
@@ -696,32 +684,18 @@ def checkState(thisState, fast):
         case "AmpIn":
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if square: 
-                    lcd.lcd_display_string(f"> +/-{waveVoltageSq} Vp          ", 1)
-                else: 
-                    lcd.lcd_display_string(f"> +/-{waveVoltageSin} Vp          ", 1)
+                lcd.lcd_display_string(f"> +/-{waveVoltage} Vp          ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
 
-            if square: 
-                #checks current amplitude
-                currentWaveVoltage = waveVoltageSq 
-                #changes amplitude
-                if clockwise != 0:
-                    waveVoltageSq = SquareWave.changeVoltage(waveVoltageSq, clockwise, fast, sine)
-                #updates lcd if necessary
-                if currentWaveVoltage != waveVoltageSq:
-                    lcd.lcd_display_string(f"> +/-{waveVoltageSq} Vp       ", 1)
-            else: 
-                #checks current amplitude
-                currentWaveVoltage = waveVoltageSin 
-                #changes amplitude
-                if clockwise != 0:
-                    waveVoltageSin = SquareWave.changeVoltage(waveVoltageSin, clockwise, fast, sine)
-                #updates lcd if necessary
-                if currentWaveVoltage != waveVoltageSin:
-                    lcd.lcd_display_string(f"> +/-{waveVoltageSin} Vp       ", 1)
+            currentWaveVoltage = waveVoltage #checks current amplitude
+            #changes amplitude
+            if clockwise != 0:
+                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast, sine)
+            #updates lcd if necessary
+            if currentWaveVoltage != waveVoltage:
+                lcd.lcd_display_string(f"> +/-{waveVoltage} Vp       ", 1)
 
             #goes back to normal amplitude menu if clicked
             if clicked == True:
@@ -781,10 +755,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if square: 
-                    lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
-                else: 
-                    lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 lcd.lcd_display_string("> On   ", 2)
                 lcd.lcd_display_string("  Off   ", 3)
                 lcd.lcd_display_string("  Back   ", 4)
@@ -800,17 +771,16 @@ def checkState(thisState, fast):
             elif clicked == True:
                 waveStatus = "On"
                 if square:
-                    print(f"Voltage: {waveVoltageSq}")
-                    print(f"Frequency: {waveFreqSq}")
-                    SquareWave.updateFrequency(waveOutPin, waveFreqSq, pi1)
-                    SquareWave.updateVoltage(waveVoltageSq, digipot)
-                    lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
+                    print(f"Voltage: {waveVoltage}")
+                    print(f"Frequency: {waveFreq}")
+                    SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
+                    SquareWave.updateVoltage(waveVoltage, digipot)
                 if sine: 
-                    print(f"Voltage: {waveVoltageSin}")
-                    print(f"Frequency: {waveFreqSin}")
-                    sineWave.set_amplitude(waveVoltageSin, digipot2)
-                    sineWave.start_wave(waveFreqSin)
-                    lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
+                    print(f"Voltage: {waveVoltage}")
+                    print(f"Frequency: {waveFreq}")
+                    sineWave.set_amplitude(waveVoltage, digipot2)
+                    sineWave.start_wave(waveFreq)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
         #level 3 under FunGenO
@@ -818,10 +788,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if square: 
-                    lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
-                else: 
-                    lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 lcd.lcd_display_string("  On   ", 2)
                 lcd.lcd_display_string("> Off   ", 3)
                 lcd.lcd_display_string("  Back   ", 4)
@@ -844,10 +811,7 @@ def checkState(thisState, fast):
                 if square: SquareWave.waveOff(waveOutPin, pi1)
                 if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
-                if square: 
-                    lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
-                else: 
-                    lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
         #level 3 under FunGenO
@@ -855,10 +819,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if square: 
-                    lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
-                else: 
-                    lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 #lcd.lcd_display_string("  On", 1)
                 lcd.lcd_display_string("  Off   ", 2)
                 lcd.lcd_display_string("> Back   ", 3)
@@ -892,10 +853,7 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                if square: 
-                    lcd.lcd_display_string(f"{waveFreqSq}Hz +/-{waveVoltageSq}Vp {waveStatus} ", 1)
-                else: 
-                    lcd.lcd_display_string(f"{waveFreqSin}Hz +/-{waveVoltageSin}Vp {waveStatus} ", 1)
+                lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 #lcd.lcd_display_string("  On", 1)
                 lcd.lcd_display_string("  Off   ", 2)
                 lcd.lcd_display_string("  Back   ", 3)
