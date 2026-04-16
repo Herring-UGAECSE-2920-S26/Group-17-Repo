@@ -10,6 +10,7 @@ import adcCodeTest
 #import ohmmeterTest
 import VoltageReference
 import SquareWave
+import measure_sinewave
 
 #set up libraries
 pi1 = pigpio.pi()
@@ -22,6 +23,8 @@ lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
+#
+measure_sinewave.setup()
 
 #declare vars
 state = "FunGen"
@@ -38,6 +41,7 @@ waveFreq = 5050
 waveVoltage = 5
 refStatus = "Off"
 waveStatus = "Off"
+frequency = 0
 
 #function that checks and updates the state
 def checkState(thisState, fast):
@@ -56,6 +60,7 @@ def checkState(thisState, fast):
     global waveVoltage
     global refStatus
     global waveStatus
+    global frequency
 
     #match case statement that handles the states changing
     match thisState:
@@ -1378,11 +1383,14 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
                 lcd.lcd_display_string("> Back", 2)
                 lcd.lcd_display_string("  Main", 3)
                 menuFirst = False
                                                 
+            frequency = measure_sinewave.takeSineMeasurement()
+            lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
+            
             #switch to other menu option
             if clockwise == 1:
                 state = "FreqMesM"
@@ -1399,10 +1407,13 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("Feq Mes Hz Tolerance", 1)
+                lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
                 lcd.lcd_display_string("  Back", 2)
                 lcd.lcd_display_string("> Main", 3)
                 menuFirst = False
+
+            frequency = measure_sinewave.takeSineMeasurement()
+            lcd.lcd_display_string(f"{frequency: .3f}Hz +50Hz  ", 1)
             
             #switch to other menu option 
             if clockwise == -1: 
