@@ -15,19 +15,24 @@ def waveOff(gpio, pi):
 
 #function that updates the voltage of the square wave
 def updateVoltage(voltage, digipot):
-    digipot.set_step(59, 0)
+    print(f"Wave voltage: {voltage}")
+    digipot.set_step(57, 0)
     step = Min_difference.min_difference_volts(voltage)
     digipot.set_step(step, 1)
 
 #function that will work with StateB to let user change frequency
-def changeFrequency(freq, clockwise, fast):
+def changeFrequency(freq, clockwise, fast, sine):
     maxFreq = 10000
-    minFreq = 100
+    minFreq = 1000 if sine else 100
     readFreq = freq
     #if rotating
     if clockwise != 0:
         #updates the frequency value
-        stepSize = 100 if fast else 10 
+        if sine:
+            stepSize = 500
+        else: 
+            stepSize = 100 if fast else 10
+            
         readFreq += (clockwise * stepSize)
 
         #makes sure frequency is in range
@@ -37,13 +42,17 @@ def changeFrequency(freq, clockwise, fast):
         return readFreq
 
 #function that will work with StateB to let user change voltage
-def changeVoltage(voltage, clockwise, fast):
+def changeVoltage(voltage, clockwise, fast, sine):
     maxV = 10
     minV = 0
     #if rotating
     if clockwise != 0:
         #updates the voltage value
-        stepSize = 1
+        if sine: 
+            stepSize = 0.625
+        else:
+            stepSize = 1
+            
         voltage += (clockwise * stepSize)
 
         #makes sure voltage is in range
@@ -66,7 +75,7 @@ if __name__ == "__main__":
     first = True
 
     #make sure square wave is centered
-    digipot.set_step(59, 0)
+    digipot.set_step(57, 0)
 
     while True:
         #update values
