@@ -10,6 +10,7 @@ import adcCodeTest
 #import ohmmeterTest
 import VoltageReference
 import SquareWave
+import DigiSineWave
 import measure_sinewave
 
 #set up libraries
@@ -23,7 +24,7 @@ lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
-#
+sineWave = DigiSineWave.SineWave(pi1)
 measure_sinewave.setup()
 
 #declare vars
