@@ -94,7 +94,7 @@ class Voltmeter:
 
         if t1 is not None:
             if t2 < 19552: #negative voltage
-                vin = -6.34 + 2.99E-4 *t2 + 1.36E-9 *t2*t2
+                vin = -6.34 + 2.99E-4 *t2 + 1.36E-9 *t2*t2 + 500
                 print(f"Actual T1: {t1} us | Actual T2: {t2} us")
                 print(f"Measured Vin: {vin:.4f} V")
             else: #positive voltage
@@ -117,7 +117,8 @@ class Voltmeter:
         
         if t1 is not None:
             # 2. Calculate Ohms from Vin (Using ** for power)
-            rin = -4406 + -0.0406*t2 + 1.35E-5 *t2*t2
+            rin = -22103 + 2.01*t2 + -6.62E-5 *t2*t2 + 9.89E-10 *t2*t2*t2
+            if rin < 0: rin = 0
             print(f"Measured Rin: {rin:.4f} Ohms")
         else: 
             rin = 0
