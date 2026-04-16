@@ -2,6 +2,7 @@ import spidev #https://pypi.org/project/spidev/
 import pigpio #https://abyz.me.uk/rpi/pigpio/index.html
 import time
 import Dual_Digipot
+import DigipotCode
 import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
@@ -20,6 +21,7 @@ spi1 = spidev.SpiDev()
 #set up devices
 rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
+digipot2 = DigipotCode.MCP4131(spi1, 0, 1)
 lcd = I2C_LCD_driver.lcd()
 voltmeter = adcCodeTest.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
@@ -72,9 +74,9 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("> Function Generator", 1)
-                lcd.lcd_display_string("  Ohmmeter", 2)
-                lcd.lcd_display_string("  Voltmeter", 3)
-                lcd.lcd_display_string("  DC Reference", 4)
+                lcd.lcd_display_string("  Ohmmeter          ", 2)
+                lcd.lcd_display_string("  Voltmeter         ", 3)
+                lcd.lcd_display_string("  DC Reference      ", 4)
                 menuFirst = False
 
             #switch to other menu option 
@@ -94,9 +96,9 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("  Function Generator", 1)
-                lcd.lcd_display_string("> Ohmmeter", 2)
-                lcd.lcd_display_string("  Voltmeter", 3)
-                lcd.lcd_display_string("  DC Reference", 4)
+                lcd.lcd_display_string("> Ohmmeter          ", 2)
+                lcd.lcd_display_string("  Voltmeter         ", 3)
+                lcd.lcd_display_string("  DC Reference      ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -121,9 +123,9 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("  Function Generator", 1)
-                lcd.lcd_display_string("  Ohmmeter", 2)
-                lcd.lcd_display_string("> Voltmeter", 3)
-                lcd.lcd_display_string("  DC Reference", 4)
+                lcd.lcd_display_string("  Ohmmeter          ", 2)
+                lcd.lcd_display_string("> Voltmeter         ", 3)
+                lcd.lcd_display_string("  DC Reference      ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -148,9 +150,9 @@ def checkState(thisState, fast):
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
                 lcd.lcd_display_string("  Function Generator", 1)
-                lcd.lcd_display_string("  Ohmmeter", 2)
-                lcd.lcd_display_string("  Voltmeter", 3)
-                lcd.lcd_display_string("> DC Reference", 4)
+                lcd.lcd_display_string("  Ohmmeter          ", 2)
+                lcd.lcd_display_string("  Voltmeter         ", 3)
+                lcd.lcd_display_string("> DC Reference      ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -174,10 +176,10 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Ohmmeter", 1)
-                lcd.lcd_display_string("  Voltmeter", 2)
-                lcd.lcd_display_string("  DC Reference", 3)
-                lcd.lcd_display_string("> Freq. Measurement", 4)
+                lcd.lcd_display_string("  Ohmmeter          ", 1)
+                lcd.lcd_display_string("  Voltmeter         ", 2)
+                lcd.lcd_display_string("  DC Reference      ", 3)
+                lcd.lcd_display_string("> Freq. Measurement ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -201,10 +203,10 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  Voltmeter", 1)
-                lcd.lcd_display_string("  DC Reference", 2)
-                lcd.lcd_display_string("  Freq. Measurement", 3)
-                lcd.lcd_display_string("> Back", 4)
+                lcd.lcd_display_string("  Voltmeter         ", 1)
+                lcd.lcd_display_string("  DC Reference      ", 2)
+                lcd.lcd_display_string("  Freq. Measurement ", 3)
+                lcd.lcd_display_string("> Back              ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -228,10 +230,10 @@ def checkState(thisState, fast):
             #updates led when something has changed
             if menuFirst == True:
                 if clear: lcd.lcd_clear()
-                lcd.lcd_display_string("  DC Reference", 1)
-                lcd.lcd_display_string("  Freq. Measurement", 2)
-                lcd.lcd_display_string("  Back", 3)
-                lcd.lcd_display_string("> Main", 4)
+                lcd.lcd_display_string("  DC Reference      ", 1)
+                lcd.lcd_display_string("  Freq. Measurement ", 2)
+                lcd.lcd_display_string("  Back              ", 3)
+                lcd.lcd_display_string("> Main              ", 4)
                 menuFirst = False
                 
             #switch to other menu option 
@@ -434,6 +436,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 square = False
                 sine = True
+                waveFreq = 4500
+                waveVoltage = 5
                 menuFirst = True
                 clear = True
 
@@ -479,6 +483,9 @@ def checkState(thisState, fast):
             elif clicked == True:
                 square = True
                 sine = False
+                menuFirst = True
+                waveFreq = 5050
+                waveVoltage = 5
                 menuFirst = True
                 clear = True
 
@@ -595,7 +602,7 @@ def checkState(thisState, fast):
             currentFreq = waveFreq #checks current frequency
             #changes frequency
             if clockwise != 0:
-                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast)
+                waveFreq = SquareWave.changeFrequency(waveFreq, clockwise, fast, sine)
             #updates lcd if necessary
             if currentFreq != waveFreq:
                 lcd.lcd_display_string(f"> {waveFreq} Hz        ", 1)
@@ -686,7 +693,7 @@ def checkState(thisState, fast):
             currentWaveVoltage = waveVoltage #checks current amplitude
             #changes amplitude
             if clockwise != 0:
-                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast)
+                waveVoltage = SquareWave.changeVoltage(waveVoltage, clockwise, fast, sine)
             #updates lcd if necessary
             if currentWaveVoltage != waveVoltage:
                 lcd.lcd_display_string(f"> +/-{waveVoltage} Vp       ", 1)
@@ -764,8 +771,16 @@ def checkState(thisState, fast):
             #turn on wave generator
             elif clicked == True:
                 waveStatus = "On"
-                SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
-                SquareWave.updateVoltage(waveVoltage, digipot)
+                if square:
+                    print(f"Voltage: {waveVoltage}")
+                    print(f"Frequency: {waveFreq}")
+                    SquareWave.updateFrequency(waveOutPin, waveFreq, pi1)
+                    SquareWave.updateVoltage(waveVoltage, digipot)
+                if sine: 
+                    print(f"Voltage: {waveVoltage}")
+                    print(f"Frequency: {waveFreq}")
+                    sineWave.set_amplitude(waveVoltage, digipot2)
+                    sineWave.start_wave(waveFreq)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
 
@@ -794,7 +809,8 @@ def checkState(thisState, fast):
             #turn off wave generator
             elif clicked == True:
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 lcd.lcd_display_string(f"{waveFreq}Hz +/-{waveVoltage}Vp {waveStatus} ", 1)
                 clear = False
@@ -825,7 +841,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 #turn off wave generator
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 #change state
                 state = "FunGenO"
@@ -853,7 +870,8 @@ def checkState(thisState, fast):
             elif clicked == True:
                 #turn off wave generator
                 waveStatus = "Off"
-                SquareWave.waveOff(waveOutPin, pi1)
+                if square: SquareWave.waveOff(waveOutPin, pi1)
+                if sine: sineWave.stop()
                 voltageReference.setDigiPot(0)
                 #change state
                 state = "FunGen"
