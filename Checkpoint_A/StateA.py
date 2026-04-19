@@ -7,7 +7,7 @@ import Rotary
 import I2C_LCD_driver #https://gist.github.com/DenisFromHR/cc863375a6e19dce359d
 import Min_difference
 #import ADCvoltmeter
-import adcCodeTest
+import adcNew
 #import ohmmeterTest
 import VoltageReference
 import SquareWave
@@ -23,7 +23,7 @@ rotary = Rotary.Rotary(18,23,24, pi1)
 digipot = Dual_Digipot.MCP4131(spi1)
 digipot2 = DigipotCode.MCP4131(spi1, 0, 1)
 lcd = I2C_LCD_driver.lcd()
-voltmeter = adcCodeTest.Voltmeter(pi1)
+voltmeter = adcNew.Voltmeter(pi1)
 #ohmmeter = ohmmeterTest.Ohmmeter(pi1)
 voltageReference = VoltageReference.VoltageReference(digipot, pi1)
 sineWave = DigiSineWave.SineWave(pi1)
