@@ -55,7 +55,7 @@ class Voltmeter:
         # --- PHASE 1: T1 (Integration) ---
         self.t1_start = self.pi.get_current_tick()   # Capture hardware start tick
         self.pi.write(self.GPIO_VIN_CTRL, 1)         # Start ramp
-        time.sleep(.075)                             # Target 200ms
+        time.sleep(.075)                             # Target 75ms
         self.pi.write(self.GPIO_VIN_CTRL, 0)         # Stop ramp
         self.t1_stop = self.pi.get_current_tick()    # Capture hardware stop tick
     
@@ -63,7 +63,7 @@ class Voltmeter:
         t1_actual = float(pigpio.tickDiff(self.t1_start, self.t1_stop))
 
         # --- DEAD TIME ---
-        # Increased to 1ms to allow MOSFETs to settle with your supply issues
+        # Increased to 1ms to allow MOSFETs to settle with supply issues
         time.sleep(0.001)
 
         # --- PHASE 2: T2 (De-integration) ---
