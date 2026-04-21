@@ -1,4 +1,4 @@
-import RPi.GPIO as GPIO #https://pypi.org/project/RPi.GPIO/
+import RPi.GPIO as GPIO 
 import time
 
 GPIO_PIN = 27 
@@ -41,10 +41,6 @@ def main():
             
     #except KeyboardInterrupt:
     print("\nTest stopped by user.")
-        
-    #finally:
-        # Always clean up GPIO states on exit to prevent errors on the next run
-        #GPIO.cleanup()
 
 #returns the measured frequency
 def takeSineMeasurement():
