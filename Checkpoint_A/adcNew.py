@@ -96,7 +96,7 @@ class Voltmeter:
                 print(f"Measured Vin: {vin:.4f} V")
             else: #positive voltage
                 # Vin ( 0.000226* t2) - 5.56
-                # Ensure the sign of Vref matches your integrator's direction
+                
                 vin = -6.45 +3.61E-4 *t2 + -1.58E-9 *t2*t2
                 print(f"Actual T1: {t1} us | Actual T2: {t2} us")
                 print(f"Measured Vin: {vin:.4f} V")
